@@ -125,8 +125,9 @@ int double_size() {
   double* doub_ptr1;
   double* doub_ptr2;
   // Write code to compute size of a double.
-
-  return 2;
+  doub_ptr1 = &doub_array;
+  doub_ptr2 = doub_ptr1 + 1;
+  return (int)doub_ptr2 - (int)doub_ptr1;
 }
 
 /*

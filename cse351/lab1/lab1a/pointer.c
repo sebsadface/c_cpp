@@ -1,8 +1,8 @@
 /*
  * CSE 351 Lab 1a (Pointers in C)
  *
- * Name(s):  
- * NetID(s): 
+ * Name: Sebastian Liu
+ * NetID: ll57         
  *
  * WARNING: Do not include the <stdio.h> header; it confuses the dlc compiler.
  * You can still use printf for debugging without including <stdio.h>. The
@@ -101,7 +101,9 @@ int int_size() {
   int* int_ptr1;
   int* int_ptr2;
   // Write code to compute size of an integer.
-
+  int_ptr1 = &int_array;
+  int_ptr2 = int_ptr1++;
+  printf ("Here is the length of an integer: %d \n", (int)int_ptr2 - (int)int_ptr1)
   return 2;
 }
 

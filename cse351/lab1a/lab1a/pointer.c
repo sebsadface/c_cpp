@@ -170,6 +170,9 @@ int pointer_size() {
  */
 void swap_ints(int* ptr1, int* ptr2) {
   // Your code here
+  int* ptr_temp = ptr1;
+  ptr1 = ptr2;
+  ptr2 = ptr_temp;
 }
 
 /*

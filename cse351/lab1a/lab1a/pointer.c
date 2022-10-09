@@ -225,7 +225,7 @@ int change_value()
 int within_same_block(int *ptr1, int *ptr2)
 {
   // Your code here
-  return 2;
+  return (int)ptr1 >> 6 == (int)ptr2 >> 6;
 }
 
 /*

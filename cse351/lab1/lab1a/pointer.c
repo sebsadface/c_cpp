@@ -103,8 +103,7 @@ int int_size() {
   // Write code to compute size of an integer.
   int_ptr1 = &int_array;
   int_ptr2 = int_ptr1++;
-  printf ("Here is the length of an integer: %d \n", (int)int_ptr2 - (int)int_ptr1)
-  return 2;
+  return (int)int_ptr2 - (int)int_ptr1;
 }
 
 /*

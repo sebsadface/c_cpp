@@ -149,8 +149,9 @@ int pointer_size() {
   double** ptr_ptr1;
   double** ptr_ptr2;
   // Write code to compute size of a pointer.
-
-  return 2;
+  ptr_ptr1 = &ptr_array;
+  ptr_ptr2 = ptr_ptr1 + 1;
+  return (int)ptr_ptr2 - (int)ptr_ptr1;
 }
 
 /*

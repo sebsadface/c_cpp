@@ -102,7 +102,7 @@ int int_size() {
   int* int_ptr2;
   // Write code to compute size of an integer.
   int_ptr1 = &int_array;
-  int_ptr2 = &int_array + 1;
+  int_ptr2 = int_ptr1 + 1;
   return (int)int_ptr2 - (int)int_ptr1;
 }
 

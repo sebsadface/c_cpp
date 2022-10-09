@@ -1,8 +1,8 @@
-        /*
+/*
  * CSE 351 Lab 1a (Pointers in C)
  *
  * Name: Sebastian Liu
- * NetID: ll57         
+ * NetID: ll57
  *
  * WARNING: Do not include the <stdio.h> header; it confuses the dlc compiler.
  * You can still use printf for debugging without including <stdio.h>. The
@@ -96,10 +96,11 @@ INTEGER CODING RULES:
  *   Binary integer operators: &, &&, |, ||, <, >, <<, >>, ==, !=, ^, /, %
  *   Unary integer operators: ~, -
  */
-int int_size() {
+int int_size()
+{
   int int_array[10];
-  int* int_ptr1;
-  int* int_ptr2;
+  int *int_ptr1;
+  int *int_ptr2;
   // Write code to compute size of an integer.
   int_ptr1 = &int_array;
   int_ptr2 = int_ptr1 + 1;
@@ -120,10 +121,11 @@ int int_size() {
  *   Binary integer operators: &, &&, |, ||, <, >, <<, >>, ==, !=, ^, /, %
  *   Unary integer operators: ~, -
  */
-int double_size() {
+int double_size()
+{
   double doub_array[10];
-  double* doub_ptr1;
-  double* doub_ptr2;
+  double *doub_ptr1;
+  double *doub_ptr2;
   // Write code to compute size of a double.
   doub_ptr1 = &doub_array;
   doub_ptr2 = doub_ptr1 + 1;
@@ -144,10 +146,11 @@ int double_size() {
  *   Binary integer operators: &, &&, |, ||, <, >, <<, >>, ==, !=, ^, /, %
  *   Unary integer operators: ~, -
  */
-int pointer_size() {
-  double* ptr_array[10];
-  double** ptr_ptr1;
-  double** ptr_ptr2;
+int pointer_size()
+{
+  double *ptr_array[10];
+  double **ptr_ptr1;
+  double **ptr_ptr2;
   // Write code to compute size of a pointer.
   ptr_ptr1 = &ptr_array;
   ptr_ptr2 = ptr_ptr1 + 1;
@@ -168,11 +171,12 @@ int pointer_size() {
  *   Binary integer operators: &, &&, |, ||, <, >, <<, >>, ==, !=, ^, /, %
  *   Unary integer operators: ~, -
  */
-void swap_ints(int* ptr1, int* ptr2) {
+void swap_ints(int *ptr1, int *ptr2)
+{
   // Your code here
-  int* ptr_temp = ptr1;
-  ptr1 = ptr2;
-  ptr2 = ptr_temp;
+  int temp = *ptr1;
+  *ptr1 = *ptr2;
+  *ptr2 = temp;
 }
 
 /*
@@ -190,9 +194,10 @@ void swap_ints(int* ptr1, int* ptr2) {
  *   Binary integer operators: &, &&, |, ||, <, >, !=, /, %
  *   Unary integer operators: -
  */
-int change_value() {
+int change_value()
+{
   int int_array[10];
-  int* int_ptr1 = int_array;
+  int *int_ptr1 = int_array;
   // Remember not to use constants greater than 255.
   // Remember to use * to dereference. You cannot use '[<index>]' syntax.
 
@@ -217,7 +222,8 @@ int change_value() {
  *   Binary integer operators: &, &&, |, ||, <, >, !=, /, %
  *   Unary integer operators: -
  */
-int within_same_block(int* ptr1, int* ptr2) {
+int within_same_block(int *ptr1, int *ptr2)
+{
   // Your code here
   return 2;
 }
@@ -241,7 +247,8 @@ int within_same_block(int* ptr1, int* ptr2) {
  *   Binary integer operators: &, &&, |, ||, <, >, !=, /, %
  *   Unary integer operators: -
  */
-int within_array(int* int_array, int size, int* ptr) {
+int within_array(int *int_array, int size, int *ptr)
+{
   // Your code here
   return 2;
 }
@@ -265,7 +272,8 @@ int within_array(int* int_array, int size, int* ptr) {
  *   Binary integer operators: &, &&, |, ||, <<, >>, ^, /, %
  *   Unary integer operators: ~, -
  */
-int string_length(char* s) {
+int string_length(char *s)
+{
   // Your code here
   return 2;
 }
@@ -289,8 +297,9 @@ int string_length(char* s) {
  *   Binary integer operators: &, &&, |, ||, <, >, <<, >>, ==, !=, ^, /, %
  *   Unary integer operators: ~, -
  */
-int endian_experiment(int* ptr) {
-  char* byte_ptr;
+int endian_experiment(int *ptr)
+{
+  char *byte_ptr;
   // Your code here
   return *ptr;
 }
@@ -328,7 +337,8 @@ int endian_experiment(int* ptr) {
  *   Binary integer operators: &, &&, |, ||, <<, >>, ^, /
  *   Unary integer operators: ~, -
  */
-void selection_sort(int arr[], int arr_length) {
+void selection_sort(int arr[], int arr_length)
+{
   int i, j, min_index;
   // Your code here
 }

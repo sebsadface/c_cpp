@@ -201,7 +201,7 @@ int change_value()
   // Remember not to use constants greater than 255.
   // Remember to use * to dereference. You cannot use '[<index>]' syntax.
   *(int_ptr1 + 5) = (0x80 << 1) + 0x5F;
-  return int_array[5];
+  return *(int_array + 5);
 }
 
 /*
@@ -250,7 +250,7 @@ int within_same_block(int *ptr1, int *ptr2)
 int within_array(int *int_array, int size, int *ptr)
 {
   // Your code here
-  return ((ptr - int_array) >> 31) + ((ptr - size - int_array) >> 31) == -1;
+  return ((ptr - size - int_array) >> 31) == ((ptr - int_array) >> 31) - 1;
 }
 
 /*

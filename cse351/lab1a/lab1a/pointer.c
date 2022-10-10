@@ -351,4 +351,16 @@ void selection_sort(int arr[], int arr_length)
 {
   int i, j, min_index;
   // Your code here
+  for (i = 0; i < arr_length - 1; i++)
+  {
+    min_index = i;
+    for (j = i + 1; j < arr_length; j++)
+    {
+      if (*(arr + min_index) > *(arr + j))
+      {
+        min_index = j;
+      }
+    }
+    swap_ints(arr + i, arr + min_index);
+  }
 }

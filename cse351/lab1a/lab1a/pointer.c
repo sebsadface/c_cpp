@@ -307,6 +307,10 @@ int endian_experiment(int *ptr)
 {
   char *byte_ptr;
   // Your code here
+  byte_ptr = ptr;
+  *byte_ptr = 0x77;
+  *(byte_ptr + 1) = 0x5C;
+  *(byte_ptr + 2) = 0x05;
   return *ptr;
 }
 

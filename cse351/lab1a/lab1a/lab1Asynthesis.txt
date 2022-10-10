@@ -1,23 +1,57 @@
 ******************************
 * Lab 1a Synthesis Questions *
 ******************************
-Name(s):  
-NetID(s): 
+Name(s): Sebastian Liu 
+NetID(s): ll57
 
 
 -----------------------------------------------------------
 1) Use/Benefit and Equation:
+Pointer Arithmetic alows us to access addresses in the memory 
+easily and efficiently by treating memory as an array, and it 
+gives us both the type and the size of the data.
 
-
+Equation: arr[i] = *(arr + i)
+arr is a pointer to arr[0], which stores the address of arr[0] 
+in the memory. When we add an integer i to the pointer arr, it 
+will automatically scaled by the size of the data type(e.g. 4 
+for int) and add it to the pointer(e.g. assume arr = 0x00, for
+an integer array arr + 1 = 0x00 + 0x01 * 4 = 0x04). This enables
+us to use pointer arithmetic to traverse the array.
 
 -----------------------------------------------------------
 2) Steps:
+I first let one pointer points to the first element of the array, 
+and the other pointer points to the second element using pointer 
+arithmetic. To get the actual difference in bytes between the two
+addresses, I first cast two pointer variables to long (they have
+to be of the type long, if cast them to int, we will get a warning
+saying int* is being cast to a smaller value int), then subtract
+the first value from the second value. We need to cast the pointers
+to long integers because if we directly do subtraction on the two
+pointers we will get the the integer number of the elements of a
+given typec(int in this case) between the two addresses.
 
 
 
 -----------------------------------------------------------
 3) Explain:
+Assume we have a function like this:
 
+void swap_ints(int x, int y)
+{
+    int temp;
+    temp = x;
+    x = y;
+    y = temp;
+}
 
+and we have int a = 1; int b = 2, we call the fundction using swap_ints(a, b)
+
+The parameters need to both be pointers because if we use int
+for the parameters, we are just passing the value of a and b 
+to x and y which are stored in different addresses than a and b. 
+Hence we are only swaping the value of x and y instead of a and b.
+Therefore using int as parameters will not work.
 
 -----------------------------------------------------------

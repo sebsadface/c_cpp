@@ -275,7 +275,13 @@ int within_array(int *int_array, int size, int *ptr)
 int string_length(char *s)
 {
   // Your code here
-  return 2;
+  int count = 0;
+  while (*s != '\0')
+  {
+    s++;
+    count++;
+  }
+  return count;
 }
 
 /*

@@ -201,7 +201,7 @@ int change_value()
   // Remember not to use constants greater than 255.
   // Remember to use * to dereference. You cannot use '[<index>]' syntax.
   *(int_ptr1 + 5) = (0x80 << 1) | 0x5F;
-  return int_array[5];
+  return int_array + 5;
 }
 
 /*

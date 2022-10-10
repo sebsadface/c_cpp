@@ -102,9 +102,9 @@ int int_size()
   int *int_ptr1;
   int *int_ptr2;
   // Write code to compute size of an integer.
-  int_ptr1 = &int_array;
+  int_ptr1 = int_array;
   int_ptr2 = int_ptr1 + 1;
-  return (int)int_ptr2 - (int)int_ptr1;
+  return (long)int_ptr2 - (long)int_ptr1;
 }
 
 /*
@@ -127,9 +127,9 @@ int double_size()
   double *doub_ptr1;
   double *doub_ptr2;
   // Write code to compute size of a double.
-  doub_ptr1 = &doub_array;
+  doub_ptr1 = doub_array;
   doub_ptr2 = doub_ptr1 + 1;
-  return (int)doub_ptr2 - (int)doub_ptr1;
+  return (long)doub_ptr2 - (long)doub_ptr1;
 }
 
 /*
@@ -152,9 +152,9 @@ int pointer_size()
   double **ptr_ptr1;
   double **ptr_ptr2;
   // Write code to compute size of a pointer.
-  ptr_ptr1 = &ptr_array;
+  ptr_ptr1 = ptr_array;
   ptr_ptr2 = ptr_ptr1 + 1;
-  return (int)ptr_ptr2 - (int)ptr_ptr1;
+  return (long)ptr_ptr2 - (long)ptr_ptr1;
 }
 
 /*
@@ -225,7 +225,7 @@ int change_value()
 int within_same_block(int *ptr1, int *ptr2)
 {
   // Your code here
-  return (int)ptr1 >> 6 == (int)ptr2 >> 6;
+  return (long)ptr1 >> 6 == (long)ptr2 >> 6;
 }
 
 /*
@@ -307,7 +307,7 @@ int endian_experiment(int *ptr)
 {
   char *byte_ptr;
   // Your code here
-  byte_ptr = ptr;
+  byte_ptr = (char *)ptr;
   *byte_ptr = 0x77;
   *(byte_ptr + 1) = 0x5C;
   *(byte_ptr + 2) = 0x05;

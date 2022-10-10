@@ -200,8 +200,8 @@ int change_value()
   int *int_ptr1 = int_array;
   // Remember not to use constants greater than 255.
   // Remember to use * to dereference. You cannot use '[<index>]' syntax.
-  *(int_ptr1 + 5) = (0x80 << 1) | 0x5F;
-  return int_array + 5;
+  *(int_ptr1 + 5) = (0x80 << 1) + 0x5F;
+  return int_array[5];
 }
 
 /*

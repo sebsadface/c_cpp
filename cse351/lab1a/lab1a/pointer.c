@@ -250,7 +250,7 @@ int within_same_block(int *ptr1, int *ptr2)
 int within_array(int *int_array, int size, int *ptr)
 {
   // Your code here
-  return 2;
+  return ((ptr - int_array) >> 31) + ((ptr - size - int_array) >> 31) == -1;
 }
 
 /*

@@ -1,8 +1,8 @@
 /*
  * CSE 351 Lab 1b (Manipulating Bits in C)
  *
- * Name(s):  
- * NetID(s): 
+ * Name: Sebastian Liu
+ * NetID: ll57
  *
  * ----------------------------------------------------------------------------
  * Overview
@@ -74,25 +74,25 @@
 // (aisle & SECTION_MASK) should preserve a section's worth of bits at the
 // lower end of the aisle and set all other bits to 0. This is essentially
 // extracting section 0 from the example aisle shown above.
-#define SECTION_MASK 0x????
+#define SECTION_MASK 0xFFFF
 
 // Mask for extracting the spaces bits from a section.
 // (section & SPACES_MASK) should preserve all the spaces bits in a section and
 // set all non-spaces bits to 0.
-#define SPACES_MASK 0x????
+#define SPACES_MASK 0x2FF
 
 // Mask for extracting the ID bits from a section.
 // (section & ID_MASK) should preserve all the id bits in a section and set all
 // non-id bits to 0.
-#define ID_MASK 0x????
-
+#define ID_MASK 0xFC00
 
 /* Given a pointer to an aisle and a section index, return the section at the
  * given index of the given aisle.
  *
  * Can assume the index is a valid index (0-3 inclusive).
  */
-unsigned short get_section(unsigned long* aisle, int index) {
+unsigned short get_section(unsigned long *aisle, int index)
+{
   // TODO: implement this method
   return 0;
 }
@@ -104,7 +104,8 @@ unsigned short get_section(unsigned long* aisle, int index) {
  *
  * Can assume the index is a valid index (0-3 inclusive).
  */
-unsigned short get_spaces(unsigned long* aisle, int index) {
+unsigned short get_spaces(unsigned long *aisle, int index)
+{
   // TODO: implement this method
   return 0;
 }
@@ -118,7 +119,8 @@ unsigned short get_spaces(unsigned long* aisle, int index) {
  *
  * Can assume the index is a valid index (0-3 inclusive).
  */
-unsigned short get_id(unsigned long* aisle, int index) {
+unsigned short get_id(unsigned long *aisle, int index)
+{
   // TODO: implement this method
   return 0;
 }
@@ -129,7 +131,8 @@ unsigned short get_id(unsigned long* aisle, int index) {
  *
  * Can assume the index is a valid index (0-3 inclusive).
  */
-void set_section(unsigned long* aisle, int index, unsigned short new_section) {
+void set_section(unsigned long *aisle, int index, unsigned short new_section)
+{
   // TODO: implement this method
 }
 
@@ -142,7 +145,8 @@ void set_section(unsigned long* aisle, int index, unsigned short new_section) {
  *
  * Can assume the index is a valid index (0-3 inclusive).
  */
-void set_spaces(unsigned long* aisle, int index, unsigned short new_spaces) {
+void set_spaces(unsigned long *aisle, int index, unsigned short new_spaces)
+{
   // TODO: implement this method
 }
 
@@ -155,7 +159,8 @@ void set_spaces(unsigned long* aisle, int index, unsigned short new_spaces) {
  *
  * Can assume the index is a valid index (0-3 inclusive).
  */
-void set_id(unsigned long* aisle, int index, unsigned short new_id) {
+void set_id(unsigned long *aisle, int index, unsigned short new_id)
+{
   // TODO: implement this method
 }
 
@@ -167,7 +172,8 @@ void set_id(unsigned long* aisle, int index, unsigned short new_id) {
  * Can assume the section index is a valid index (0-3 inclusive).
  * Can assume the spaces index is a valid index (0-9 inclusive).
  */
-void toggle_space(unsigned long* aisle, int index, int space_index) {
+void toggle_space(unsigned long *aisle, int index, int space_index)
+{
   // TODO: implement this method
 }
 
@@ -176,7 +182,8 @@ void toggle_space(unsigned long* aisle, int index, int space_index) {
  *
  * Can assume the index is a valid index (0-3 inclusive).
  */
-unsigned short num_items(unsigned long* aisle, int index) {
+unsigned short num_items(unsigned long *aisle, int index)
+{
   // TODO: implement this method
   return 0;
 }
@@ -190,7 +197,8 @@ unsigned short num_items(unsigned long* aisle, int index) {
  *
  * Can assume the index is a valid index (0-3 inclusive).
  */
-void add_items(unsigned long* aisle, int index, int n) {
+void add_items(unsigned long *aisle, int index, int n)
+{
   // TODO: implement this method
 }
 
@@ -203,7 +211,8 @@ void add_items(unsigned long* aisle, int index, int n) {
  *
  * Can assume the index is a valid index (0-3 inclusive).
  */
-void remove_items(unsigned long* aisle, int index, int n) {
+void remove_items(unsigned long *aisle, int index, int n)
+{
   // TODO: implement this method
 }
 
@@ -217,7 +226,8 @@ void remove_items(unsigned long* aisle, int index, int n) {
  * Can assume the index is a valid index (0-3 inclusive).
  * Can NOT assume n < NUM_SPACES (hint: find an equivalent rotation).
  */
-void rotate_items_left(unsigned long* aisle, int index, int n) {
+void rotate_items_left(unsigned long *aisle, int index, int n)
+{
   // TODO: implement this method
 }
 
@@ -231,6 +241,7 @@ void rotate_items_left(unsigned long* aisle, int index, int n) {
  * Can assume the index is a valid index (0-3 inclusive).
  * Can NOT assume n < NUM_SPACES (hint: find an equivalent rotation).
  */
-void rotate_items_right(unsigned long* aisle, int index, int n) {
+void rotate_items_right(unsigned long *aisle, int index, int n)
+{
   // TODO: implement this method
 }

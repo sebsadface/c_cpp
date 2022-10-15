@@ -107,7 +107,7 @@ unsigned short get_section(unsigned long *aisle, int index)
 unsigned short get_spaces(unsigned long *aisle, int index)
 {
   // TODO: implement this method
-  return 0;
+  return ((*aisle >> (16 * index)) & SPACES_MASK);
 }
 
 /* Given a pointer to an aisle and a section index, return the id of the

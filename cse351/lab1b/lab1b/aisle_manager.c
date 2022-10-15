@@ -94,6 +94,7 @@
 unsigned short get_section(unsigned long *aisle, int index)
 {
   // TODO: implement this method
+  print_binary_long(SECTION_MASK << (16 * index));
   return (*aisle & (SECTION_MASK << (16 * index)));
 }
 

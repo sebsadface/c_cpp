@@ -79,7 +79,7 @@
 // Mask for extracting the spaces bits from a section.
 // (section & SPACES_MASK) should preserve all the spaces bits in a section and
 // set all non-spaces bits to 0.
-#define SPACES_MASK 0x2FF
+#define SPACES_MASK 0x3FF
 
 // Mask for extracting the ID bits from a section.
 // (section & ID_MASK) should preserve all the id bits in a section and set all

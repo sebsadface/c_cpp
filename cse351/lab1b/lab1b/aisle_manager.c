@@ -84,7 +84,7 @@
 // Mask for extracting the ID bits from a section.
 // (section & ID_MASK) should preserve all the id bits in a section and set all
 // non-id bits to 0.
-#define ID_MASK 0xFC
+#define ID_MASK 0xFC00
 
 /* Given a pointer to an aisle and a section index, return the section at the
  * given index of the given aisle.
@@ -122,7 +122,7 @@ unsigned short get_spaces(unsigned long *aisle, int index)
 unsigned short get_id(unsigned long *aisle, int index)
 {
   // TODO: implement this method
-  return ((*aisle >> (16 * index + 10)) & ID_MASK);
+  return ((*aisle >> (16 * index)) & ID_MASK) >> 10;
 }
 
 /* Given a pointer to an aisle, a section index, and a short representing a new

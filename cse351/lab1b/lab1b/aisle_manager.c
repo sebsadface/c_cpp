@@ -184,7 +184,7 @@ void set_id(unsigned long *aisle, int index, unsigned short new_id)
 void toggle_space(unsigned long *aisle, int index, int space_index)
 {
   // TODO: implement this method
-  *aisle = (*aisle & ~((long)1 << (16 * index + space_index))) | ((long)((~get_section(*aisle, index)) & (1 << space_index)) << (16 * index));
+  *aisle = (*aisle & ~((long)1 << (16 * index + space_index))) | ((long)((~get_spaces(*aisle, index)) & (1 << space_index)) << (16 * index));
 }
 
 /* Given a pointer to an aisle and a section index, return the number of items

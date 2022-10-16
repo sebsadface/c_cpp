@@ -149,7 +149,7 @@ void set_section(unsigned long *aisle, int index, unsigned short new_section)
 void set_spaces(unsigned long *aisle, int index, unsigned short new_spaces)
 {
   // TODO: implement this method
-  if ((new_spaces << 10) == 0)
+  if ((new_spaces >> 10) == 0)
   {
     *aisle = (*aisle & ~((long)SPACES_MASK << (16 * index))) | ((long)new_spaces << (16 * index));
   }

@@ -167,6 +167,10 @@ void set_spaces(unsigned long *aisle, int index, unsigned short new_spaces)
 void set_id(unsigned long *aisle, int index, unsigned short new_id)
 {
   // TODO: implement this method
+  if ((new_id) >> 6 == 0)
+  {
+    *aisle = (*aisle & ~((long)ID_MASK << (16 * index + 10))) | ((long)new_id << (16 * index + 10));
+  }
 }
 
 /* Given a pointer to an aisle, a section index, and a space index, toggle the

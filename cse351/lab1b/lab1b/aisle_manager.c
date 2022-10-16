@@ -134,6 +134,7 @@ unsigned short get_id(unsigned long *aisle, int index)
 void set_section(unsigned long *aisle, int index, unsigned short new_section)
 {
   // TODO: implement this method
+  return (*aisle & (~((long)SECTION_MASK << index))) | (new_section << index);
 }
 
 /* Given a pointer to an aisle, a section index, and a short representing a new

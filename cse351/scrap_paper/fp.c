@@ -2,7 +2,7 @@
 
 int main(int argc, char* argv[]) {
   int count = 0;
-  float cap = 16777216;
+  float cap = 16777218;
 
   for (float i = 0; i < cap; i++) {
     count++;

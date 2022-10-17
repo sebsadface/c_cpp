@@ -253,7 +253,7 @@ void remove_items(unsigned long *aisle, int index, int n)
   int items = num_items(aisle, index);
   if (n > items)
   {
-    set_spaces(aisle, index, ~SPACES_MASK);
+    set_spaces(aisle, index, 0);
   }
   else
   {

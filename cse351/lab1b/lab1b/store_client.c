@@ -124,7 +124,7 @@ unsigned short *empty_section_with_id(unsigned short id)
       {
         if (num_items(aisles + i, j) == 0)
         {
-          return aisles + i + (short)j;
+          return (short *)(aisles + i) + j;
         }
       }
     }

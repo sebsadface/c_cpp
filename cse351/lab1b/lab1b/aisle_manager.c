@@ -306,7 +306,7 @@ void rotate_items_right(unsigned long *aisle, int index, int n)
   // TODO: implement this method
   int rotation = n % NUM_SPACES;
   unsigned int spaces = get_spaces(aisle, index);
-  unsigned int new_spaces = (spaces << NUM_SPACES) >> n;
-  new_spaces = (new_spaces | (spaces >> n)) & SPACES_MASK;
+  unsigned int new_spaces = (spaces << NUM_SPACES) >> rotation;
+  new_spaces = (new_spaces | (spaces >> rotation)) & SPACES_MASK;
   set_spaces(aisle, index, (short)new_spaces);
 }

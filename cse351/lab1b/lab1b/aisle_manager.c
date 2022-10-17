@@ -195,7 +195,12 @@ void toggle_space(unsigned long *aisle, int index, int space_index)
 unsigned short num_items(unsigned long *aisle, int index)
 {
   // TODO: implement this method
-  return 0;
+  int count = 0;
+  for (int i = 0; i < NUM_SPACES; i++)
+  {
+    count += (get_spaces(aisle, index) & (1 << i)) >> i;
+  }
+  return count;
 }
 
 /* Given a pointer to an aisle, a section index, and the desired number of

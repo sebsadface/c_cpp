@@ -215,6 +215,27 @@ unsigned short num_items(unsigned long *aisle, int index)
 void add_items(unsigned long *aisle, int index, int n)
 {
   // TODO: implement this method
+  int items = num_items(aisle, index);
+  if (n > (NUM_SPACES - items))
+  {
+    set_spaces(aisle, index, SPACES_MASK);
+  }
+  else
+  {
+    int space_index = 0;
+    for (int i = 0; i < NUM_SPACES; i++)
+    {
+      if (n > 0)
+      {
+        if ((get_spaces(aisle, index) & (1 << space_index)) == 0)
+        {
+          toggle_space(aisle, index, space_index);
+          n--;
+        }
+        space_index++;
+      }
+    }
+  }
 }
 
 /* Given a pointer to an aisle, a section index, and the desired number of

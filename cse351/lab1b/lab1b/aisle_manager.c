@@ -94,7 +94,7 @@
 unsigned short get_section(unsigned long *aisle, int index)
 {
   // TODO: implement this method
-  return ((*aisle >> (16 * index)) & SECTION_MASK);
+  return ((*aisle >> (SECTION_SIZE * index)) & SECTION_MASK);
 }
 
 /* Given a pointer to an aisle and a section index, return the spaces of the
@@ -107,7 +107,7 @@ unsigned short get_section(unsigned long *aisle, int index)
 unsigned short get_spaces(unsigned long *aisle, int index)
 {
   // TODO: implement this method
-  return ((*aisle >> (16 * index)) & SPACES_MASK);
+  return ((*aisle >> (SECTION_SIZE * index)) & SPACES_MASK);
 }
 
 /* Given a pointer to an aisle and a section index, return the id of the
@@ -122,7 +122,7 @@ unsigned short get_spaces(unsigned long *aisle, int index)
 unsigned short get_id(unsigned long *aisle, int index)
 {
   // TODO: implement this method
-  return ((*aisle >> (16 * index)) & ID_MASK) >> 10;
+  return ((*aisle >> (SECTION_SIZE * index)) & ID_MASK) >> NUM_SPACES;
 }
 
 /* Given a pointer to an aisle, a section index, and a short representing a new
@@ -134,7 +134,7 @@ unsigned short get_id(unsigned long *aisle, int index)
 void set_section(unsigned long *aisle, int index, unsigned short new_section)
 {
   // TODO: implement this method
-  *aisle = (*aisle & ~((long)SECTION_MASK << (16 * index))) | ((long)new_section << (16 * index));
+  *aisle = (*aisle & ~((long)SECTION_MASK << (SECTION_SIZE * index))) | ((long)new_section << (SECTION_SIZE * index));
 }
 
 /* Given a pointer to an aisle, a section index, and a short representing a new
@@ -149,9 +149,9 @@ void set_section(unsigned long *aisle, int index, unsigned short new_section)
 void set_spaces(unsigned long *aisle, int index, unsigned short new_spaces)
 {
   // TODO: implement this method
-  if ((new_spaces >> 10) == 0)
+  if ((new_spaces >> NUM_SPACES) == 0)
   {
-    *aisle = (*aisle & ~((long)SPACES_MASK << (16 * index))) | ((long)new_spaces << (16 * index));
+    *aisle = (*aisle & ~((long)SPACES_MASK << (SECTION_SIZE * index))) | ((long)new_spaces << (SECTION_SIZE * index));
   }
 }
 
@@ -167,9 +167,9 @@ void set_spaces(unsigned long *aisle, int index, unsigned short new_spaces)
 void set_id(unsigned long *aisle, int index, unsigned short new_id)
 {
   // TODO: implement this method
-  if ((new_id >> 6) == 0)
+  if ((new_id >> ID_SIZE) == 0)
   {
-    *aisle = (*aisle & ~((long)ID_MASK << (16 * index))) | ((long)new_id << (16 * index + 10));
+    *aisle = (*aisle & ~((long)ID_MASK << (SECTION_SIZE * index))) | ((long)new_id << (SECTION_SIZE * index + NUM_SPACES));
   }
 }
 
@@ -184,7 +184,7 @@ void set_id(unsigned long *aisle, int index, unsigned short new_id)
 void toggle_space(unsigned long *aisle, int index, int space_index)
 {
   // TODO: implement this method
-  *aisle = (*aisle & ~((long)1 << (16 * index + space_index))) | ((long)((~get_spaces(aisle, index)) & (1 << space_index)) << (16 * index));
+  *aisle = (*aisle & ~((long)1 << (SECTION_SIZE * index + space_index))) | ((long)((~get_spaces(aisle, index)) & (1 << space_index)) << (SECTION_SIZE * index));
 }
 
 /* Given a pointer to an aisle and a section index, return the number of items

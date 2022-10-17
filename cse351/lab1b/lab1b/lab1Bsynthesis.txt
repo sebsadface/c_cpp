@@ -1,26 +1,33 @@
 ******************************
 * Lab 1b Synthesis Questions *
 ******************************
-Name(s):  
-NetID(s): 
+Name:  Sebastian Liu
+NetID: ll57
 
 
 -----------------------------------------------------------
-1) Benefit 1:
+1) Benefit 1: We can have more types of items (2^8 items compares to 2^6 items before).
 
-   Benefit 2:
+   Benefit 2: It's easier to represent the section in differnt unit (exactly 2 hexdecimal 
+               digits or 1 byte for the number of items in the section or a unique item id).
 
-   Benefit 3:
+   Benefit 3: We can use characters to represent the items id or the number of items (since one characters is also 8 bits long).
 
-   Drawback:
-
------------------------------------------------------------
-2) Difference? Y/N
-
-   Explain:
+   Drawback: We will have less space to put in items in a section (8 items compares to 10 items before).
 
 -----------------------------------------------------------
-3) Explain:
+2) Difference? Yes
 
-   Considerations:
+   Explain: the integer value of 0xFFFFFFFF depends on whether y is a signed or unsigned integer.
+            (if y is a signed integer, 0XFFFFFFFF will represent the value -1; if y is a unsigned 
+            integer, 0XFFFFFFFF will represent the value 4294967295).
+
+-----------------------------------------------------------
+3) Explain: This is because when a floating point number is outside of the representable range,
+            a rounding, or overflow, or underflow which will make "==" and "!=" problematic in
+            comparing two floating point numbers.
+
+   Considerations: We have to consider the scale of the numbers. Two large numbers with very differnt
+                  float can be equal, and two really small numbers with can be differnt even with very
+                  similar float. 
 

@@ -67,7 +67,34 @@ void refill_from_stockroom()
 int fulfill_order(unsigned short id, int num)
 {
   // TODO: implement this function
-  return 0;
+  int count = 0;
+  unsigned short items_before;
+  for (int i = 0; i < NUM_AISLES; i++)
+  {
+    for (int j = 0; j < SECTIONS_PER_AISLE; j++)
+    {
+      if (get_id(aisles + i, j) == id)
+      {
+        items_before = num_items(aisles + i, j);
+        count += items_before;
+        remove_items(aisles + i, j, items_before);
+        num -= items_before;
+      }
+    }
+  }
+  if ((num > 0))
+  {
+    if (num >= stockroom[id])
+    {
+      count += stockroom[id];
+    }
+    else
+    {
+      count += num;
+    }
+  }
+
+  return count;
 }
 
 /* Return a pointer to the first section in the aisles with the given item id

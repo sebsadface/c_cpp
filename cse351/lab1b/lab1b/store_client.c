@@ -43,6 +43,13 @@ int stockroom[NUM_ITEMS];
 void refill_from_stockroom()
 {
   // TODO: implement this function
+  for (int i = 0; i < NUM_AISLES; i++)
+  {
+    for (int j = 0; j < SECTIONS_PER_AISLE; j++)
+    {
+      add_items(aisles[i], j, stockroom[get_id(aisles[i], j)]);
+    }
+  }
 }
 
 /* Remove at most num items from sections with the given item id, starting with

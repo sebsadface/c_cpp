@@ -87,10 +87,12 @@ int fulfill_order(unsigned short id, int num)
     if (num >= stockroom[id])
     {
       count += stockroom[id];
+      stockroom[id] = 0;
     }
     else
     {
       count += num;
+      stockroom[id] -= num;
     }
   }
 

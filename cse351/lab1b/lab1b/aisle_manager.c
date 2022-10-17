@@ -265,6 +265,7 @@ void remove_items(unsigned long *aisle, int index, int n)
         if ((get_spaces(aisle, index) & (1 << space_index)) == 1)
         {
           toggle_space(aisle, index, space_index);
+          print_binary_long(get_spaces(aisle, index));
           n--;
         }
         space_index++;

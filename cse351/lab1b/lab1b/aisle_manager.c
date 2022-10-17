@@ -288,8 +288,6 @@ void rotate_items_left(unsigned long *aisle, int index, int n)
   unsigned int spaces = get_spaces(aisle, index);
   unsigned int new_spaces = (spaces << rotation);
   new_spaces = (new_spaces | (new_spaces >> NUM_SPACES)) & SPACES_MASK;
-  print_binary_long(spaces);
-  print_binary_short(new_spaces);
   set_spaces(aisle, index, (short)new_spaces);
 }
 

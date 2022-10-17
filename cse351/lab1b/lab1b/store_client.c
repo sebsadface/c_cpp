@@ -116,6 +116,19 @@ int fulfill_order(unsigned short id, int num)
 unsigned short *empty_section_with_id(unsigned short id)
 {
   // TODO: implement this function
+  for (int i = 0; i < NUM_AISLES; i++)
+  {
+    for (int j = 0; j < SECTIONS_PER_AISLE; j++)
+    {
+      if (get_id(aisles + i, j) == id)
+      {
+        if (num_items(aisles + i, j) == 0)
+        {
+          return aisles + i + (short)j;
+        }
+      }
+    }
+  }
   return NULL;
 }
 

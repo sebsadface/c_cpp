@@ -45,7 +45,7 @@ void refill_from_stockroom()
   // TODO: implement this function
   for (int i = 0; i < NUM_AISLES; i++)
   {
-    for (int j = 0; j < SECTIONS_PER_AISLE; j++)
+    for (int j = SECTIONS_PER_AISLE - 1; j >= 0; j++)
     {
       int id = get_id((aisles + i), j);
       add_items((aisles + i), j, stockroom[id]);

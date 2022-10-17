@@ -139,5 +139,20 @@ unsigned short *empty_section_with_id(unsigned short id)
 unsigned short *section_with_most_items()
 {
   // TODO: implement this function
-  return NULL;
+  unsigned short max_items = 0;
+  unsigned short current_items;
+  unsigned short *max_ptr = NULL;
+  for (int i = 0; i < NUM_AISLES; i++)
+  {
+    for (int j = 0; j < SECTIONS_PER_AISLE; j++)
+    {
+      current_items = num_items(aisles + i, j);
+      if (current_items > max_items)
+      {
+        max_items = current_items;
+        max_ptr = (unsigned short *)(aisles + i) + j;
+      }
+    }
+  }
+  return max_ptr;
 }

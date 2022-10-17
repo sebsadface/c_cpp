@@ -284,7 +284,7 @@ void remove_items(unsigned long *aisle, int index, int n)
 void rotate_items_left(unsigned long *aisle, int index, int n)
 {
   // TODO: implement this method
-  set_spaces(aisle, index, (get_spaces(aisle, index) >> (SECTION_SIZE - n)) | (get_spaces(aisle, index) << n));
+  set_spaces(aisle, index, (get_spaces(aisle, index) >> (SECTION_SIZE - (n % 10)) | (get_spaces(aisle, index) << (n % 10))));
 }
 
 /* Given a pointer to an aisle, a section index, and a number of slots to

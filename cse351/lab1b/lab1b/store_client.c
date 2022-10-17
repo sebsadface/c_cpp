@@ -76,9 +76,18 @@ int fulfill_order(unsigned short id, int num)
       if (get_id(aisles + i, j) == id)
       {
         items_before = num_items(aisles + i, j);
-        count += items_before;
-        remove_items(aisles + i, j, items_before);
-        num -= items_before;
+        if (items_before >= num)
+        {
+          count += num;
+          remove_items(aisles + i, j, num);
+          num -= num;
+        }
+        else
+        {
+          count += items_before;
+          remove_items(aisles + i, j, items_before);
+          num -= items_before;
+        }
       }
     }
   }

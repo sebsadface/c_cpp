@@ -141,7 +141,7 @@ unsigned short *section_with_most_items()
   // TODO: implement this function
   unsigned short max_items = 0;
   unsigned short current_items;
-  unsigned short *max_ptr = NULL;
+  unsigned short *max_ptr = aisles;
   for (int i = 0; i < NUM_AISLES; i++)
   {
     for (int j = 0; j < SECTIONS_PER_AISLE; j++)

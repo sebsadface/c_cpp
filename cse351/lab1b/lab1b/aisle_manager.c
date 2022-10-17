@@ -284,7 +284,7 @@ void remove_items(unsigned long *aisle, int index, int n)
 void rotate_items_left(unsigned long *aisle, int index, int n)
 {
   // TODO: implement this method
-  int rotation = n % 10;
+  int rotation = n % NUM_SPACES;
   unsigned int spaces = get_spaces(aisle, index);
   unsigned int new_spaces = (spaces << rotation);
   new_spaces = (new_spaces | (new_spaces >> NUM_SPACES)) & SPACES_MASK;
@@ -304,4 +304,9 @@ void rotate_items_left(unsigned long *aisle, int index, int n)
 void rotate_items_right(unsigned long *aisle, int index, int n)
 {
   // TODO: implement this method
+  int rotation = n % NUM_SPACES;
+  unsigned int spaces = get_spaces(aisle, index);
+  unsigned int new_spaces = (spaces << NUM_SPACES) >> n;
+  new_spaces = (new_spaces | (spaces >> n)) & SPACES_MASK;
+  set_spaces(aisle, index, (short)new_spaces);
 }

@@ -43,12 +43,13 @@ int stockroom[NUM_ITEMS];
 void refill_from_stockroom()
 {
   // TODO: implement this function
+  unsigned short items_before;
   for (int i = 0; i < NUM_AISLES; i++)
   {
     for (int j = 0; j < SECTIONS_PER_AISLE; j++)
     {
       int id = get_id(aisles + i, j);
-      unsigned short items_before = num_items(aisles + i, j);
+      items_before = num_items(aisles + i, j);
       add_items(aisles + i, j, stockroom[id]);
       stockroom[id] -= (num_items(aisles + i, j) - items_before);
     }

@@ -82,7 +82,7 @@ int fulfill_order(unsigned short id, int num)
       }
     }
   }
-  if ((num > 0))
+  if ((num > 0) && (stockroom > 0))
   {
     if (num >= stockroom[id])
     {

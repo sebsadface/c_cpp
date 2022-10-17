@@ -215,8 +215,7 @@ unsigned short num_items(unsigned long *aisle, int index)
 void add_items(unsigned long *aisle, int index, int n)
 {
   // TODO: implement this method
-  int items = num_items(aisle, index);
-  if (n > (NUM_SPACES - items))
+  if (n > (NUM_SPACES - num_items(aisle, index)))
   {
     set_spaces(aisle, index, SPACES_MASK);
   }
@@ -250,8 +249,7 @@ void add_items(unsigned long *aisle, int index, int n)
 void remove_items(unsigned long *aisle, int index, int n)
 {
   // TODO: implement this method
-  int items = num_items(aisle, index);
-  if (n >= items)
+  if (n >= num_items(aisle, index))
   {
     set_spaces(aisle, index, 0);
   }
@@ -262,7 +260,7 @@ void remove_items(unsigned long *aisle, int index, int n)
     {
       if (n > 0)
       {
-        if ((get_spaces(aisle, index) & (1 << space_index)) == 1)
+        if ((get_spaces(aisle, index) & (1 << space_index)) != 0)
         {
           toggle_space(aisle, index, space_index);
           print_binary_long(get_spaces(aisle, index));

@@ -260,7 +260,7 @@ void remove_items(unsigned long *aisle, int index, int n)
     {
       if (n > 0)
       {
-        if ((get_spaces(aisle, index) & (1 << space_index)) == (char)1)
+        if ((get_spaces(aisle, index) & (1 << space_index)) != 0)
         {
           toggle_space(aisle, index, space_index);
           n--;

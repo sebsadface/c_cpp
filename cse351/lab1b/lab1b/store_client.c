@@ -45,10 +45,12 @@ void refill_from_stockroom()
   // TODO: implement this function
   for (int i = 0; i < NUM_AISLES; i++)
   {
-    for (int j = SECTIONS_PER_AISLE - 1; j >= 0; j--)
+    for (int j = 0; j < SECTIONS_PER_AISLE; j++)
     {
-      int id = get_id((aisles + i), j);
-      add_items((aisles + i), j, stockroom[id]);
+      int id = get_id(aisles + i, j);
+      unsigned short items_before = num_items(aisles + i, j);
+      add_items(aisles + i, j, stockroom[id]);
+      stockroom[id] -= (num_items(aisles + i, j) - items_before);
     }
   }
 }

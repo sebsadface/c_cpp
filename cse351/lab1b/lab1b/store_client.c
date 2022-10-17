@@ -47,8 +47,8 @@ void refill_from_stockroom()
   {
     for (int j = 0; j < SECTIONS_PER_AISLE; j++)
     {
-      int id = get_id(aisles[i], j);
-      add_items(aisles[i], j, stockroom[id]);
+      int id = get_id((unsigned long *)aisles[i], j);
+      add_items((unsigned long *)aisles[i], j, stockroom[1]);
     }
   }
 }

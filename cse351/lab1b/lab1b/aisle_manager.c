@@ -251,7 +251,7 @@ void remove_items(unsigned long *aisle, int index, int n)
 {
   // TODO: implement this method
   int items = num_items(aisle, index);
-  if (n > items)
+  if (n >= items)
   {
     set_spaces(aisle, index, 0);
   }

@@ -290,7 +290,7 @@ void rotate_items_left(unsigned long *aisle, int index, int n)
   new_spaces |= new_spaces >> NUM_SPACES;
   print_binary_long(spaces);
   print_binary_long(new_spaces);
-  set_spaces(aisle, index, new_spaces);
+  set_spaces(aisle, index, (short)new_spaces);
 }
 
 /* Given a pointer to an aisle, a section index, and a number of slots to

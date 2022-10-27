@@ -17,6 +17,6 @@ NetID(s): ll57
 4) Replacement Instruction: lea 0x10(%rsp), %rax 
 -----------------------------------------------------------
 5) String address: 0x4020a2
-   Part of memory: 
-   Assembly instruction address: <function+#>
+   Part of memory: It's stored in the "Literals" part of the memory layout
+   Assembly instruction address: <part_2+8>
 -----------------------------------------------------------

@@ -1,0 +1,15 @@
+void fib(%rdi) {
+    if (%rdi <= 1) {
+        %rax = 1;
+        return %rax;
+    } else {
+        %rbx = %rdi;
+        %rdi = (the address of %rdi) - 2;
+        %rax = fib(%rdi);
+        $rbp = %rax;
+        %rdi = (the address of %rbx) - 1;
+        %rax = fib(%rdi);
+        %rax = %rax + %rbp;
+        retun %rax;
+    }
+}

@@ -8,20 +8,22 @@
 
 	.text
 fib:
-	push	%r10
 	cmpq	$1, %rdi
 	ja	.L8
 	movl	$1, %eax
-	pop		%r10
 	ret
 .L8:
 	push	$rbp
 	movq	%rdi, %r10
 	leaq	-2(%rdi), %rdi
+	push	%r10
 	call	fib
+	pop		%r10
 	movq	%rax, %rbp
 	leaq	-1(%r10), %rdi
+	push	%r10
 	call	fib
+	pop	    %r10
 	addq	%rbp, %rax
 	pop 	%rbp
 	pop		$r10

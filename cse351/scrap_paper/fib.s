@@ -22,8 +22,8 @@ fib:
 	leaq	-1(%r10), %rdi
 	call	fib
 	addq	%rbp, %rax
-	pop		$r10
 	pop 	%rbp
+	pop		$r10
 	ret
 
 # ===============================================================

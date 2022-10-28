@@ -23,7 +23,7 @@ fib:
 	call	fib
 	addq	%rbp, %rax
 	pop 	%rbp
-	pop		%rbp
+	pop		%rbx
 	ret
 
 # ===============================================================

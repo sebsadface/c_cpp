@@ -12,7 +12,6 @@ fib:
 	cmpq	$1, %rdi
 	ja	.L8
 	movl	$1, %eax
-	pop		$r10
 	ret
 .L8:
 	push	%rbp

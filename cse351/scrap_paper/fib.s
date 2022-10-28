@@ -16,14 +16,18 @@ fib:
 	push	%r10
 	push	%rbp
 	movq	%rdi, %r10
+	pop		%r10
 	leaq	-2(%rdi), %rdi
 	call	fib
+	push	%r10
 	movq	%rax, %rbp
 	leaq	-1(%r10), %rdi
-	call	fib
-	addq	%rbp, %rax
-	pop 	%rbp
 	pop		%r10
+	call	fib
+	push	%r10
+	addq	%rbp, %rax
+	pop		%r10
+	pop 	%rbp
 	ret
 
 # ===============================================================

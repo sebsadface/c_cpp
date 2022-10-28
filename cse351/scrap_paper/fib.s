@@ -13,17 +13,17 @@ fib:
 	movl	$1, %eax
 	ret
 .L8:
-	push	%rbx
+	push	%r10
 	push	%rbp
-	movq	%rdi, %rbx
+	movq	%rdi, %r10
 	leaq	-2(%rdi), %rdi
 	call	fib
 	movq	%rax, %rbp
-	leaq	-1(%rbx), %rdi
+	leaq	-1(%r10), %rdi
 	call	fib
 	addq	%rbp, %rax
 	pop 	%rbp
-	pop		%rbx
+	pop		%r10
 	ret
 
 # ===============================================================

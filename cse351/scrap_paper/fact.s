@@ -1,50 +1,38 @@
-	.section	__TEXT,__text,regular,pure_instructions
-	.build_version macos, 12, 3	sdk_version 12, 3
-	.globl	_factorial                      ## -- Begin function factorial
-	.p2align	4, 0x90
-_factorial:                             ## @factorial
-## %bb.0:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	testl	%edi, %edi
-	js	LBB0_1
-## %bb.2:
-	addl	$1, %edi
-	xorl	%ecx, %ecx
-	movl	$1, %eax
-	.p2align	4, 0x90
-LBB0_3:                                 ## =>This Inner Loop Header: Depth=1
-	imull	%ecx, %eax
-	addl	$1, %ecx
-	cmpl	%ecx, %edi
-	jne	LBB0_3
-## %bb.4:
-	popq	%rbp
-	retq
-LBB0_1:
-	movl	$1, %eax
-	popq	%rbp
-	retq
-                                        ## -- End function
-	.globl	_main                           ## -- Begin function main
-	.p2align	4, 0x90
-_main:                                  ## @main
-## %bb.0:
-	pushq	%rbp
-	movq	%rsp, %rbp
+	.file	"fact.c"
+	.text
+	.globl	factorial
+	.type	factorial, @function
+factorial:
+	movl	$1, %edx
+	movl	$0, %eax
+	jmp	.L2
+.L3:
+	imull	%eax, %edx
+	addl	$1, %eax
+.L2:
+	cmpl	%edi, %eax
+	jle	.L3
+	movl	%edx, %eax
+	ret
+	.size	factorial, .-factorial
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC0:
+	.string	"factorial(%d) = %d\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+	subq	$8, %rsp
 	movl	$5, %edi
-	callq	_factorial
-	leaq	L_.str(%rip), %rdi
-	movl	$5, %esi
+	call	factorial
 	movl	%eax, %edx
-	xorl	%eax, %eax
-	callq	_printf
-	xorl	%eax, %eax
-	popq	%rbp
-	retq
-                                        ## -- End function
-	.section	__TEXT,__cstring,cstring_literals
-L_.str:                                 ## @.str
-	.asciz	"factorial(%d) = %d\n"
-
-.subsections_via_symbols
+	movl	$5, %esi
+	movl	$.LC0, %edi
+	movl	$0, %eax
+	call	printf
+	movl	$0, %eax
+	addq	$8, %rsp
+	ret
+	.size	main, .-main
+	.ident	"GCC: (GNU) 11.2.1 20220127 (Red Hat 11.2.1-9)"
+	.section	.note.GNU-stack,"",@progbits

@@ -11,5 +11,8 @@ void fib(%rdi) {
         %rax = fib(%rdi);
         %rax = %rax + %rbp;
         retun %rax;
+
+
+            ret
     }
 }

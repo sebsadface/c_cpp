@@ -1,0 +1,2 @@
+2022-11-03T01:47:00.584194Z  WARN sui::sui_commands: Client/Server api version mismatch, client api version : 0.13.0, server api version : 0.14.0
+2022-11-03T01:47:00.588443Z  INFO sui::client_commands: 0xebe763a526f928865bab63e3405746f24bc5a12d

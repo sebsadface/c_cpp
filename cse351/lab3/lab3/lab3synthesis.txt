@@ -6,22 +6,38 @@ NetID(s): 2033037
 
 
 -----------------------------------------------------------
-1) Explain:  
-
-
+1) Explain: The return address of part_2 was originally 0x4015a9,
+   but the array kept getting bigger and eventually overwritten the
+   return address of part_2 to 0x2c which is an address that cannot
+   be accessed, then when part_2 finished executing and tried to return
+   to 0x2c, the segmentation fault occurred.
+│  The assembly instruction that corrupted the return part_2's address is:
+   0x40126d <fill_array+85>        mov    %edx,(%rax)
+   And segmentation fault occured at the moment this assembly instruction is executed:
+   0x40130f <part_2+63>:    ret
 
 -----------------------------------------------------------
-2) Instruction 1: <?? + ##> instruction
-   Purpose:
+2) Instruction 1: <part_2 + 0> sub $0x48,%rsp
+   Purpose: Allocating 72 bytes of memory onto the stack
 
-   Instruction 2: <?? + ##> instruction
-   Purpose:
-
-   Minimum length to cause a seg fault:
-   Calculation:
+   Instruction 2: <part_2 + 14> lea 0x10(%rsp),%rax
+   Purpose: Store the address 16 bytes after the stack pointer to %rax 
+            (determine the start of the buffer)
+   Minimum length to cause a seg fault: 65 bytes
+   Calculation: 0x48 - 0x10 + 6 = 72 - 16 + 3 = 59 (bytes)
+               0x48 = 72 bytes -> the length between the stack pointer and the return address.
+               0x10 = 16 bytes -> the lenghth between the stack pointer and the beginning of the beginning the array
+                                 (also is the beginning of the buffer)
+               3 bytes -> the length of the return address that needs to be overwritten.
+               To get a seg fault we need to fill the buffer and overwrite the return address. We can get the legth of the
+               buffer by 0x48 - 0x10 = 56 bytes, and the size of the return address is 3 bytes, so we need a total of 56+3 = 59 bytes
+               to get a seg fault.
+               
+   
 -----------------------------------------------------------
-3) Agree or Disagree:
-   Explain:  
+3) Agree or Disagree: Disagree
+   Explain:  Event if we store the array on the heap, as long as there is no limit on the length of the array, we can still keep growing 
+   the array and eventually overwrite the return address which can still cause a seg fault.
 
 
 

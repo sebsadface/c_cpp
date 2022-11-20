@@ -25,11 +25,11 @@ int main() {
     get_input(&buffer, &buf_len, new_argv);
 
     if (fork() == 0) {
-      if (execv(new_argv[0], new_argv)) {
-              perror("execv");
-      }
+        if ( execv(new_argv[0], new_argv) ) {
+         perror("execv");
+        }
     } else {
-        wait(NULL);
+      wait(NULL);
     }
   }
 }

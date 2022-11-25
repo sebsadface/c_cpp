@@ -2,8 +2,8 @@
  * CSE 351 Lab 4 (Caches and Cache-Friendly Code)
  * Part 1 - Inferring Mystery Cache Geometries
  *
- * Name(s):  
- * NetID(s): 
+ * Name(s): Sebastian Liu
+ * NetID(s): ll57
  *
  * NOTES:
  * 1. When using access_cache() you do not need to provide a "real" memory
@@ -22,55 +22,63 @@
 
 #include "support/mystery-cache.h"
 
-
 /* Returns the size (in B) of each block in the cache. */
-int get_block_size(void) {
+int get_block_size(void)
+{
   /* YOUR CODE GOES HERE */
 
   return -1;
 }
-
 
 /* Returns the size (in B) of the cache. */
-int get_cache_size(int block_size) {
+int get_cache_size(int block_size)
+{
   /* YOUR CODE GOES HERE */
   return -1;
 }
-
 
 /* Returns the associativity of the cache. */
-int get_cache_assoc(int cache_size) {
+int get_cache_assoc(int cache_size)
+{
   /* YOUR CODE GOES HERE */
   return -1;
 }
 
-
 /* Run the functions above on a given cache and print the results. */
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
   int size;
   int assoc;
   int block_size;
   char do_block_size, do_size, do_assoc;
   do_block_size = do_size = do_assoc = 0;
-  if (argc == 1) {
+  if (argc == 1)
+  {
     do_block_size = do_size = do_assoc = 1;
-  } else {
-    for (int i = 1; i < argc; i++) {
-      if (strcmp(argv[i], "block_size") == 0) {
+  }
+  else
+  {
+    for (int i = 1; i < argc; i++)
+    {
+      if (strcmp(argv[i], "block_size") == 0)
+      {
         do_block_size = 1;
         continue;
       }
-      if (strcmp(argv[i], "size") == 0) {
+      if (strcmp(argv[i], "size") == 0)
+      {
         do_size = 1;
         continue;
       }
-      if (strcmp(argv[i], "assoc") == 0) {
+      if (strcmp(argv[i], "assoc") == 0)
+      {
         do_assoc = 1;
       }
     }
   }
 
-  if (!do_block_size && !do_size && !do_assoc) {
+  if (!do_block_size && !do_size && !do_assoc)
+  {
     printf("No function requested!\n");
     printf("Usage: ./cache-test\n");
     printf("Usage: ./cache-test {block_size/size/assoc}\n");
@@ -81,18 +89,24 @@ int main(int argc, char* argv[]) {
   cache_init(0, 0);
 
   block_size = size = assoc = -1;
-  if (do_block_size) {
+  if (do_block_size)
+  {
     block_size = get_block_size();
     printf("Cache block size: %d bytes\n", block_size);
   }
-  if (do_size) {
-    if (block_size == -1) block_size = get_block_size();
+  if (do_size)
+  {
+    if (block_size == -1)
+      block_size = get_block_size();
     size = get_cache_size(block_size);
     printf("Cache size: %d bytes\n", size);
   }
-  if (do_assoc) {
-    if (block_size == -1) block_size = get_block_size();
-    if (size == -1) size = get_cache_size(block_size);
+  if (do_assoc)
+  {
+    if (block_size == -1)
+      block_size = get_block_size();
+    if (size == -1)
+      size = get_cache_size(block_size);
     assoc = get_cache_assoc(size);
     printf("Cache associativity: %d\n", assoc);
   }

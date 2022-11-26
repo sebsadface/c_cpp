@@ -25,7 +25,7 @@
 /* Returns the size (in B) of each block in the cache. */
 int get_block_size(void)
 {
-  flush_cache;
+  flush_cache();
   int bsize = 0;
   int address = 0;
   access_cache(address);
@@ -42,7 +42,7 @@ int get_block_size(void)
 /* Returns the size (in B) of the cache. */
 int get_cache_size(int block_size)
 {
-  flush_cache;
+  flush_cache();
   int csize = 0;
   int address = 0;
   access_cache(address);

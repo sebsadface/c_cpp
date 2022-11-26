@@ -25,24 +25,34 @@
 /* Returns the size (in B) of each block in the cache. */
 int get_block_size(void)
 {
-  int size = 0;
+  flush_cache;
+  int bsize = 0;
   int address = 0;
   access_cache(address);
   int status = -1;
   while (status != 0)
   {
-    size++;
     address++;
     status = access_cache(address);
+    bsize++;
   }
-  return size;
+  return bsize;
 }
 
 /* Returns the size (in B) of the cache. */
 int get_cache_size(int block_size)
 {
-  /* YOUR CODE GOES HERE */
-  return -1;
+  flush_cache;
+  int csize = 0;
+  int address = 0;
+  access_cache(address);
+  while (access_cache(0) != 0)
+  {
+    address += block_size;
+    access_cache(address);
+    csize++;
+  }
+  return csize * block_size;
 }
 
 /* Returns the associativity of the cache. */

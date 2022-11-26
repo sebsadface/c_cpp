@@ -25,14 +25,15 @@
 /* Returns the size (in B) of each block in the cache. */
 int get_block_size(void)
 {
-  int size = 0;
+  int size = 1;
   int address = 0;
+  access_cache(address);
   int status = -1;
   while (status != 0)
   {
     size++;
-    status = access_cache(address);
     address++;
+    status = access_cache(address);
   }
   return size;
 }

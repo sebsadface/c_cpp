@@ -44,10 +44,10 @@ int get_cache_size(int block_size)
   int csize = 0;
   int address = 0;
   access_cache(0);
+  printf("status = %d\n", address + block_size);
   while (access_cache(0) == 1)
   {
     address += block_size;
-    printf("status = %d\n", access_cache(address));
     access_cache(address);
     csize++;
   }

@@ -26,14 +26,12 @@
 int get_block_size(void)
 {
   flush_cache();
-  int bsize = 0;
-  int address = 0;
-  access_cache(address);
-  int status = -1;
-  while (status != 0)
+  int bsize = 1;
+  access_cache(0);
+  int address = 1;
+  while (access_cache(address) != 0)
   {
     address++;
-    status = access_cache(address);
     bsize++;
   }
   return bsize;

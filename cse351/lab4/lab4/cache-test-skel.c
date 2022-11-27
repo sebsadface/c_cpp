@@ -41,7 +41,7 @@ int get_block_size(void)
 int get_cache_size(int block_size)
 {
   flush_cache();
-  int csize = 0;
+  int csize = -1;
   int address = 0;
   access_cache(0);
   while (access_cache(0) == 1)

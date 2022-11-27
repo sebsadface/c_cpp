@@ -60,8 +60,18 @@ int get_cache_size(int block_size)
 /* Returns the associativity of the cache. */
 int get_cache_assoc(int cache_size)
 {
-  /* YOUR CODE GOES HERE */
-  return -1;
+  flush_cache();
+  int assoc = 0;
+  int address = 0;
+  access_cache(0);
+  while (access_cache(0) == 1)
+  {
+    address += cache_size;
+    access_cache(address);
+    assoc++;
+  }
+
+  return assoc - 1;
 }
 
 /* Run the functions above on a given cache and print the results. */

@@ -43,15 +43,16 @@ int get_cache_size(int block_size)
   flush_cache();
   int csize = 0;
   int address = 0;
-  int status = 1;
   access_cache(0);
-  while (status == 1)
+  while (access_cache(0) == 1)
   {
     address += block_size;
     access_cache(address);
-    status = access_cache(address);
-    access_cache(address - 2 * block_size);
     csize++;
+    for (int i = 0; i < csize; i++)
+    {
+      access_cache(i * block_size);
+    }
   }
   return csize * block_size;
 }

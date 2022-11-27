@@ -2,8 +2,8 @@
  * CSE 351 Lab 4 (Caches and Cache-Friendly Code)
  * Part 2 - Optimizing Matrix Transpose
  *
- * Name(s):  
- * NetID(s): 
+ * Name(s): Sebastian Liu
+ * NetID(s): ll57
  *
  * Each transpose function must have a prototype of the form:
  * void trans(int M, int N, int A[M][N], int B[N][M]);
@@ -18,7 +18,6 @@
 
 int is_transpose(int M, int N, int A[M][N], int B[N][M]);
 
-
 /*
  * transpose_submit - This is the transpose function that you will be graded
  *     on. Do not change the description string "Transpose submission", as the
@@ -26,10 +25,16 @@ int is_transpose(int M, int N, int A[M][N], int B[N][M]);
  *     graded.
  */
 char transpose_submit_desc[] = "Transpose submission";
-void transpose_submit(int M, int N, int A[M][N], int B[N][M]) {
-
+void transpose_submit(int M, int N, int A[M][N], int B[N][M])
+{
+    for (int i = 0; i < M; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            B[j][i] = A[i][j];
+        }
+    }
 }
-
 
 // You can define additional transpose functions below. We've defined a simple
 // one below to help you get started.
@@ -38,18 +43,19 @@ void transpose_submit(int M, int N, int A[M][N], int B[N][M]) {
  * trans - A simple baseline transpose function, not optimized for the cache.
  */
 char trans_desc[] = "Simple row-wise scan transpose";
-void trans(int M, int N, int A[M][N], int B[N][M]) {
+void trans(int M, int N, int A[M][N], int B[N][M])
+{
     int i, j, tmp;
 
-    for (i = 0; i < M; i++) {
-        for (j = 0; j < N; j++) {
+    for (i = 0; i < M; i++)
+    {
+        for (j = 0; j < N; j++)
+        {
             tmp = A[i][j];
             B[j][i] = tmp;
         }
     }
-
 }
-
 
 /*
  * registerFunctions - This function registers your transpose
@@ -58,27 +64,30 @@ void trans(int M, int N, int A[M][N], int B[N][M]) {
  *     performance. This is a handy way to experiment with different
  *     transpose strategies.
  */
-void registerFunctions() {
+void registerFunctions()
+{
     /* Register your solution function */
     registerTransFunction(transpose_submit, transpose_submit_desc);
 
     /* Register any additional transpose functions */
     registerTransFunction(trans, trans_desc);
-
 }
-
 
 /*
  * is_transpose - This helper function checks if B is the transpose of
  *     A. You can check the correctness of your transpose by calling
  *     it before returning from the transpose function.
  */
-int is_transpose(int M, int N, int A[M][N], int B[N][M]) {
+int is_transpose(int M, int N, int A[M][N], int B[N][M])
+{
     int i, j;
 
-    for (i = 0; i < M; i++) {
-        for (j = 0; j < N; ++j) {
-            if (A[i][j] != B[j][i]) {
+    for (i = 0; i < M; i++)
+    {
+        for (j = 0; j < N; ++j)
+        {
+            if (A[i][j] != B[j][i])
+            {
                 return 0;
             }
         }

@@ -31,12 +31,12 @@ void transpose_submit(int M, int N, int A[M][N], int B[N][M])
     {
         for (int j = 0; j < N; j += 8)
         {
-            printf("j = %d\n", j);
             for (int k = 0; k < 8; k++)
             {
-                B[j + k][i] = A[i][j + k];
-                B[j][i + k] = A[i + k][j];
-                B[j + k][i + k] = A[i + k][j + k];
+                for (int l = 0; l < 8; l++)
+                {
+                    B[j + l][i + k] = A[i + k][j + l];
+                }
             }
         }
     }

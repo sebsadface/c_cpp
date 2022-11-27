@@ -34,10 +34,9 @@ void transpose_submit(int M, int N, int A[M][N], int B[N][M])
         {
             for (k = 0; k < 8; k++)
             {
-                *arry = A[i + k][j];
                 for (l = 0; l < 8; l++)
                 {
-                    B[j + l][i + k] = arry[l];
+                    B[j + l][i + k] = A[i + k][j + l];
                 }
             }
         }

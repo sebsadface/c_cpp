@@ -68,6 +68,10 @@ int get_cache_assoc(int cache_size)
   {
     address += cache_size;
     access_cache(address);
+    for (int i = 0; i < assoc; i++)
+    {
+      access_cache(i * cache_size);
+    }
     assoc++;
   }
 

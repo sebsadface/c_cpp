@@ -41,7 +41,7 @@ int get_block_size(void)
 int get_cache_size(int block_size)
 {
   flush_cache();
-  int csize = -1;
+  int csize = 0;
   int address = 0;
   access_cache(0);
   while (access_cache(0) == 1)
@@ -54,7 +54,7 @@ int get_cache_size(int block_size)
       access_cache(i * block_size);
     }
   }
-  return csize * block_size;
+  return (csize - 1) * block_size;
 }
 
 /* Returns the associativity of the cache. */

@@ -35,6 +35,7 @@ void transpose_submit(int M, int N, int A[M][N], int B[N][M])
             {
                 B[j + k][i] = A[i][j + k];
                 B[j][i + k] = A[i + k][j];
+                B[j + k][i + k] = A[i + k][j + k];
             }
         }
     }

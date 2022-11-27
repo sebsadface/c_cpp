@@ -28,16 +28,16 @@ char transpose_submit_desc[] = "Transpose submission";
 void transpose_submit(int M, int N, int A[M][N], int B[N][M])
 {
     int arry[8], i, j, k, l;
-    for (i = 0; i < N; i += 8)
+    for (i = 0; i < M; i += 8)
     {
-        for (j = 0; j < M; j += 8)
+        for (j = 0; j < N; j += 8)
         {
             for (k = 0; k < 8; k++)
             {
-                *arry = A[j + k][i];
+                *arry = A[i + k][j];
                 for (l = 0; l < 8; l++)
                 {
-                    B[i + l][j + k] = arry[l];
+                    B[j + l][i + k] = arry[l];
                 }
             }
         }

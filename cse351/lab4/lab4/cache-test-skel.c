@@ -75,7 +75,7 @@ int get_cache_assoc(int cache_size)
     assoc++;
   }
 
-  return assoc - 1;
+  return assoc - 2;
 }
 
 /* Run the functions above on a given cache and print the results. */

@@ -49,8 +49,8 @@ int get_cache_size(int block_size)
   {
     address += block_size;
     access_cache(address);
-    status = access_cache(address);
     access_cache(address - block_size);
+    status = access_cache(address);
     csize++;
   }
   return csize * block_size;

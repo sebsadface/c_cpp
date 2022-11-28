@@ -38,7 +38,7 @@ void transpose_submit(int M, int N, int A[M][N], int B[N][M])
                 {
                     for (o = 0; o < 8; o++)
                     {
-                        int array[o] = A[i + k][j + o];
+                        array[o] = A[i + k][j + o];
                     }
 
                     for (l = 0; l < 8; l++)
@@ -60,7 +60,7 @@ void transpose_submit(int M, int N, int A[M][N], int B[N][M])
                 {
                     for (o = 0; o < 4; o++)
                     {
-                        int array[o] = A[i + k][j + o];
+                        array[o] = A[i + k][j + o];
                     }
 
                     for (l = 0; l < 4; l++)

@@ -51,18 +51,18 @@ void transpose_submit(int M, int N, int A[M][N], int B[N][M])
     }
     else
     {
-        for (i = 0; i < M; i += 8)
+        for (i = 0; i < M; i += 16)
         {
-            for (j = 0; j < N; j += 8)
+            for (j = 0; j < N; j += 16)
             {
-                for (k = 0; k < 8; k++)
+                for (k = 0; k < 16; k++)
                 {
-                    for (o = 0; o < 8; o++)
+                    for (o = 0; o < 16; o++)
                     {
                         array[o] = A[i + k][j + o];
                     }
 
-                    for (l = 0; l < 8; l++)
+                    for (l = 0; l < 16; l++)
                     {
                         B[j + l][i + k] = array[l];
                     }

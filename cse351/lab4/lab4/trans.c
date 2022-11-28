@@ -27,201 +27,81 @@ int is_transpose(int M, int N, int A[M][N], int B[N][M]);
 char transpose_submit_desc[] = "Transpose submission";
 void transpose_submit(int M, int N, int A[M][N], int B[N][M])
 {
-    int array[8], i, j, k, l, o;
-    if (M == 32 && N == 32)
-    {
-        for (i = 0; i < M; i += 8)
-        {
-            for (j = 0; j < N; j += 8)
-            {
-                for (k = 0; k < 8; k++)
-                {
-                    for (o = 0; o < 8; o++)
-                    {
-                        array[o] = A[i + k][j + o];
-                    }
+    // int array[8], i, j, k, l, o;
+    // if (M == 32 && N == 32)
+    // {
+    //     for (i = 0; i < M; i += 8)
+    //     {
+    //         for (j = 0; j < N; j += 8)
+    //         {
+    //             for (k = 0; k < 8; k++)
+    //             {
+    //                 for (o = 0; o < 8; o++)
+    //                 {
+    //                     array[o] = A[i + k][j + o];
+    //                 }
 
-                    for (l = 0; l < 8; l++)
-                    {
-                        B[j + l][i + k] = array[l];
-                    }
+    //                 for (l = 0; l < 8; l++)
+    //                 {
+    //                     B[j + l][i + k] = array[l];
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // else
+    // {
+
+    // }
+
+    int i, j;
+    int p, q;
+    int temp;
+
+    for (i = 0; i < M; i += 8)
+    {
+        for (j = 0; j < N; j += 8)
+        {
+            // Step 1: A3 to B2
+            for (p = i + 7; (p > (i + 3)) && p < M; p--)
+            {
+                for (q = j + 3; (q >= j) && q < N; q--)
+                {
+                    B[q][p] = A[p][q];
                 }
             }
-        }
-    }
-    else
-    {
-        int i, j, p, q;
-        int xDash, yDash; // These variables help for translating the matrix
-        int temp;
-
-        for (i = 0; i < M; i += 8)
-        {
-            for (j = 0; j < N; j += 8)
+            // Step 2: A4 to B1 in requisite order
+            for (p = i + 7; (p > (i + 3)) && p < M; p--)
             {
-                xDash = j - i;
-                yDash = i - j;
-                // A's 1,2 rows to B's 3,4
-                for (p = i; p < (i + 2); p++)
+                for (q = j + 4; (q <= (j + 7)) && q < N; q++)
                 {
-                    for (q = j; q < (j + 8); q++)
-                    {
-                        B[p + 2 + xDash][q + yDash] = A[p][q];
-                    }
+                    B[q - 4][p - 4] = A[p][q];
                 }
-                // A's 3,4 rows to B's 1,2
-                for (p = i + 2; p < (i + 4); p++)
+            }
+            // Step 3: A2 to B3
+            for (p = i; (p <= (i + 3)) && p < M; p++)
+            {
+                for (q = j + 4; (q <= (j + 7)) && q < N; q++)
                 {
-                    for (q = j; q < (j + 8); q++)
-                    {
-                        B[p - 2 + xDash][q + yDash] = A[p][q];
-                    }
+                    B[q][p] = A[p][q];
                 }
-                // Now, re-translate in B
-                // B rows 1,2 and 3,4
-                for (p = i; p < (i + 2); p++)
+            }
+            // Step 4: A1 to B4 in requisite order
+            for (p = i; (p <= (i + 3)) && p < M; p++)
+            {
+                for (q = j; (q <= (j + 3)) && q < N; q++)
                 {
-                    for (q = j; q < (j + 8); q++)
-                    {
-                        temp = B[p + xDash][q + yDash];
-                        B[p + xDash][q + yDash] = B[p + 2 + xDash][q + yDash];
-                        B[p + 2 + xDash][q + yDash] = temp;
-                    }
+                    B[q + 4][p + 4] = A[p][q];
                 }
-                // Now transpose the first 4 by 4 quadrant of upper half
-                for (p = i + xDash; p < (i + 4 + xDash); p++)
+            }
+            // Step 5: Swap B1 and B4-direct swap
+            for (p = i; (p <= (i + 3)) && p < M; p++)
+            {
+                for (q = j; (q <= (j + 3)) && q < N; q++)
                 {
-                    for (q = j + yDash; q < (j + 4 + yDash); q++)
-                    {
-                        if ((q - (j + yDash)) < (p - (i + xDash)))
-                        {
-                            temp = B[p][q];
-                            B[p][q] = B[q + xDash][p + yDash];
-                            B[q + xDash][p + yDash] = temp;
-                        }
-                    }
-                }
-                // Now transpose the second 4 by 4 quadrant of upper half
-                for (p = i + xDash; p < (i + 4 + xDash); p++)
-                {
-                    for (q = j + 4 + yDash; q < (j + 8 + yDash); q++)
-                    {
-                        if ((q - (j + 4 + yDash)) < (p - (i + xDash)))
-                        {
-                            temp = B[p][q];
-                            B[p][q] = B[q + xDash - 4][p + yDash + 4];
-                            B[q + xDash - 4][p + yDash + 4] = temp;
-                        }
-                    }
-                }
-                // Swap the second quadrant of B's 12 with 34
-                // B rows 1,2 and 3,4
-                for (p = i; p < (i + 2); p++)
-                {
-                    for (q = j + 4; q < (j + 8); q++)
-                    {
-                        temp = B[p + xDash][q + yDash];
-                        B[p + xDash][q + yDash] = B[p + 2 + xDash][q + yDash];
-                        B[p + 2 + xDash][q + yDash] = temp;
-                    }
-                }
-
-                // Now repeat the same for the lower half
-                // A's 5,6 rows to B's 7,8
-                for (p = i + 4; p < (i + 6); p++)
-                {
-                    for (q = j; q < (j + 8); q++)
-                    {
-                        B[p + 2 + xDash][q + yDash] = A[p][q];
-                    }
-                }
-                // A's 7,8 rows to B's 5,6
-                for (p = i + 6; p < (i + 8); p++)
-                {
-                    for (q = j; q < (j + 8); q++)
-                    {
-                        B[p - 2 + xDash][q + yDash] = A[p][q];
-                    }
-                }
-                // Now re translate in B
-                // B rows 5,6 and 7,8
-                for (p = i + 4; p < (i + 6); p++)
-                {
-                    for (q = j; q < (j + 8); q++)
-                    {
-                        temp = B[p + xDash][q + yDash];
-                        B[p + xDash][q + yDash] = B[p + 2 + xDash][q + yDash];
-                        B[p + 2 + xDash][q + yDash] = temp;
-                    }
-                }
-                // Now transpose the first 4 by 4 quadrant of the lower half
-                for (p = i + 4 + xDash; p < (i + 8 + xDash); p++)
-                {
-                    for (q = j + yDash; q < (j + 4 + yDash); q++)
-                    {
-                        if ((q - (j + yDash)) < (p - (i + 4 + xDash)))
-                        {
-                            temp = B[p][q];
-                            B[p][q] = B[q + xDash + 4][p + yDash - 4];
-                            B[q + xDash + 4][p + yDash - 4] = temp;
-                        }
-                    }
-                }
-                // Now transpose the second 4 by 4 quadrant of lower half
-                for (p = i + 4 + xDash; p < (i + 8 + xDash); p++)
-                {
-                    for (q = j + 4 + yDash; q < (j + 8 + yDash); q++)
-                    {
-                        if ((q - (j + 4 + yDash)) < (p - (i + 4 + xDash)))
-                        {
-                            temp = B[p][q];
-                            B[p][q] = B[q + xDash][p + yDash];
-                            B[q + xDash][p + yDash] = temp;
-                        }
-                    }
-                }
-                // Swap the first quadrant of B's 56 with 78
-                // B rows 5,6 and 7,8
-                for (p = i + 4; p < (i + 6); p++)
-                {
-                    for (q = j + 0; q < (j + 4); q++)
-                    {
-                        temp = B[p + xDash][q + yDash];
-                        B[p + xDash][q + yDash] = B[p + 2 + xDash][q + yDash];
-                        B[p + 2 + xDash][q + yDash] = temp;
-                    }
-                }
-
-                /*
-                 *Consider Quadrants to be defined as :
-                 * 1 2
-                 * 3 4
-                 */
-                /*Swap the:
-                 * upper half of the third quadrant  with the
-                 * lower half of the second quadrant
-                 */
-                for (p = i + 4; p < (i + 6); p++)
-                {
-                    for (q = j + 0; q < (j + 4); q++)
-                    {
-                        temp = B[p + xDash][q + yDash];
-                        B[p + xDash][q + yDash] = B[p - 2 + xDash][q + 4 + yDash];
-                        B[p - 2 + xDash][q + 4 + yDash] = temp;
-                    }
-                }
-                /*Now, swap the:
-                 * lower half of the third quadrant with the
-                 * upper half of the second quadrant
-                 */
-                for (p = i + 6; p < (i + 8); p++)
-                {
-                    for (q = j + 0; q < (j + 4); q++)
-                    {
-                        temp = B[p + xDash][q + yDash];
-                        B[p + xDash][q + yDash] = B[p - 6 + xDash][q + 4 + yDash];
-                        B[p - 6 + xDash][q + 4 + yDash] = temp;
-                    }
+                    temp = B[p + 4 + (j - i)][q + 4 + (i - j)];
+                    B[p + 4 + (j - i)][q + 4 + (i - j)] = B[p + (j - i)][q + (i - j)];
+                    B[p + (j - i)][q + (i - j)] = temp;
                 }
             }
         }

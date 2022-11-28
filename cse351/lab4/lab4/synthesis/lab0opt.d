@@ -333,6 +333,7 @@ Disassembly of section .text:
   400985:	e8 76 fc ff ff       	callq  400600 <malloc@plt>
   40098a:	48 89 c5             	mov    %rax,%rbp
   40098d:	e8 1e fc ff ff       	callq  4005b0 <clock@plt>
+  ---------------------------------------------------------------------------------------------------------------------
   400992:	48 89 c3             	mov    %rax,%rbx
   400995:	48 8d 85 40 42 0f 00 	lea    0xf4240(%rbp),%rax
   40099c:	45 31 c0             	xor    %r8d,%r8d
@@ -342,7 +343,7 @@ Disassembly of section .text:
   4009b0:	31 d2                	xor    %edx,%edx
   4009b2:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
   4009b8:	8d 0c 17             	lea    (%rdi,%rdx,1),%ecx
-  4009bb:	89 0c 96             	mov    %ecx,(%rsi,%rdx,4)
+  4009bb:	89 0c 96             	mov    %ecx,(%rsi,%rdx,4) WWW
   4009be:	48 83 c2 01          	add    $0x1,%rdx
   4009c2:	48 81 fa f4 01 00 00 	cmp    $0x1f4,%rdx
   4009c9:	75 ed                	jne    4009b8 <part4+0x48>
@@ -352,8 +353,9 @@ Disassembly of section .text:
   4009d8:	75 d6                	jne    4009b0 <part4+0x40>
   4009da:	41 83 c0 01          	add    $0x1,%r8d
   4009de:	48 8d 86 40 42 0f 00 	lea    0xf4240(%rsi),%rax
-  4009e5:	41 81 f8 f4 01 00 00 	cmp    $0x1f4,%r8d
+  4009e5:	41 81 f8 f4 01 00 00 	cmp    $0x1f4,%r8d 
   4009ec:	75 b1                	jne    40099f <part4+0x2f>
+  ---------------------------------------------------------------------------------------------------------------------
   4009ee:	e8 bd fb ff ff       	callq  4005b0 <clock@plt>
   4009f3:	48 83 c4 08          	add    $0x8,%rsp
   4009f7:	89 c6                	mov    %eax,%esi

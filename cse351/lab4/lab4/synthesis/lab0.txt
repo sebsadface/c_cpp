@@ -1,0 +1,19 @@
+  400987:	48 89 45 d0          	mov    %rax,-0x30(%rbp)
+  40098b:	c7 45 ec 00 00 00 00 	movl   $0x0,-0x14(%rbp)
+  400994:	c7 45 e8 00 00 00 00 	movl   $0x0,-0x18(%rbp)
+  40099d:	c7 45 e4 00 00 00 00 	movl   $0x0,-0x1c(%rbp)
+  4009a6:	8b 55 ec             	mov    -0x14(%rbp),%edx
+  4009a9:	8b 45 e8             	mov    -0x18(%rbp),%eax
+  4009af:	8b 55 e4             	mov    -0x1c(%rbp),%edx
+  4009b2:	8b 4d e8             	mov    -0x18(%rbp),%ecx
+  4009b5:	8b 45 ec             	mov    -0x14(%rbp),%eax
+  4009cb:	48 8b 45 d8          	mov    -0x28(%rbp),%rax
+  4009d2:	8b 55 e4             	mov    -0x1c(%rbp),%edx
+  4009d7:	89 10                	mov    %edx,(%rax)
+  4009d9:	83 45 e4 01          	addl   $0x1,-0x1c(%rbp)-----------------------
+  4009dd:	81 7d e4 f3 01 00 00 	cmpl   $0x1f3,-0x1c(%rbp)
+  4009e6:	83 45 e8 01          	addl   $0x1,-0x18(%rbp)------------------------
+  4009ea:	81 7d e8 f3 01 00 00 	cmpl   $0x1f3,-0x18(%rbp)
+  4009f3:	83 45 ec 01          	addl   $0x1,-0x14(%rbp)------------------------
+  4009f7:	81 7d ec f3 01 00 00 	cmpl   $0x1f3,-0x14(%rbp)
+  4009bc:	e8 78 ff ff ff       	callq  400939 <bigArrayIndex>

@@ -1,0 +1,1 @@
+ 4009bb:	89 0c 96             	mov    %ecx,(%rsi,%rdx,4)

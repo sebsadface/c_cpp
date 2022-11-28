@@ -1,37 +1,66 @@
 *****************************
 * Lab 4 Synthesis Questions *
 *****************************
-Name(s):  
-NetID(s): 
+Name(s): Sebastian Liu
+NetID(s): ll57
 
 
 -----------------------------------------------------------
 1) Instructions in the nested loops that access memory
-   lab0.d:    <count>
+   lab0.d: 19
    List of instructions for lab0.d:
+      400987:	48 89 45 d0          	mov    %rax,-0x30(%rbp)
+      40098b:	c7 45 ec 00 00 00 00 	movl   $0x0,-0x14(%rbp)
+      400994:	c7 45 e8 00 00 00 00 	movl   $0x0,-0x18(%rbp)
+      40099d:	c7 45 e4 00 00 00 00 	movl   $0x0,-0x1c(%rbp)
+      4009a6:	8b 55 ec             	mov    -0x14(%rbp),%edx
+      4009a9:	8b 45 e8             	mov    -0x18(%rbp),%eax
+      4009af:	8b 55 e4             	mov    -0x1c(%rbp),%edx
+      4009b2:	8b 4d e8             	mov    -0x18(%rbp),%ecx
+      4009b5:	8b 45 ec             	mov    -0x14(%rbp),%eax
+      4009bc:	e8 78 ff ff ff       	callq  400939 <bigArrayIndex>
+      4009cb:	48 8b 45 d8          	mov    -0x28(%rbp),%rax
+      4009d2:	8b 55 e4             	mov    -0x1c(%rbp),%edx
+      4009d7:	89 10                	mov    %edx,(%rax)
+      4009d9:	83 45 e4 01          	addl   $0x1,-0x1c(%rbp)
+      4009dd:	81 7d e4 f3 01 00 00 	cmpl   $0x1f3,-0x1c(%rbp)
+      4009e6:	83 45 e8 01          	addl   $0x1,-0x18(%rbp)
+      4009ea:	81 7d e8 f3 01 00 00 	cmpl   $0x1f3,-0x18(%rbp)
+      4009f3:	83 45 ec 01          	addl   $0x1,-0x14(%rbp)
+      4009f7:	81 7d ec f3 01 00 00 	cmpl   $0x1f3,-0x14(%rbp)
 
-   lab0opt.d: <count>
+   lab0opt.d: 1
    List of instructions for lab0opt.d:
+      4009bb:	89 0c 96             	mov    %ecx,(%rsi,%rdx,4)
 
 -----------------------------------------------------------
 2) Where are the loop variables stored in lab0.d:
-   i: 
-   j: 
-   k: 
+   i: -0x14(%rbp)
+   j: -0x18(%rbp)
+   k: -0x1c(%rbp)
 -----------------------------------------------------------
 3) Corresponding values in lab0opt.d:
-   %edx: 
-   %ecx: 
+   %edx: k
+   %ecx: i + j + k
 -----------------------------------------------------------
-4) Effect on number of misses:
+4) Effect on number of misses: Increase
 
-   Explain:
-
+   Explain: Because the beginning of matrix A is not at the beginning of a 
+            cache block and we take data from memory in blocks, the last 
+            couple of entries of the matrix won't fit in the previous block.
+            To access these entries of the matrix we need to pull another block
+            of data from the memory, which will means we will have extra misses.
 
 -----------------------------------------------------------
-5) Effect on number of misses:
+5) Effect on number of misses: Decrease
 
-   Explain:
+   Explain: First, because we have the same number of matrix entries, so it won't 
+            contribute the change in the number of misses. Secondly, since 57 x 71
+            is not a square matrix anymore, so the cache blocks that used to be in
+            the same place on different cache images (e.g. first 8 entries in the 
+            first row of matrix A and matrix B in the case of 64x64) will now be at
+            different places on different cache blocks, which leads to less evicions
+            and that will cause less misses.
 
 
 -----------------------------------------------------------

@@ -51,43 +51,20 @@ void transpose_submit(int M, int N, int A[M][N], int B[N][M])
     }
     else
     {
-
-        int n, m;      // Indecies for rows and columns in matrix
-        int row, col;  // Track current row and column in matrix
-        int d_val = 0; // Hold value of diagonal element found in matrix (detailed in below code)
-        int diag = 0;  // Hold position of diagonal element found in matrix (detailed in below code)
-
-        // Iterates through each column and row
-        for (col = 0; col < N; col += 4)
+        for (i = 0; i < M; i += 4)
         {
-            for (row = 0; row < N; row += 4)
+            for (j = 0; j < N; j += 4)
             {
-
-                // For each row and column in the designated block, until end of matrix
-                for (n = row; n < (row + 4); n++)
+                for (k = 0; k < 4; k++)
                 {
-                    for (m = col; m < (col + 4); m++)
+                    for (o = 0; o < 4; o++)
                     {
-
-                        // If row and column number do not match, transposition will occur
-                        if (n != m)
-                        {
-                            B[m][n] = A[n][m];
-                            // Else, row and column number are same and element in matrix is defined as a diagonal
-                        }
-                        else
-                        {
-
-                            // Assign diagonal element to a temporary variable
-                            // This saves an individual cache miss on each run through the matrix where the columns and rows still match up
-                            diag = n;
-                            d_val = A[n][m];
-                        }
+                        array[o] = A[i + k][j + o];
                     }
-                    // If row and column are same, element is defined as a diagonal and our temporarily saved element is assigned
-                    if (row == col)
+
+                    for (l = 0; l < 4; l++)
                     {
-                        B[diag][diag] = d_val;
+                        B[j + l][i + k] = array[l];
                     }
                 }
             }

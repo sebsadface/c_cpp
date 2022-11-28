@@ -28,20 +28,44 @@ char transpose_submit_desc[] = "Transpose submission";
 void transpose_submit(int M, int N, int A[M][N], int B[N][M])
 {
     int array[8], i, j, k, l, o;
-    for (i = 0; i < M; i += 8)
+    if (M == 32 && N == 32)
     {
-        for (j = 0; j < N; j += 8)
+        for (i = 0; i < M; i += 8)
         {
-            for (k = 0; k < 8; k++)
+            for (j = 0; j < N; j += 8)
             {
-                for (o = 0; o < 8; o++)
+                for (k = 0; k < 8; k++)
                 {
-                    array[o] = A[i + k][j + o];
-                }
+                    for (o = 0; o < 8; o++)
+                    {
+                        array[o] = A[i + k][j + o];
+                    }
 
-                for (l = 0; l < 8; l++)
+                    for (l = 0; l < 8; l++)
+                    {
+                        B[j + l][i + k] = array[l];
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        for (i = 0; i < M; i += 12)
+        {
+            for (j = 0; j < N; j += 12)
+            {
+                for (k = 0; k < 12; k++)
                 {
-                    B[j + l][i + k] = array[l];
+                    for (o = 0; o < 12; o++)
+                    {
+                        array[o] = A[i + k][j + o];
+                    }
+
+                    for (l = 0; l < 12; l++)
+                    {
+                        B[j + l][i + k] = array[l];
+                    }
                 }
             }
         }

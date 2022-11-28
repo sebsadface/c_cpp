@@ -55,9 +55,9 @@ void transpose_submit(int M, int N, int A[M][N], int B[N][M])
         {
             for (b = 0; b < (N / 32); b++)
             {
-                for (i = 0; i < (32 * a); i += 8)
+                for (i = (32 * a); i < (32 * (a + 1)); i += 8)
                 {
-                    for (j = 0; j < (32 * b); j += 8)
+                    for (j = (32 * b); j < (32 * (b + 1)); j += 8)
                     {
                         for (k = 0; k < 8; k++)
                         {

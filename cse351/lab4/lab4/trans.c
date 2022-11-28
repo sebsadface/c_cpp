@@ -27,81 +27,68 @@ int is_transpose(int M, int N, int A[M][N], int B[N][M]);
 char transpose_submit_desc[] = "Transpose submission";
 void transpose_submit(int M, int N, int A[M][N], int B[N][M])
 {
-    // int array[8], i, j, k, l, o;
-    // if (M == 32 && N == 32)
-    // {
-    //     for (i = 0; i < M; i += 8)
-    //     {
-    //         for (j = 0; j < N; j += 8)
-    //         {
-    //             for (k = 0; k < 8; k++)
-    //             {
-    //                 for (o = 0; o < 8; o++)
-    //                 {
-    //                     array[o] = A[i + k][j + o];
-    //                 }
-
-    //                 for (l = 0; l < 8; l++)
-    //                 {
-    //                     B[j + l][i + k] = array[l];
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    // else
-    // {
-
-    // }
-
-    int i, j;
-    int p, q;
-    int temp;
-
-    for (i = 0; i < M; i += 8)
+    int array[8], i, j, k, l, o;
+    if (M == 32 && N == 32)
     {
-        for (j = 0; j < N; j += 8)
+        for (i = 0; i < M; i += 8)
         {
-            // Step 1: A3 to B2
-            for (p = i + 7; (p > (i + 3)) && p < M; p--)
+            for (j = 0; j < N; j += 8)
             {
-                for (q = j + 3; (q >= j) && q < N; q--)
+                for (k = 0; k < 8; k++)
                 {
-                    B[q][p] = A[p][q];
+                    for (o = 0; o < 8; o++)
+                    {
+                        array[o] = A[i + k][j + o];
+                    }
+
+                    for (l = 0; l < 8; l++)
+                    {
+                        B[j + l][i + k] = array[l];
+                    }
                 }
             }
-            // Step 2: A4 to B1 in requisite order
-            for (p = i + 7; (p > (i + 3)) && p < M; p--)
+        }
+    }
+    else
+    {
+
+        int n, m;      // Indecies for rows and columns in matrix
+        int row, col;  // Track current row and column in matrix
+        int d_val = 0; // Hold value of diagonal element found in matrix (detailed in below code)
+        int diag = 0;  // Hold position of diagonal element found in matrix (detailed in below code)
+
+        // Iterates through each column and row
+        for (col = 0; col < N; col += 4)
+        {
+            for (row = 0; row < N; row += 4)
             {
-                for (q = j + 4; (q <= (j + 7)) && q < N; q++)
+
+                // For each row and column in the designated block, until end of matrix
+                for (n = row; n < (row + 4); n++)
                 {
-                    B[q - 4][p - 4] = A[p][q];
-                }
-            }
-            // Step 3: A2 to B3
-            for (p = i; (p <= (i + 3)) && p < M; p++)
-            {
-                for (q = j + 4; (q <= (j + 7)) && q < N; q++)
-                {
-                    B[q][p] = A[p][q];
-                }
-            }
-            // Step 4: A1 to B4 in requisite order
-            for (p = i; (p <= (i + 3)) && p < M; p++)
-            {
-                for (q = j; (q <= (j + 3)) && q < N; q++)
-                {
-                    B[q + 4][p + 4] = A[p][q];
-                }
-            }
-            // Step 5: Swap B1 and B4-direct swap
-            for (p = i; (p <= (i + 3)) && p < M; p++)
-            {
-                for (q = j; (q <= (j + 3)) && q < N; q++)
-                {
-                    temp = B[p + 4 + (j - i)][q + 4 + (i - j)];
-                    B[p + 4 + (j - i)][q + 4 + (i - j)] = B[p + (j - i)][q + (i - j)];
-                    B[p + (j - i)][q + (i - j)] = temp;
+                    for (m = col; m < (col + 4); m++)
+                    {
+
+                        // If row and column number do not match, transposition will occur
+                        if (n != m)
+                        {
+                            B[m][n] = A[n][m];
+                            // Else, row and column number are same and element in matrix is defined as a diagonal
+                        }
+                        else
+                        {
+
+                            // Assign diagonal element to a temporary variable
+                            // This saves an individual cache miss on each run through the matrix where the columns and rows still match up
+                            diag = n;
+                            d_val = A[n][m];
+                        }
+                    }
+                    // If row and column are same, element is defined as a diagonal and our temporarily saved element is assigned
+                    if (row == col)
+                    {
+                        B[diag][diag] = d_val;
+                    }
                 }
             }
         }

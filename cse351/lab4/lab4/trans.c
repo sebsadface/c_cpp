@@ -77,7 +77,7 @@ void transpose_submit(int M, int N, int A[M][N], int B[N][M])
 // one below to help you get started.
 
 /*
- * trans - A simple baseline transpose function, not optimized for the cache.
+ * trans - A simple baseline transpose function, not optimized for the cache
  */
 char trans_desc[] = "Simple row-wise scan transpose";
 void trans(int M, int N, int A[M][N], int B[N][M])

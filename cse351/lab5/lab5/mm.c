@@ -388,6 +388,9 @@ void *mm_malloc(size_t size)
   // TODO: Implement mm_malloc.  You can change or remove any of the
   // above code.  It is included as a suggestion of where to start.
   // You will want to replace this return statement...
+
+  // search for free blocks, if there's none available, then we request more space
+  // for the heap.
   ptr_free_block = search_free_list(req_size);
   if (ptr_free_block == NULL)
   {
@@ -395,11 +398,32 @@ void *mm_malloc(size_t size)
     ptr_free_block = search_free_list(req_size);
   }
   block_size = SIZE(req_size);
-  preceding_block_use_tag = SIZE(ptr_free_block) & TAG_PRECEDING_USED;
+
+  // Depend on the size of the free block, we either add the remining free space as
+  // internal fragmentation or split the free block into two free blocks.
+  if (SIZE(ptr_free_block->size_and_tags) > block_size)
+  {
+    if (SIZE(ptr_free_block->size_and_tags) - block_size < MIN_BLOCK_SIZE)
+    {
+      // add the extra free space as internal fragmentation.
+      block_size += SIZE(ptr_free_block->size_and_tags);
+    }
+    else // spliting the free block.
+    {
+      block_info *splited_block = UNSCALED_POINTER_ADD(ptr_free_block, block_size);
+      splited_block->size_and_tags = (SIZE(ptr_free_block->size_and_tags) - block_size);
+      splited_block->prev = ptr_free_block;
+      splited_block->next = ptr_free_block->next;
+      ptr_free_block->next = splited_block;
+    }
+  }
+  preceding_block_use_tag = SIZE(ptr_free_block->size_and_tags) & TAG_PRECEDING_USED;
   ptr_free_block->size_and_tags = block_size + preceding_block_use_tag + TAG_USED;
+  ptr_free_block->next->size_and_tags += TAG_PRECEDING_USED;
+  void *payload = (void *)UNSCALED_POINTER_ADD(ptr_free_block, WORD_SIZE);
   remove_free_block(ptr_free_block);
 
-  return (void *)UNSCALED_POINTER_ADD(ptr_free_block, WORD_SIZE);
+  return payload;
 }
 
 /* Free the block referenced by ptr. */

@@ -1,8 +1,8 @@
 /*
  * CSE 351 Lab 5 (Dynamic Storage Allocator)
  *
- * Name(s):
- * NetID(s):
+ * Name(s): Sebastian Liu
+ * NetID(s): ll57
  *
  * NOTES:
  *  - Explicit allocator with an explicit free-list

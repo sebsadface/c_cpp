@@ -437,7 +437,7 @@ void mm_free(void *ptr)
   // above.  They are included as minor hints.
   block_to_free = (block_info *)UNSCALED_POINTER_SUB(ptr, WORD_SIZE);
   following_block = (block_info *)UNSCALED_POINTER_ADD(block_to_free, SIZE(block_to_free->size_and_tags));
-  if (SIZE(following_block->size_and_tags) & TAG_USED == TAG_USED)
+  if ((SIZE(following_block->size_and_tags) & TAG_USED) == TAG_USED)
   {
     block_to_free->size_and_tags += SIZE(SIZE(following_block->size_and_tags));
   }

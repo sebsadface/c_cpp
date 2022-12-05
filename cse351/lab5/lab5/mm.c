@@ -400,11 +400,11 @@ void *mm_malloc(size_t size)
   if ((block_size == req_size) || ((block_size - req_size) < MIN_BLOCK_SIZE) || (block_size - req_size) % ALIGNMENT != 0)
   {
     ptr_free_block->size_and_tags |= TAG_USED;
-    block_info *next_block = (block_info *)UNSCALED_POINTER_ADD(ptr_free_block, block_size);
-    next_block->size_and_tags |= TAG_PRECEDING_USED;
-    if (((next_block->size_and_tags) & TAG_USED) != TAG_USED)
+    block_info *following_block = (block_info *)UNSCALED_POINTER_ADD(ptr_free_block, block_size);
+    following_block->size_and_tags |= TAG_PRECEDING_USED;
+    if (((following_block->size_and_tags) & TAG_USED) != TAG_USED)
     {
-      ((block_info *)UNSCALED_POINTER_ADD(next_block, SIZE(next_block->size_and_tags) - WORD_SIZE))->size_and_tags |= TAG_PRECEDING_USED;
+      ((block_info *)UNSCALED_POINTER_ADD(following_block, SIZE(following_block->size_and_tags) - WORD_SIZE))->size_and_tags |= TAG_PRECEDING_USED;
     }
   }
   else
@@ -429,6 +429,20 @@ void mm_free(void *ptr)
 
   // TODO: Implement mm_free.  You can change or remove the declaraions
   // above.  They are included as minor hints.
+  block_to_free = (block_info *)UNSCALED_POINTER_SUB(ptr, WORD_SIZE);
+  following_block = (block_info *)UNSCALED_POINTER_ADD(block_to_free, SIZE(block_to_free->size_and_tags));
+  payload_size = SIZE(block_to_free->size_and_tags) - WORD_SIZE;
+
+  following_block->size_and_tags &= ~TAG_PRECEDING_USED;
+  if (((following_block->size_and_tags) & TAG_USED) != TAG_USED)
+  {
+    ((block_info *)UNSCALED_POINTER_ADD(following_block, SIZE(following_block->size_and_tags) - WORD_SIZE))->size_and_tags &= ~TAG_PRECEDING_USED;
+  }
+
+  block_to_free->size_and_tags &= ~TAG_USED;
+  ((block_info *)UNSCALED_POINTER_ADD(block_to_free, payload_size))->size_and_tags = (block_to_free->size_and_tags) & ~TAG_USED;
+  insert_free_block(block_to_free);
+  coalesce_free_block(block_to_free);
 }
 
 /*

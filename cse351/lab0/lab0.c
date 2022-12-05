@@ -15,7 +15,6 @@
               by the end of this course! :D
 */
 
-
 // These #includes tell the compiler to include the named
 // header files, similar to imports in Java.  The functions
 // mentioned below are used in our code.  Functions are
@@ -29,7 +28,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-
 // This #define tells the C preprocessor to do a straight
 // substitution of instances of the text "SIZE" in the code
 // below with the text "500". This example acts like a
@@ -37,16 +35,15 @@
 // a variable.
 #define SIZE 500
 
-
 /**** LOOK AT MAIN() AT THE BOTTOM OF THIS FILE FIRST ****/
-
 
 // PART 1 - Data (Pointers, Numbers, and Bits)
 //
 // All data are internally stored as bits (binary digits).
 // Data stored in memory (RAM) are associated with addresses.
 // Addresses can be stored in variables called pointers.
-void part1() {
+void part1()
+{
     printf("*** LAB 0 PART 1 ***\n");
 
     // C has different integer datatypes, which determine
@@ -72,8 +69,6 @@ void part1() {
     printf("x & x = %i\n", x & x);
 }
 
-
-
 // HELPER FUNCTION - fillArray()
 //
 // Fill a given array with values according to a formula.
@@ -84,10 +79,13 @@ void part1() {
 // to an int. We'll learn more about why int* is used here,
 // but for now it is enough to understand that "array" is an
 // array of ints.
-void fillArray(int* array, int len) {
+void fillArray(int *array, int len)
+{
     printf("Filling an array at address %p with %d "
-        "values\n", array, len);
-    for (int i = 0; i < len; ++i) {
+           "values\n",
+           array, len);
+    for (int i = 0; i < len; ++i)
+    {
         array[i] = i * 3 + 2;
         // assert() verifies that the given condition is true
         // and exits the program otherwise. This is just a
@@ -98,13 +96,13 @@ void fillArray(int* array, int len) {
     printf("Done!\n");
 }
 
-
 // PART 2 - Arrays
 //
 // Create an array and fill it with values using the
 // fillArray() function defined above. Learn about array
 // representation in memory and (lack of) boundaries.
-void part2() {
+void part2()
+{
     printf("*** LAB 0 PART 2 ***\n");
 
     // This is a block of memory big enough to store 10
@@ -134,8 +132,6 @@ void part2() {
     fillArray(&value, 1);
 }
 
-
-
 // PART 3 Definition - Scores
 //
 // Structs are blocks of memory composed of smaller parts,
@@ -145,16 +141,17 @@ void part2() {
 // In this case, we use typedef to give structs of this
 // type a name, Scores, which can be used like we use
 // other types such as int or char.
-typedef struct {
+typedef struct
+{
     int hw;
     int lab;
     int midterm;
     int final;
 } Scores;
 
-
 // PART 3 - Structs
-void part3() {
+void part3()
+{
     printf("*** LAB 0 PART 3 ***\n");
 
     // The following creates an instance of Scores. The
@@ -178,7 +175,7 @@ void part3() {
     // treat "&student" as an address of an int (in this
     // case, the start of an array) rather than an address
     // of a Scores struct.
-    fillArray((int*) &student, 4);
+    fillArray((int *)&student, 4);
 
     // We can confirm that fillArray updated the values
     // in the Scores struct:
@@ -186,7 +183,6 @@ void part3() {
     assert(student.lab == 5);
     assert(student.midterm == 8);
     assert(student.final == 11);
-
 
     // Q3.1: Given that we were able to get our program to
     // treat &student as an int array, we should be able
@@ -201,8 +197,6 @@ void part3() {
     // assert( student == 8 );
 }
 
-
-
 // HELPER FUNCTION - bigArrayIndex()
 //
 // To create a sufficiently large array, it must be created
@@ -210,10 +204,10 @@ void part3() {
 // a 3D array, so this function mimics multi-level array
 // syntax: bigArray[bigArrayIndex(i,j,k)] is equivalent to
 // bigArray[i][j][k] if bigArray[] were a 3D array.
-int bigArrayIndex(int i, int j, int k) {
+int bigArrayIndex(int i, int j, int k)
+{
     return SIZE * SIZE * i + SIZE * j + k;
 }
-
 
 // PART 4 - Performance
 //
@@ -222,7 +216,8 @@ int bigArrayIndex(int i, int j, int k) {
 // Here we will see that even without altering results,
 // changing the order of memory accesses can alter execution
 // speed.
-void part4() {
+void part4()
+{
     printf("*** LAB 0 PART 4 ***\n");
 
     // Raw execution times are often poor metrics due to
@@ -230,17 +225,19 @@ void part4() {
     // can still be used to show general trends.
     clock_t timer;
     // allocate space in the Heap for a "3D array"
-    int* bigArray = (int*) malloc(SIZE * SIZE * SIZE * sizeof(int));
+    int *bigArray = (int *)malloc(SIZE * SIZE * SIZE * sizeof(int));
     // start timer
     timer = clock();
-
 
     // Q4.1: Try changing the order of the loops (switch the
     // "for" lines). The original ordering below is
     // considered "ijk".  Which loop orderings are fastest?
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            for (int k = 0; k < SIZE; k++) {
+    for (int i = 0; i < SIZE; i++)
+    {
+        for (int j = 0; j < SIZE; j++)
+        {
+            for (int k = 0; k < SIZE; k++)
+            {
                 bigArray[bigArrayIndex(i, j, k)] = i + j + k;
             }
         }
@@ -249,8 +246,6 @@ void part4() {
     // stop timer and print result
     printf("Approximate runtime = %d\n", (int)(clock() - timer));
 }
-
-
 
 // PART 5 - Memory Allocation
 //
@@ -261,7 +256,8 @@ void part4() {
 // when the program is done using it via the free function.
 // This can affect not only the performance of your program,
 // but the performance of your overall system.
-void part5() {
+void part5()
+{
     printf("*** LAB 0 PART 5 ***\n");
 
     // malloc takes a single argument, the number of bytes
@@ -270,8 +266,9 @@ void part5() {
     // argument.
     // sizeof(Scores) gives the size of the Scores struct in
     // bytes (which is 16), so sizeof(Scores) * 5 is 80.
-    Scores* class_grades = (Scores*) malloc(sizeof(Scores) * 5);
-    fillArray((int*)class_grades, 5*4);
+    malloc(16);
+    Scores *class_grades = (Scores *)malloc(sizeof(Scores) * 5);
+    fillArray((int *)class_grades, 5 * 4);
 
     // Q5: Once we are finished with malloc-ed memory, we
     // need to free the memory associated with it.
@@ -283,31 +280,43 @@ void part5() {
     free(class_grades);
 }
 
-
-
 // main() is the entry point of the program. It has two
 // parameters: argc is the number of arguments that were
 // passed on the command line; argv is an array of those
 // arguments as strings.
 // Strings in C are arrays of chars.
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     // input checking - note that the executable name is
     // included in the argument count
-    if ( argc != 2 || !atoi(argv[1]) ) {
+    if (argc != 2 || !atoi(argv[1]))
+    {
         printf("Usage: %s <num>\n", argv[0]);
         exit(0);
     }
 
     // atoi() is a library function that converts a String
     // to an integer
-    switch ( atoi(argv[1]) ) {
-        case 1:   part1();  break;
-        case 2:   part2();  break;
-        case 3:   part3();  break;
-        case 4:   part4();  break;
-        case 5:   part5();  break;
-        default:  printf("No part %s in this lab!\n", argv[1]);
-                  exit(0);
+    switch (atoi(argv[1]))
+    {
+    case 1:
+        part1();
+        break;
+    case 2:
+        part2();
+        break;
+    case 3:
+        part3();
+        break;
+    case 4:
+        part4();
+        break;
+    case 5:
+        part5();
+        break;
+    default:
+        printf("No part %s in this lab!\n", argv[1]);
+        exit(0);
     }
 
     return 0;

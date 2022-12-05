@@ -6,15 +6,25 @@ NetID(s): ll57
 
 
 -----------------------------------------------------------
-1) Alignment: 
-   Reasoning:
-
-
+1) Alignment: 16 bytes
+   Reasoning: When calling malloc(1), the address difference is 32.
+            Keep incresing the value for malloc the difference one step
+            at a time doesn't change until we call malloc(25), where the 
+            difference incresed to 48. Keep doing the same thing, we will
+            get the address differences are 64, 80, 96, 112 ...
+            We see the address difference increse 16 at a time, and all the
+            differences are multiples of 16. Therefore we know the alignment
+            size of this allocator is 16 bytes.
 
 -----------------------------------------------------------
-2) Boundary Tag Size:  
-   Reasoning:
-
-
+2) Boundary Tag Size: 8 bytes
+   Reasoning: We can figure out the boundary tag size during the
+               process decribed in question 1): we can see that the 
+               maximum payloads that can be hold in blocks that have sizes 
+               48, 64, 80, 96, 112 are 40, 56, 72, 88, 104. We can see
+               that the difference between the block sizes and the maximum
+               payload sizes is 8 bytes. Since a heap block that has maximum payload
+               is made up by only the payload and boundary tag(s), we know the
+               size of boundary tag(s) in an allocated block is 8 bytes.
 
 -----------------------------------------------------------

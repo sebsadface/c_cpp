@@ -446,7 +446,7 @@ void mm_free(void *ptr)
     *footer = SIZE(block_to_free->size_and_tags);
   }
   insert_free_block(block_to_free);
-  coalesce_free_block(block_to_free);
+  // coalesce_free_block(block_to_free);
 }
 
 /*

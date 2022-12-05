@@ -410,7 +410,7 @@ void *mm_malloc(size_t size)
     }
     else // spliting the free block.
     {
-      block_info *splited_block = (block_info *)UNSCALED_POINTER_ADD(ptr_free_block, block_size);
+      block_info *splited_block = UNSCALED_POINTER_ADD(ptr_free_block, block_size);
       splited_block->size_and_tags = (SIZE(ptr_free_block->size_and_tags) - block_size);
       splited_block->prev = ptr_free_block;
       splited_block->next = ptr_free_block->next;
@@ -435,16 +435,16 @@ void mm_free(void *ptr)
 
   // TODO: Implement mm_free.  You can change or remove the declaraions
   // above.  They are included as minor hints.
-  // block_to_free = (block_info *)UNSCALED_POINTER_SUB(ptr, WORD_SIZE);
-  // following_block = (block_info *)UNSCALED_POINTER_ADD(block_to_free, SIZE(block_to_free->size_and_tags));
-  // if ((SIZE(following_block->size_and_tags) & TAG_USED) == TAG_USED)
-  // {
-  //   block_to_free->size_and_tags += SIZE(SIZE(following_block->size_and_tags));
-  // }
-  // size_t *footer = (size_t *)UNSCALED_POINTER_ADD(block_to_free, SIZE(SIZE(block_to_free->size_and_tags)) - WORD_SIZE);
-  // *footer = SIZE(block_to_free->size_and_tags);
-  // insert_free_block(block_to_free);
-  // coalesce_free_block(block_to_free);
+  block_to_free = (block_info *)UNSCALED_POINTER_SUB(ptr, WORD_SIZE);
+  following_block = (block_info *)UNSCALED_POINTER_ADD(block_to_free, SIZE(block_to_free->size_and_tags));
+  if ((SIZE(following_block->size_and_tags) & TAG_USED) == TAG_USED)
+  {
+    block_to_free->size_and_tags += SIZE(SIZE(following_block->size_and_tags));
+  }
+  size_t *footer = (size_t *)UNSCALED_POINTER_ADD(block_to_free, SIZE(SIZE(block_to_free->size_and_tags)) - WORD_SIZE);
+  *footer = SIZE(block_to_free->size_and_tags);
+  insert_free_block(block_to_free);
+  coalesce_free_block(block_to_free);
 }
 
 /*

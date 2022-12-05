@@ -399,7 +399,13 @@ void *mm_malloc(size_t size)
   block_size = SIZE(ptr_free_block->size_and_tags);
   if ((block_size == req_size) || ((block_size - req_size) < MIN_BLOCK_SIZE) || (block_size - req_size) % ALIGNMENT != 0)
   {
-    ptr_free_block->size_and_tags = (ptr_free_block->size_and_tags) | TAG_USED;
+    ptr_free_block->size_and_tags |= TAG_USED;
+    block_info *next_block = (block_info *)UNSCALED_POINTER_ADD(ptr_free_block, block_size);
+    next_block->size_and_tags |= TAG_PRECEDING_USED;
+    if (((next_block->size_and_tags) & TAG_USED) != TAG_USED)
+    {
+      ((block_info *)UNSCALED_POINTER_ADD(next_block, SIZE(next_block->size_and_tags) - WORD_SIZE))->size_and_tags |= TAG_PRECEDING_USED;
+    }
   }
   else
   {

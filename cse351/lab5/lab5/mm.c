@@ -394,7 +394,7 @@ void *mm_malloc(size_t size)
   ptr_free_block = search_free_list(req_size);
   if (ptr_free_block == NULL)
   {
-    request_more_space(req_size);
+    request_more_space(req_size + WORD_SIZE);
     ptr_free_block = search_free_list(req_size);
   }
   block_size = SIZE(req_size);

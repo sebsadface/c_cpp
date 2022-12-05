@@ -385,38 +385,72 @@ void *mm_malloc(size_t size)
     req_size = ALIGNMENT * ((size + ALIGNMENT - 1) / ALIGNMENT);
   }
 
-  // TODO: Implement mm_malloc.  You can change or remove any of the
-  // above code.  It is included as a suggestion of where to start.
-  // You will want to replace this return statement...
+  // Check if we have a free block that is big enough for requested size.
+  if (search_free_list(req_size) == NULL)
+  {
+    // request more free space to meet the size requirement.
+    request_more_space(req_size);
+  }
+
+  // Get a free block that is big enough for the requested size.
   ptr_free_block = search_free_list(req_size);
 
-  if (ptr_free_block == NULL)
-  {
-    request_more_space(req_size);
-    ptr_free_block = search_free_list(req_size);
-  }
+  // Remove the free block from the free list.
   remove_free_block(ptr_free_block);
+
+  // Set block_size to the current free block size.
   block_size = SIZE(ptr_free_block->size_and_tags);
-  if ((block_size == req_size) || ((block_size - req_size) < MIN_BLOCK_SIZE) || (block_size - req_size) % ALIGNMENT != 0)
+
+  // Check if we need to split the free block (We don't split if the remaining space is
+  // either less than the minimum block size or doesn't match the alignment requirement)
+  if (((block_size - req_size) < MIN_BLOCK_SIZE) || (block_size - req_size) % ALIGNMENT != 0)
   {
+    // In this branch we don't split the free block.
+
+    // Update the header (flip the used bit).
     ptr_free_block->size_and_tags |= TAG_USED;
+
+    // get the pointer to the following block.
     block_info *following_block = (block_info *)UNSCALED_POINTER_ADD(ptr_free_block, block_size);
+
+    // Update the header of the following block (flip the preceding used bit).
     following_block->size_and_tags |= TAG_PRECEDING_USED;
+
+    // Check if the following block is a used block (if it is a free block, we need to also
+    // update the footer).
     if (((following_block->size_and_tags) & TAG_USED) != TAG_USED)
     {
+      // Update the footer of the following free block (flip the preceding used bit).
       ((block_info *)UNSCALED_POINTER_ADD(following_block, SIZE(following_block->size_and_tags) - WORD_SIZE))->size_and_tags |= TAG_PRECEDING_USED;
     }
   }
   else
   {
+    // In this branch, we need to split the free block.
+
+    // Get the pointer to the new free block after splitting.
     block_info *new_block = (block_info *)UNSCALED_POINTER_ADD(ptr_free_block, req_size);
+
+    // Initialize the header of the new block.
     new_block->size_and_tags = (block_size - req_size) | TAG_PRECEDING_USED;
-    ((block_info *)UNSCALED_POINTER_ADD(new_block, block_size - req_size - WORD_SIZE))->size_and_tags = (block_size - req_size) | TAG_PRECEDING_USED;
+
+    // Initialize the footer of the new block.
+    ((block_info *)UNSCALED_POINTER_ADD(new_block, block_size - req_size - WORD_SIZE))->size_and_tags =
+        (block_size - req_size) | TAG_PRECEDING_USED;
+
+    // Add the new block to the free list and immediately coalesce newly
+    // allocated memory space.
     insert_free_block(new_block);
     coalesce_free_block(new_block);
+
+    // Get the preceding used bit from the free block that's been requested
     preceding_block_use_tag = (ptr_free_block->size_and_tags) & TAG_PRECEDING_USED;
+
+    // Update the header of the requested block (update the size and flip the used bit)
     ptr_free_block->size_and_tags = req_size | preceding_block_use_tag | TAG_USED;
   }
+
+  // returns a pointer to the payload of the requested block.
   return (void *)UNSCALED_POINTER_ADD(ptr_free_block, WORD_SIZE);
 }
 
@@ -427,30 +461,37 @@ void mm_free(void *ptr)
   block_info *block_to_free;
   block_info *following_block;
 
-  // TODO: Implement mm_free.  You can change or remove the declaraions
-  // above.  They are included as minor hints.
+  // Get the pointer to the block that needs to be freed.
   block_to_free = (block_info *)UNSCALED_POINTER_SUB(ptr, WORD_SIZE);
-  following_block = (block_info *)UNSCALED_POINTER_ADD(block_to_free, SIZE(block_to_free->size_and_tags));
+
+  // Get the pointer to the following block of the block that needs to be freed.
+  following_block =
+      (block_info *)UNSCALED_POINTER_ADD(block_to_free, SIZE(block_to_free->size_and_tags));
+
+  // Get the size of the payload of the block that needs to be freed.
   payload_size = SIZE(block_to_free->size_and_tags) - WORD_SIZE;
 
+  // Update the header of the following block (flip the preceding used bit)
   following_block->size_and_tags &= ~TAG_PRECEDING_USED;
+
+  // Check if the following block is a used block (if it is a free block, we need to also
+  // update the footer).
   if (((following_block->size_and_tags) & TAG_USED) != TAG_USED)
   {
-    ((block_info *)UNSCALED_POINTER_ADD(following_block, SIZE(following_block->size_and_tags) - WORD_SIZE))->size_and_tags &= ~TAG_PRECEDING_USED;
+    // Update the footer of the following free block (flip the preceding used bit).
+    ((block_info *)UNSCALED_POINTER_ADD(following_block, SIZE(following_block->size_and_tags) - WORD_SIZE))->size_and_tags &=
+        ~TAG_PRECEDING_USED;
   }
 
+  // Update the header of the block that needs to be freed.
   block_to_free->size_and_tags &= ~TAG_USED;
-  ((block_info *)UNSCALED_POINTER_ADD(block_to_free, payload_size))->size_and_tags = (block_to_free->size_and_tags) & ~TAG_USED;
+
+  // Initialize the footer of the block that needs to be freed.
+  ((block_info *)UNSCALED_POINTER_ADD(block_to_free, payload_size))->size_and_tags =
+      (block_to_free->size_and_tags) & ~TAG_USED;
+
+  // Add the freed block to the free list and immediately coalesce newly
+  // allocated memory space.
   insert_free_block(block_to_free);
   coalesce_free_block(block_to_free);
-}
-
-/*
- * A heap consistency checker. Optional, but recommended to help you debug
- * potential issues with your allocator.
- */
-int mm_check()
-{
-  // TODO: Implement a heap consistency checker as needed/desired.
-  return 0;
 }

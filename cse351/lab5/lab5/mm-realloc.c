@@ -66,9 +66,9 @@ void *mm_realloc(void *ptr, size_t size)
     else
     {
       new_block = mm_malloc(size);
-      for (int i = 0; i < (old_block_size - WORD_SIZE); i++)
+      for (int i = 0; i < (old_block_size - WORD_SIZE); i += WORD_SIZE)
       {
-        *(char *)UNSCALED_POINTER_ADD(new_block, WORD_SIZE + i) = *(char *)UNSCALED_POINTER_ADD(old_block, WORD_SIZE + i);
+        *(long *)UNSCALED_POINTER_ADD(new_block, WORD_SIZE + i) = *(long *)UNSCALED_POINTER_ADD(old_block, WORD_SIZE + i);
       }
       mm_free(ptr);
     }

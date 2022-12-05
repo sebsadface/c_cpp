@@ -266,7 +266,7 @@ void part5()
     // argument.
     // sizeof(Scores) gives the size of the Scores struct in
     // bytes (which is 16), so sizeof(Scores) * 5 is 80.
-    malloc(16);
+    void *new = malloc(16);
     Scores *class_grades = (Scores *)malloc(sizeof(Scores) * 5);
     fillArray((int *)class_grades, 5 * 4);
 

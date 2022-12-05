@@ -266,10 +266,10 @@ void part5()
     // argument.
     // sizeof(Scores) gives the size of the Scores struct in
     // bytes (which is 16), so sizeof(Scores) * 5 is 80.
-    void *new = malloc(32);
+    void *new = malloc(33);
     printf("ptr new = %p\n", new);
     Scores *class_grades = (Scores *)malloc(sizeof(Scores) * 5);
-    printf("diff = %X\n", (int)class_grades - (int)new);
+    printf("diff = %d\n", (int)class_grades - (int)new);
     fillArray((int *)class_grades, 5 * 4);
 
     // Q5: Once we are finished with malloc-ed memory, we

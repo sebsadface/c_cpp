@@ -410,7 +410,7 @@ void *mm_malloc(size_t size)
     }
     else // spliting the free block.
     {
-      block_info *splited_block = UNSCALED_POINTER_ADD(ptr_free_block, block_size);
+      block_info *splited_block = (block_info *)UNSCALED_POINTER_ADD(ptr_free_block, block_size);
       splited_block->size_and_tags = (SIZE(ptr_free_block->size_and_tags) - block_size);
       splited_block->prev = ptr_free_block;
       splited_block->next = ptr_free_block->next;
@@ -422,7 +422,6 @@ void *mm_malloc(size_t size)
   ptr_free_block->next->size_and_tags += TAG_PRECEDING_USED;
   void *payload = (void *)UNSCALED_POINTER_ADD(ptr_free_block, WORD_SIZE);
   remove_free_block(ptr_free_block);
-
   return payload;
 }
 

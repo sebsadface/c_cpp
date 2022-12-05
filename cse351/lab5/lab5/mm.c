@@ -1,8 +1,8 @@
 /*
  * CSE 351 Lab 5 (Dynamic Storage Allocator)
  *
- * Name(s): Sebastian Liu
- * NetID(s): ll57
+ * Name(s):
+ * NetID(s):
  *
  * NOTES:
  *  - Explicit allocator with an explicit free-list
@@ -428,7 +428,7 @@ void *mm_malloc(size_t size)
 /* Free the block referenced by ptr. */
 void mm_free(void *ptr)
 {
-  // size_t payload_size;
+  size_t payload_size;
   block_info *block_to_free;
   block_info *following_block;
 

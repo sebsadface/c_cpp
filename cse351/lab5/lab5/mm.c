@@ -391,38 +391,39 @@ void *mm_malloc(size_t size)
 
   // search for free blocks, if there's none available, then we request more space
   // for the heap.
-  ptr_free_block = search_free_list(req_size);
-  if (ptr_free_block == NULL)
-  {
-    request_more_space(req_size);
-    ptr_free_block = search_free_list(req_size);
-  }
-  block_size = SIZE(req_size);
+  // ptr_free_block = search_free_list(req_size);
+  // if (ptr_free_block == NULL)
+  // {
+  //   request_more_space(req_size);
+  //   ptr_free_block = search_free_list(req_size);
+  // }
+  // block_size = SIZE(req_size);
 
-  // Depend on the size of the free block, we either add the remining free space as
-  // internal fragmentation or split the free block into two free blocks.
-  if (SIZE(ptr_free_block->size_and_tags) > block_size)
-  {
-    if (SIZE(ptr_free_block->size_and_tags) - block_size < MIN_BLOCK_SIZE)
-    {
-      // add the extra free space as internal fragmentation.
-      block_size += SIZE(ptr_free_block->size_and_tags);
-    }
-    else // spliting the free block.
-    {
-      block_info *splited_block = (block_info *)UNSCALED_POINTER_ADD(ptr_free_block, block_size);
-      splited_block->size_and_tags = (SIZE(ptr_free_block->size_and_tags) - block_size);
-      splited_block->prev = ptr_free_block;
-      splited_block->next = ptr_free_block->next;
-      ptr_free_block->next = splited_block;
-    }
-  }
-  preceding_block_use_tag = SIZE(ptr_free_block->size_and_tags) & TAG_PRECEDING_USED;
-  ptr_free_block->size_and_tags = block_size + preceding_block_use_tag + TAG_USED;
-  ptr_free_block->next->size_and_tags += TAG_PRECEDING_USED;
-  void *payload = (void *)UNSCALED_POINTER_ADD(ptr_free_block, WORD_SIZE);
-  remove_free_block(ptr_free_block);
-  return payload;
+  // // Depend on the size of the free block, we either add the remining free space as
+  // // internal fragmentation or split the free block into two free blocks.
+  // if (SIZE(ptr_free_block->size_and_tags) > block_size)
+  // {
+  //   if (SIZE(ptr_free_block->size_and_tags) - block_size < MIN_BLOCK_SIZE)
+  //   {
+  //     // add the extra free space as internal fragmentation.
+  //     block_size += SIZE(ptr_free_block->size_and_tags);
+  //   }
+  //   else // spliting the free block.
+  //   {
+  //     block_info *splited_block = (block_info *)UNSCALED_POINTER_ADD(ptr_free_block, block_size);
+  //     splited_block->size_and_tags = (SIZE(ptr_free_block->size_and_tags) - block_size);
+  //     splited_block->prev = ptr_free_block;
+  //     splited_block->next = ptr_free_block->next;
+  //     ptr_free_block->next = splited_block;
+  //   }
+  // }
+  // preceding_block_use_tag = SIZE(ptr_free_block->size_and_tags) & TAG_PRECEDING_USED;
+  // ptr_free_block->size_and_tags = block_size + preceding_block_use_tag + TAG_USED;
+  // ptr_free_block->next->size_and_tags += TAG_PRECEDING_USED;
+  // void *payload = (void *)UNSCALED_POINTER_ADD(ptr_free_block, WORD_SIZE);
+  // remove_free_block(ptr_free_block);
+  // return payload;
+  return NULL;
 }
 
 /* Free the block referenced by ptr. */
@@ -434,18 +435,18 @@ void mm_free(void *ptr)
 
   // TODO: Implement mm_free.  You can change or remove the declaraions
   // above.  They are included as minor hints.
-  block_to_free = (block_info *)UNSCALED_POINTER_SUB(ptr, WORD_SIZE);
-  following_block = (block_info *)UNSCALED_POINTER_ADD(block_to_free, SIZE(block_to_free->size_and_tags));
-  if ((SIZE(following_block->size_and_tags) & TAG_USED) == TAG_USED)
-  {
-    block_to_free->size_and_tags += SIZE(SIZE(following_block->size_and_tags));
-  }
-  if (SIZE(*((size_t *)UNSCALED_POINTER_ADD(block_to_free, SIZE(SIZE(block_to_free->size_and_tags)) - WORD_SIZE))) != 0)
-  {
-    size_t *footer = (size_t *)UNSCALED_POINTER_ADD(block_to_free, SIZE(SIZE(block_to_free->size_and_tags)) - WORD_SIZE);
-    *footer = SIZE(block_to_free->size_and_tags);
-  }
-  insert_free_block(block_to_free);
+  // block_to_free = (block_info *)UNSCALED_POINTER_SUB(ptr, WORD_SIZE);
+  // following_block = (block_info *)UNSCALED_POINTER_ADD(block_to_free, SIZE(block_to_free->size_and_tags));
+  // if ((SIZE(following_block->size_and_tags) & TAG_USED) == TAG_USED)
+  // {
+  //   block_to_free->size_and_tags += SIZE(SIZE(following_block->size_and_tags));
+  // }
+  // if (SIZE(*((size_t *)UNSCALED_POINTER_ADD(block_to_free, SIZE(SIZE(block_to_free->size_and_tags)) - WORD_SIZE))) != 0)
+  // {
+  //   size_t *footer = (size_t *)UNSCALED_POINTER_ADD(block_to_free, SIZE(SIZE(block_to_free->size_and_tags)) - WORD_SIZE);
+  //   *footer = SIZE(block_to_free->size_and_tags);
+  // }
+  // insert_free_block(block_to_free);
   // coalesce_free_block(block_to_free);
 }
 

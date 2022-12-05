@@ -428,7 +428,7 @@ void *mm_malloc(size_t size)
 /* Free the block referenced by ptr. */
 void mm_free(void *ptr)
 {
-  size_t payload_size;
+  // size_t payload_size;
   block_info *block_to_free;
   block_info *following_block;
 

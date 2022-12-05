@@ -440,7 +440,7 @@ void mm_free(void *ptr)
   {
     block_to_free->size_and_tags += SIZE(SIZE(following_block->size_and_tags));
   }
-  if (SIZE(*((size_t *)UNSCALED_POINTER_ADD(block_to_free, SIZE(SIZE(block_to_free->size_and_tags)) - WORD_SIZE)) != 0))
+  if (SIZE(*((size_t *)UNSCALED_POINTER_ADD(block_to_free, SIZE(SIZE(block_to_free->size_and_tags)) - WORD_SIZE))) != 0)
   {
     size_t *footer = (size_t *)UNSCALED_POINTER_ADD(block_to_free, SIZE(SIZE(block_to_free->size_and_tags)) - WORD_SIZE);
     *footer = SIZE(block_to_free->size_and_tags);

@@ -101,7 +101,7 @@ static void mark(void *ptr)
 
   *(char *)UNSCALED_POINTER_ADD(block_header, WORD_SIZE - 3) = 1;
 
-  for (int i = 0; i < SIZE(*block_header); i += WORD_SIZE)
+  for (int i = 0; i < SIZE(((block_info *)block_header)->size_and_tags); i += WORD_SIZE)
   {
     mark(UNSCALED_POINTER_ADD(ptr, i));
   }
@@ -127,7 +127,7 @@ static void sweep()
     {
       free((block_info *)cur_block);
     }
-    cur_block += SIZE(*cur_block);
+    cur_block += SIZE(((block_info *)cur_block)->size_and_tags);
   }
 }
 

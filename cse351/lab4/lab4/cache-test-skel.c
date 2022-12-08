@@ -75,6 +75,10 @@ int get_cache_assoc(int cache_size)
     assoc++;
   }
 
+  if ((assoc - 2) < 1)
+  {
+    return 1;
+  }
   return assoc - 2;
 }
 

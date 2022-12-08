@@ -127,7 +127,7 @@ static void sweep()
     {
       free((block_info *)cur_block);
     }
-    cur_block += SIZE(cur_block);
+    cur_block += SIZE(*cur_block);
   }
 }
 

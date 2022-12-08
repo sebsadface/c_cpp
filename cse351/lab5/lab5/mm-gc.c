@@ -101,7 +101,7 @@ static void mark(void *ptr)
 
   *(char *)UNSCALED_POINTER_ADD(block_header, WORD_SIZE - 3) = 1;
 
-  for (int i = 0; i < SIZE(block_header); i += WORD_SIZE)
+  for (int i = 0; i < SIZE(*block_header); i += WORD_SIZE)
   {
     mark(UNSCALED_POINTER_ADD(ptr, i));
   }

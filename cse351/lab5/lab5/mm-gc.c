@@ -2,8 +2,8 @@
  * CSE 351 Lab 5 (Dynamic Storage Allocator)
  * Extra credit: Implementing garbage collection
  *
- * Name(s):
- * NetID(s):
+ * Name(s): Sebastian Liu
+ * NetID(s): ll57
  *
  * NOTES:
  *  - This requires mm_malloc and mm_free to be working correctly, so don't

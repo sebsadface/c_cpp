@@ -25,7 +25,7 @@
 void *mm_realloc(void *ptr, size_t size)
 {
   block_info *new_block = NULL;
-  // TODO: Implement mm_realloc.
+  // TODO: Implement mm_realloc
   // You will want to replace this return statement...
   if (ptr == NULL)
   {

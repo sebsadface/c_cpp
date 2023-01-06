@@ -45,12 +45,13 @@ double getPi(int n)
     {
         if (i % 2 == 0)
         {
-            result += (double)4 / (2 * i * (2 * i + 1) * (2 * i + 2));
+            result += (double)(4 / (2 * i * (2 * i + 1) * (2 * i + 2)));
         }
         else
         {
-            result -= (double)4 / (2 * i * (2 * i + 1) * (2 * i + 2));
+            result -= (double)(4 / (2 * i * (2 * i + 1) * (2 * i + 2)));
         }
+        printf("result = %f\n", result);
     }
     return result;
 }

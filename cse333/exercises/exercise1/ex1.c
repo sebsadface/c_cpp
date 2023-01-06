@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     }
 
     n = atoi(argv[1]);
-    printf("Our estimate of Pi is %lf \n", getPi(n));
+    printf("Our estimate of Pi is %.20f\n", getPi(n));
 
     return EXIT_SUCCESS;
 }
@@ -40,7 +40,7 @@ bool isNonNegativeInteger(char arg[])
 double getPi(int n)
 {
     int i;
-    double result = 3.0;
+    double result = (double)3;
     for (i = 1; i < n + 1; i++)
     {
         if (i % 2 == 0)
@@ -51,7 +51,7 @@ double getPi(int n)
         {
             result += ((double)4) / ((double)(2 * i * (2 * i + 1) * (2 * i + 2)));
         }
-        printf("result = %lf\n", result);
+        printf("result = %.20f\n", result);
     }
     return result;
 }

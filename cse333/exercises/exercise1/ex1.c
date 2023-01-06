@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
     if (argc < 2 || !isNonNegativeInteger(argv[1]))
     {
-        printf("Please give me an integer n (n>=0)");
+        printf("Please give me an integer n (n>=0)\n");
 
         return EXIT_FAILURE;
     }

@@ -49,7 +49,7 @@ double getPi(int n)
         }
         else
         {
-            result -= (double)(4 / (2 * i * (2 * i + 1) * (2 * i + 2)));
+            result -= ((double)4) / ((double)(2 * i * (2 * i + 1) * (2 * i + 2)));
         }
         printf("result = %f\n", result);
     }

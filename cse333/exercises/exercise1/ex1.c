@@ -51,7 +51,6 @@ double getPi(int n)
         {
             result += ((double)4) / ((double)(2 * i * (2 * i + 1) * (2 * i + 2)));
         }
-        printf("result = %.20f\n", result);
     }
     return result;
 }

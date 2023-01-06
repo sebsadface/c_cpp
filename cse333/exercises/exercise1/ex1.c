@@ -40,8 +40,8 @@ bool isNonNegativeInteger(char arg[])
 double getPi(int n)
 {
     int i;
-    double result = 0.0;
-    for (i = 0; i < n + 1; i++)
+    double result = 3.0;
+    for (i = 1; i < n + 1; i++)
     {
         if (i % 2 == 0)
         {

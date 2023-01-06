@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     }
 
     n = atoi(argv[1]);
-    printf("Our estimate of Pi is %f \n", getPi(n));
+    printf("Our estimate of Pi is %lf \n", getPi(n));
 
     return EXIT_SUCCESS;
 }
@@ -51,7 +51,7 @@ double getPi(int n)
         {
             result += ((double)4) / ((double)(2 * i * (2 * i + 1) * (2 * i + 2)));
         }
-        printf("result = %f\n", result);
+        printf("result = %lf\n", result);
     }
     return result;
 }

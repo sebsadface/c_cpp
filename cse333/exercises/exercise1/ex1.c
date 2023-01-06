@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     }
 
     n = atoi(argv[1]);
-    printf("Our estimate of Pi is %f", getPi(n));
+    printf("Our estimate of Pi is %f \n", getPi(n));
 
     return EXIT_SUCCESS;
 }

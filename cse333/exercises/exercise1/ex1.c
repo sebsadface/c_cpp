@@ -4,22 +4,28 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+#define INIT 3
+#define READ_INDEX 1
+#define MIN_INPUT_SIZE 2
+
 bool isNonNegativeInteger(char arg[]);
-double getPi(int n);
+void getPi(int n, double *result);
 
 int main(int argc, char *argv[])
 {
     int n;
+    double result = INIT;
 
-    if (argc < 2 || !isNonNegativeInteger(argv[1]))
+    if (argc < MIN_INPUT_SIZE || !isNonNegativeInteger(argv[READ_INDEX]))
     {
         printf("Please give me an integer n (n>=0)\n");
 
         return EXIT_FAILURE;
     }
 
-    n = atoi(argv[1]);
-    printf("Our estimate of Pi is %.20f\n", getPi(n));
+    n = atoi(argv[READ_INDEX]);
+    getPi(n, &result);
+    printf("Our estimate of Pi is %.20f\n", result);
 
     return EXIT_SUCCESS;
 }
@@ -37,20 +43,18 @@ bool isNonNegativeInteger(char arg[])
     return true;
 }
 
-double getPi(int n)
+void getPi(int n, double *result)
 {
     int i;
-    double result = (double)3;
     for (i = 1; i < n + 1; i++)
     {
         if (i % 2 == 0)
         {
-            result -= ((double)4) / ((double)(2 * i * (2 * i + 1) * (2 * i + 2)));
+            *result -= ((double)4) / ((double)(2 * i * (2 * i + 1) * (2 * i + 2)));
         }
         else
         {
-            result += ((double)4) / ((double)(2 * i * (2 * i + 1) * (2 * i + 2)));
+            *result += ((double)4) / ((double)(2 * i * (2 * i + 1) * (2 * i + 2)));
         }
     }
-    return result;
 }

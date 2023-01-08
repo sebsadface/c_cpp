@@ -1,3 +1,5 @@
+// Copyright © 2023 Sebatian Liu. All rights reserved.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

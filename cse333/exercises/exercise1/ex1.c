@@ -1,6 +1,5 @@
-/*
- * Copyright © 2023 Sebatian Liu.All rights reserved.
- */
+// Name: Sebastian Liu
+// CSE Email Address: ll57@cs.washington.edu
 
 #include <ctype.h>
 #include <stdbool.h>
@@ -8,8 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define INIT 3
-#define READ_INDEX 1
+#define INIT 3         // for the intial value of Pi
+#define INPUT_INDEX 1  // for the
 #define MIN_INPUT_SIZE 2
 
 bool isNonNegativeInteger(char arg[]);
@@ -19,13 +18,13 @@ int main(int argc, char *argv[]) {
   int n;
   double result = INIT;
 
-  if (argc < MIN_INPUT_SIZE || !isNonNegativeInteger(argv[READ_INDEX])) {
+  if (argc < MIN_INPUT_SIZE || !isNonNegativeInteger(argv[INPUT_INDEX])) {
     printf("Please give me an integer n (n>=0)\n");
 
     return EXIT_FAILURE;
   }
 
-  n = atoi(argv[READ_INDEX]);
+  n = atoi(argv[INPUT_INDEX]);
   getPi(n, &result);
   printf("Our estimate of Pi is %.20f\n", result);
 
@@ -52,3 +51,5 @@ void getPi(int n, double *result) {
     }
   }
 }
+
+// Copyright © 2023 Sebatian Liu. All rights reserved.

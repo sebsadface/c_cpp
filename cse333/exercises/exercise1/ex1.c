@@ -7,11 +7,11 @@
 // inclusive, in the Nilakantha series, and prints out that estimate to 20
 // decimal places.
 
-#include <ctype.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <ctype.h>    // isdigit()
+#include <stdbool.h>  // boolean types and values
+#include <stdio.h>    // printf()
+#include <stdlib.h>   // EXIT_SUCCESS, EXIT_FAILURE
+#include <string.h>   // atoi(), strlen()
 
 #define INIT 3         // for the intial value of Pi
 #define INPUT_INDEX 1  // for the index in argv[] that is used as input param

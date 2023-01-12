@@ -6,17 +6,15 @@
  * 3. Clean up the code style.
  */
 
-#include <string.h>  // strcpy, strlen
 #include <stdio.h>   // printf
 #include <stdlib.h>  // malloc, EXIT_SUCCESS, NULL
-
+#include <string.h>  // strcpy, strlen
 
 // WordCount is considered a "small" struct
 typedef struct word_st {
   char* word;
-  int   count;
+  int count;
 } WordCount;
-
 
 // Capitalize the first letter in the word
 void CapitalizeWord(WordCount* wc_ptr);
@@ -27,7 +25,6 @@ void IncreaseCount(WordCount wc);
 // Return a new WordCount with the letters of word in reverse order and a
 // count of 0.  Returns NULL on allocation failure.
 WordCount ReverseWord(WordCount* wc_ptr);
-
 
 int main(int argc, char* argv[]) {
   char comp[] = "computer";
@@ -49,18 +46,13 @@ int main(int argc, char* argv[]) {
   return EXIT_SUCCESS;
 }
 
+void IncreaseCount(WordCount wc) { wc.count += 1; }
 
-void IncreaseCount(WordCount wc) {
-  wc.count += 1;
-}
-
-void CapitalizeWord(WordCount* wc_ptr) {
-  wc_ptr->word[0] &= ~0x20;
-}
+void CapitalizeWord(WordCount* wc_ptr) { wc_ptr->word[0] &= ~0x20; }
 
 WordCount ReverseWord(WordCount* wc_ptr) {
-  WordCount* rev = (WordCount*) malloc(sizeof(WordCount));
-  rev->word = NULL;
+  WordCount* rev = (WordCount*)malloc(sizeof(WordCount));
+  rev->word = (char*)malloc(strlen(wc_ptr->word) + 1);
   strcpy(rev->word, wc_ptr->word);
 
   char ch;
@@ -69,7 +61,8 @@ WordCount ReverseWord(WordCount* wc_ptr) {
     ch = rev->word[L];
     rev->word[L] = rev->word[R];
     rev->word[R] = ch;
-    L++; R--;
+    L++;
+    R--;
   }
 
   return *rev;

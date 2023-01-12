@@ -37,7 +37,7 @@ void DumpBytes(void* pData, int32_t bytelen) {
     exit(EXIT_FAILURE);
   }
   int i;
-  printf(" The %d bytes starting at 0x%12" PRIx64 " are:", bytelen,
+  printf(" The %d bytes starting at 0x%012" PRIx64 " are:", bytelen,
          (uint64_t)pData);
   for (i = 0; i < bytelen; i++) {
     printf(" %02" PRIx8, *(((uint8_t*)pData) + i));
@@ -52,17 +52,17 @@ void CopyAndSort(uint8_t arr_unsorted[], uint8_t arr_sorted[], int length) {
         "arr_sorted != NULL, and bytelen >= 0\n");
     exit(EXIT_FAILURE);
   }
-  int i, j;
-  uint8_t temp;
   DumpBytes(arr_unsorted, length * sizeof(uint8_t));
-  for (i = 1; i < length; i++) {
-    arr_sorted[i] = arr_unsorted[i];
-    j = 0;
-    while ((i - j) > 0 && arr_sorted[i] < arr_sorted[i - j]) {
-      temp = arr_sorted[i - 1];
-      arr_sorted[i - 1] = arr_sorted[i];
-      arr_sorted[i] = temp;
-      j++;
+
+  int i, j;
+  uint8_t current;
+  for (i = 0; i < length; i++) {
+    current = arr_unsorted[i];
+    j = i - 1;
+    while (j >= 0 && arr_sorted[j] > current) {
+      arr_sorted[j + 1] = arr_sorted[j];
+      j--;
     }
+    arr_sorted[j + 1] = current;
   }
 }

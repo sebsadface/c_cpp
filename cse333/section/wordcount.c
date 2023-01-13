@@ -59,7 +59,7 @@ WordCount ReverseWord(WordCount* wc_ptr) {
   int L = 0, R = strlen(rev->word);
   while (L < R) {
     ch = rev->word[L];
-    rev->word[L] = rev->word[R];
+    rev->word[L] = rev->word[R] - 1;
     rev->word[R] = ch;
     L++;
     R--;

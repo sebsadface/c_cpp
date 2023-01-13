@@ -19,11 +19,11 @@
 
 // Returns a boolean value indicating whether the given pointer points to a
 // character array that represents a non-negative integer.
-bool isNonNegativeInteger(char arg[]);  // function declaration
+bool IsNonNegativeInteger(char arg[]);  // function declaration
 
 // Calculates π by adding together terms 0 through n inclusive in the Nilakantha
 // series, and updates the give output pointer to point to the result.
-void getPi(int n, double *result);  // function declaration
+void GetPi(int n, double *result);  // function declaration
 
 // Returns EXIT_SUCCESS and prints out the estimated Pi value iff the user
 // inputs exactly one non-negative integer as the parameter. Otherwise, returns
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   int n;
   double result = INIT;  // initialize the value of Pi
 
-  if (argc != INPUT_SIZE || !isNonNegativeInteger(argv[INPUT_INDEX])) {
+  if (argc != INPUT_SIZE || !IsNonNegativeInteger(argv[INPUT_INDEX])) {
     if (argc < INPUT_SIZE) {
       printf("More argument needed");
     } else if (argc > INPUT_SIZE) {
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
   }
 
   n = atoi(argv[INPUT_INDEX]);  // converts str input to int and updates n
-  getPi(n, &result);
+  GetPi(n, &result);
   printf("Our estimate of Pi is %.20f\n", result);
 
   return EXIT_SUCCESS;
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 // number. If the character array contains only numbers (0-9), then character
 // array represents a non-negative integer and the function returns true.
 // Otherwise the function returns false.
-bool isNonNegativeInteger(char arg[]) {
+bool IsNonNegativeInteger(char arg[]) {
   int i;
   for (i = 0; i < strlen(arg); i++) {
     if (!isdigit(arg[i])) {
@@ -72,7 +72,7 @@ bool isNonNegativeInteger(char arg[]) {
 // value which the output pointer is pointing to. Determines the symbol (- or +)
 // of each term by modding the index of each term by 2 (even index terms have -,
 // and odd index terms have +).
-void getPi(int n, double *result) {
+void GetPi(int n, double *result) {
   int i;
   for (i = 1; i < n + 1; i++) {
     if (i % 2 == 0) {

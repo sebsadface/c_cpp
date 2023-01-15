@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
 
 #include "Point3d.h"
 
@@ -22,6 +24,8 @@ void Point3d_Scale(Point3d* point, int32_t scale) {
 }
 
 Point3d Point3d_GetOrigin() {
-  Point3d* origin = Point3d_Allocate(0, 0, 0);
-  return *origin;
+  Point3d* origin_ptr = Point3d_Allocate(0, 0, 0);
+  Point3d origin = *origin_ptr;
+  free(origin_ptr);
+  return origin;
 }

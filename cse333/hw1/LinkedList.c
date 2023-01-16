@@ -26,8 +26,7 @@ LinkedList *LinkedList_Allocate(void) {
 
   // STEP 1: initialize the newly allocated record structure.
   ll->num_elements = 0;
-  ll->head = NULL;
-  ll->tail = NULL;
+  ll->head = ll->tail = NULL;
 
   // Return our newly minted linked list.
   return ll;
@@ -42,11 +41,10 @@ void LinkedList_Free(LinkedList *list,
   // (using the payload_free_function supplied as an argument) and
   // the nodes themselves.
   int i;
-  LinkedListNode *next_to_free = (list->head);
   for (i = 0; i < (list->num_elements); i++) {
-    (*payload_free_function)(next_to_free->payload);
-    next_to_free = next_to_free->next;
-    free(next_to_free->prev);
+    (*payload_free_function)(list->head->payload);
+    list->head = list->head->next;
+    free(list->head->prev);
   }
   // free the LinkedList
   free(list);
@@ -77,6 +75,7 @@ void LinkedList_Push(LinkedList *list, LLPayload_t payload) {
   } else {
     // STEP 3: typical case; list has >=1 elements
     ln->next = list->head;
+    ln->prev = NULL;
     list->head = ln;
     list->num_elements++;
   }
@@ -92,7 +91,20 @@ bool LinkedList_Pop(LinkedList *list, LLPayload_t *payload_ptr) {
   // and (b) the general case of a list with >=2 elements in it.
   // Be sure to call free() to deallocate the memory that was
   // previously allocated by LinkedList_Push().
+  if (list->num_elements == 0) {
+    return false;
+  }
 
+  payload_ptr = list->head->payload;
+  if (list->num_elements == 1) {
+    free(list->head);
+    list->head = list->tail = NULL;
+  } else {
+    list->head = list->head->next;
+    free(list->head->prev);
+    list->head->prev = NULL;
+  }
+  list->num_elements--;
   return true;  // you may need to change this return value
 }
 

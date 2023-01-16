@@ -10,8 +10,13 @@
 
 #include "Point3d.h"
 
-#define TEST_TRIALS 1000  // total number of test trials
-#define TEST_RANGE 1000   // the range of test values (exclusive)
+#define TEST_TRIALS 1000       // total number of testing trials
+#define TEST_RANGE_LOWER -500  // the lower bound of testing values
+#define TEST_RANGE_UPPER 500   // the upper bound of testing values
+
+// Returns a random number between TEST_RANGER_LOWER and
+// TEST_RANGE_UPPER with the given seed.
+int32_t GetRandomNum(unsigned int* rand_seed);
 
 int main(int argc, char* argv[]) {
   Point3d* test_point;
@@ -20,16 +25,16 @@ int main(int argc, char* argv[]) {
   int i;
 
   // Initialize random seed.
-  srand(time(NULL));
+  unsigned int rand_seed = time(NULL);
 
   // Repeat the test for TEST_TRIALS number of times with random parameters.
   for (i = 0; i < TEST_TRIALS; i++) {
-    // Initialize x,y,z, and scale with random numbers between 0 and
-    // TEST_RANGE - 1.
-    test_x = rand() % TEST_RANGE;
-    test_y = rand() % TEST_RANGE;
-    test_z = rand() % TEST_RANGE;
-    test_scale = rand() % TEST_RANGE;
+    // Initialize x,y,z, and scale with random numbers between TEST_RANGER_LOWER
+    // and TEST_RANGE_UPPER.
+    test_x = GetRandomNum(&rand_seed);
+    test_y = GetRandomNum(&rand_seed);
+    test_z = GetRandomNum(&rand_seed);
+    test_scale = GetRandomNum(&rand_seed);
 
     // Prints out the testing parameters for the current trial.
     printf("Testing with parameters: x = %d, y = %d, z = %d, scale = %d\n",
@@ -66,4 +71,9 @@ int main(int argc, char* argv[]) {
   printf("Point3d_GetOrigin test passed\n");
 
   return EXIT_SUCCESS;
+}
+
+int32_t GetRandomNum(unsigned int* rand_seed) {
+  return (rand_r(rand_seed) % (TEST_RANGE_UPPER - TEST_RANGE_LOWER + 1)) +
+         TEST_RANGE_LOWER;
 }

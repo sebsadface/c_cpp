@@ -3,8 +3,8 @@
 // Name: Sebastian Liu
 // CSE Email Address: ll57@cs.washington.edu
 
-#ifndef PRINT3D_H_  // Header Guard, continue if PRINT3D_H_ is not defined
-#define PRINT3D_H_  // Header Guard, define PRINT3D_H_
+#ifndef POINT3D_H_  // Header Guard, continue if POINT3D_H_ is not defined
+#define POINT3D_H_  // Header Guard, define POINT3D_H_
 
 #include <stdint.h>  // for int32_t
 
@@ -49,4 +49,4 @@ void Point3d_Scale(Point3d* point, int32_t scale);
 // Returns a copy of the Point3d with x, y, and z coordinates equal to zero.
 Point3d Point3d_GetOrigin();
 
-#endif  // PRINT3D_H_
+#endif  // POINT3D_H_

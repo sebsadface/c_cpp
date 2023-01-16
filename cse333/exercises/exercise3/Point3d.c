@@ -5,7 +5,7 @@
 
 #include <stdio.h>   // for NULL
 #include <stdlib.h>  // for malloc(), free()
-#include <assert.h>  //for assert()
+#include <assert.h>  // for assert()
 
 #include "Point3d.h"
 

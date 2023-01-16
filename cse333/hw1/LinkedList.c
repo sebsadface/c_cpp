@@ -16,16 +16,18 @@
 #include "LinkedList.h"
 #include "LinkedList_priv.h"
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // LinkedList implementation.
 
-LinkedList* LinkedList_Allocate(void) {
+LinkedList *LinkedList_Allocate(void) {
   // Allocate the linked list record.
-  LinkedList *ll = (LinkedList *) malloc(sizeof(LinkedList));
+  LinkedList *ll = (LinkedList *)malloc(sizeof(LinkedList));
   Verify333(ll != NULL);
 
   // STEP 1: initialize the newly allocated record structure.
+  ll->num_elements = 0;
+  ll->head = NULL;
+  ll->tail = NULL;
 
   // Return our newly minted linked list.
   return ll;
@@ -39,7 +41,13 @@ void LinkedList_Free(LinkedList *list,
   // STEP 2: sweep through the list and free all of the nodes' payloads
   // (using the payload_free_function supplied as an argument) and
   // the nodes themselves.
-
+  int i;
+  LinkedListNode *next_to_free = (list->head);
+  for (i = 0; i < (list->num_elements); i++) {
+    (*payload_free_function)(next_to_free->payload);
+    next_to_free = next_to_free->next;
+    free(next_to_free->prev);
+  }
   // free the LinkedList
   free(list);
 }
@@ -53,7 +61,7 @@ void LinkedList_Push(LinkedList *list, LLPayload_t payload) {
   Verify333(list != NULL);
 
   // Allocate space for the new node.
-  LinkedListNode *ln = (LinkedListNode *) malloc(sizeof(LinkedListNode));
+  LinkedListNode *ln = (LinkedListNode *)malloc(sizeof(LinkedListNode));
   Verify333(ln != NULL);
 
   // Set the payload
@@ -68,6 +76,9 @@ void LinkedList_Push(LinkedList *list, LLPayload_t payload) {
     list->num_elements = 1;
   } else {
     // STEP 3: typical case; list has >=1 elements
+    ln->next = list->head;
+    list->head = ln;
+    list->num_elements++;
   }
 }
 
@@ -109,8 +120,8 @@ void LinkedList_Sort(LinkedList *list, bool ascending,
     swapped = 0;
     curnode = list->head;
     while (curnode->next != NULL) {
-      int compare_result = comparator_function(curnode->payload,
-                                               curnode->next->payload);
+      int compare_result =
+          comparator_function(curnode->payload, curnode->next->payload);
       if (ascending) {
         compare_result *= -1;
       }
@@ -127,15 +138,14 @@ void LinkedList_Sort(LinkedList *list, bool ascending,
   } while (swapped);
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // LLIterator implementation.
 
-LLIterator* LLIterator_Allocate(LinkedList *list) {
+LLIterator *LLIterator_Allocate(LinkedList *list) {
   Verify333(list != NULL);
 
   // OK, let's manufacture an iterator.
-  LLIterator *li = (LLIterator *) malloc(sizeof(LLIterator));
+  LLIterator *li = (LLIterator *)malloc(sizeof(LLIterator));
   Verify333(li != NULL);
 
   // Set up the iterator.
@@ -197,10 +207,8 @@ bool LLIterator_Remove(LLIterator *iter,
   // the iterator is pointing to, and also free any LinkedList
   // data structure element as appropriate.
 
-
   return true;  // you may need to change this return value
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Helper functions
@@ -214,6 +222,4 @@ bool LinkedList_Slice(LinkedList *list, LLPayload_t *payload_ptr) {
   return true;  // you may need to change this return value
 }
 
-void LLIterator_Rewind(LLIterator *iter) {
-  iter->node = iter->list->head;
-}
+void LLIterator_Rewind(LLIterator *iter) { iter->node = iter->list->head; }

@@ -18,7 +18,6 @@ int main(int argc, char* argv[]) {
   Point3d* test_point;
   Point3d test_origin;
   int32_t test_x, test_y, test_z, test_scale;
-  int i;
 
   // Initialize testing parameters.
   test_x = X;

@@ -46,6 +46,7 @@ void LinkedList_Free(LinkedList *list,
     list->head = list->head->next;
     free(list->head->prev);
   }
+  (*payload_free_function)(list->head->payload);
   free(list->head);
   // free the LinkedList
   free(list);

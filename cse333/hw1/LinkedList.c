@@ -41,13 +41,13 @@ void LinkedList_Free(LinkedList *list,
   // (using the payload_free_function supplied as an argument) and
   // the nodes themselves.
   int i;
-  for (i = 0; i < (list->num_elements); i++) {
+  for (i = 1; i < (list->num_elements); i++) {
     (*payload_free_function)(list->head->payload);
     list->head = list->head->next;
     free(list->head->prev);
   }
-  // free the LinkedList
   free(list->head);
+  // free the LinkedList
   free(list);
 }
 

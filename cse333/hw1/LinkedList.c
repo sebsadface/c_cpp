@@ -99,7 +99,6 @@ bool LinkedList_Pop(LinkedList *list, LLPayload_t *payload_ptr) {
   // Be sure to call free() to deallocate the memory that was
   // previously allocated by LinkedList_Push().
   if (list->num_elements == 0) {
-    payload_ptr = NULL;
     return false;
   }
 

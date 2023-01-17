@@ -12,8 +12,8 @@
 #ifndef HW1_HASHTABLE_H_
 #define HW1_HASHTABLE_H_
 
-#include <stdbool.h>    // for bool type (true, false)
-#include <stdint.h>     // for uint64_t, etc.
+#include <stdbool.h>  // for bool type (true, false)
+#include <stdint.h>   // for uint64_t, etc.
 
 ///////////////////////////////////////////////////////////////////////////////
 // A HashTable is a automatically-resizing chained hash table.
@@ -44,11 +44,11 @@ typedef struct ht HashTable;
 // data can be stored in the HashTable, by casting it to the HTValue_t
 // type.  Otherwise, a pointer to the client's data is maintained in
 // the table.
-typedef uint64_t HTKey_t;      // hash table key type
-typedef void*    HTValue_t;    // hash table value type
+typedef uint64_t HTKey_t;  // hash table key type
+typedef void *HTValue_t;   // hash table value type
 typedef struct {
-  HTKey_t   key;      // the key in the (key,value) pair
-  HTValue_t value;    // the value in the (key,value) pair
+  HTKey_t key;      // the key in the (key,value) pair
+  HTValue_t value;  // the value in the (key,value) pair
 } HTKeyValue_t;
 
 // When freeing a HashTable, customers need to pass a pointer to a function
@@ -58,7 +58,7 @@ typedef struct {
 // Additional Note: This is a function pointer. Please refer to the end of
 // Lecture 3 slides (Pointers, pointers, pointers...) for more detail on the
 // syntax and usage.
-typedef void(*ValueFreeFnPtr)(HTValue_t value);
+typedef void (*ValueFreeFnPtr)(HTValue_t value);
 
 // FNV hash implementation.
 //
@@ -76,7 +76,6 @@ typedef void(*ValueFreeFnPtr)(HTValue_t value);
 //   use in a HTKeyValue_t.
 HTKey_t FNVHash64(unsigned char *buffer, int len);
 
-
 // Allocate and return a new HashTable.
 //
 // Arguments:
@@ -84,7 +83,7 @@ HTKey_t FNVHash64(unsigned char *buffer, int len);
 //   initially contain; MUST be greater than zero.
 //
 // Returns a pointer to the newly allocated HashTable.
-HashTable* HashTable_Allocate(int num_buckets);
+HashTable *HashTable_Allocate(int num_buckets);
 
 // Free a HashTable and its entries.
 //
@@ -125,8 +124,7 @@ int HashTable_NumElements(HashTable *table);
 //    with the same key was replaced and returned through
 //    the oldkeyval return parameter.  In this case, the caller assumes
 //    ownership of oldkeyvalue.
-bool HashTable_Insert(HashTable *table,
-                      HTKeyValue_t newkeyvalue,
+bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
                       HTKeyValue_t *oldkeyvalue);
 
 // Looks up a key in the HashTable, and if it is present, returns the
@@ -144,9 +142,7 @@ bool HashTable_Insert(HashTable *table,
 //  - false: if the key wasn't found in the HashTable.
 //  - true: if the key was found, and therefore the associated (key,value)
 //    was returned to the caller via that keyvalue return parameter.
-bool HashTable_Find(HashTable *table,
-                    HTKey_t key,
-                    HTKeyValue_t *keyvalue);
+bool HashTable_Find(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue);
 
 // Removes a (key,value) from the HashTable and returns it to the
 // caller.
@@ -166,10 +162,7 @@ bool HashTable_Find(HashTable *table,
 //    (key,value) was returned to the caller via that keyvalue return
 //    parameter, and (b) that (key,value) was removed from the
 //    HashTable.
-bool HashTable_Remove(HashTable *table,
-                      HTKey_t key,
-                      HTKeyValue_t *keyvalue);
-
+bool HashTable_Remove(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue);
 
 ///////////////////////////////////////////////////////////////////////////////
 // HashTable iterator
@@ -194,7 +187,7 @@ typedef struct ht_it HTIterator;  // same trick to hide implementation.
 // Returns:
 // - the newly-allocated iterator, which may be invalid or "past the end"
 //   if the table cannot be iterated through (eg, empty).
-HTIterator* HTIterator_Allocate(HashTable *table);
+HTIterator *HTIterator_Allocate(HashTable *table);
 
 // When you're done with a hash table iterator, you must free it
 // by calling this function.

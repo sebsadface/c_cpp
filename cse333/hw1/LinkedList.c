@@ -139,6 +139,7 @@ void LinkedList_Append(LinkedList *list, LLPayload_t payload) {
     // STEP 3: typical case; list has >=1 elements
     ln->prev = list->tail;
     ln->next = NULL;
+    ln->prev->next = ln;
     list->tail = ln;
   }
   list->num_elements++;

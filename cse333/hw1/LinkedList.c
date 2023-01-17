@@ -77,6 +77,7 @@ void LinkedList_Push(LinkedList *list, LLPayload_t payload) {
     // STEP 3: typical case; list has >=1 elements
     ln->next = list->head;
     ln->prev = NULL;
+    ln->next->prev = ln;
     list->head = ln;
     list->num_elements++;
   }

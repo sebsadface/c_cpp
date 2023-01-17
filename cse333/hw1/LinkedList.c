@@ -47,6 +47,7 @@ void LinkedList_Free(LinkedList *list,
     free(list->head->prev);
   }
   // free the LinkedList
+  free(list->head);
   free(list);
 }
 
@@ -92,10 +93,11 @@ bool LinkedList_Pop(LinkedList *list, LLPayload_t *payload_ptr) {
   // Be sure to call free() to deallocate the memory that was
   // previously allocated by LinkedList_Push().
   if (list->num_elements == 0) {
+    payload_ptr = NULL;
     return false;
   }
 
-  payload_ptr = list->head->payload;
+  *payload_ptr = list->head->payload;
   if (list->num_elements == 1) {
     free(list->head);
     list->head = list->tail = NULL;
@@ -290,7 +292,7 @@ bool LinkedList_Slice(LinkedList *list, LLPayload_t *payload_ptr) {
     return false;
   }
 
-  payload_ptr = list->tail->payload;
+  *payload_ptr = list->tail->payload;
   if (list->num_elements == 1) {
     free(list->tail);
     list->head = list->tail = NULL;

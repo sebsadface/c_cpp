@@ -40,14 +40,18 @@ void LinkedList_Free(LinkedList *list,
   // STEP 2: sweep through the list and free all of the nodes' payloads
   // (using the payload_free_function supplied as an argument) and
   // the nodes themselves.
-  int i;
-  for (i = 1; i < (list->num_elements); i++) {
+
+  if (list->num_elements != 0) {
+    int i;
+    for (i = 1; i < (list->num_elements); i++) {
+      (*payload_free_function)(list->head->payload);
+      list->head = list->head->next;
+      free(list->head->prev);
+    }
     (*payload_free_function)(list->head->payload);
-    list->head = list->head->next;
-    free(list->head->prev);
+    free(list->head);
   }
-  (*payload_free_function)(list->head->payload);
-  free(list->head);
+
   // free the LinkedList
   free(list);
 }

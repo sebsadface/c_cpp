@@ -256,8 +256,10 @@ bool HTIterator_Get(HTIterator *iter, HTKeyValue_t *keyvalue) {
   if ((iter->ht->num_elements == 0) || !HTIterator_IsValid(iter)) {
     return false;
   }
-
-  LLIterator_Get(iter->bucket_it, (LLPayload_t *)&keyvalue);
+  HTKeyValue_t *payload;
+  LLIterator_Get(iter->bucket_it, (LLPayload_t *)&payload);
+  payload->key = keyvalue->key;
+  payload->value = keyvalue->value;
   return true;  // you may need to change this return value
 }
 

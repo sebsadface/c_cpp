@@ -173,6 +173,7 @@ bool HashTable_Remove(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   if (FindKeyValue(table, key, true, &payload)) {
     keyvalue->key = payload->key;
     keyvalue->value = payload->value;
+    table->num_elements--;
     return true;
   }
 

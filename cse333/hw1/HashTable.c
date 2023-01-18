@@ -37,7 +37,7 @@ static void LLNoOpFree(LLPayload_t freeme) {}
 static void HTNoOpFree(HTValue_t freeme) {}
 
 bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
-                  HTKeyValue_t *keyvaluefound);
+                  HTKeyValue_t **keyvaluefound);
 
 ///////////////////////////////////////////////////////////////////////////////
 // HashTable implementation.
@@ -139,7 +139,7 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   HTKeyValue_t *newcopy = (HTKeyValue_t *)malloc(sizeof(HTKeyValue_t));
   newcopy->key = newkeyvalue.key;
   newcopy->value = newkeyvalue.value;
-  if (FindKeyValue(table, newkeyvalue.key, true, oldkeyvalue)) {
+  if (FindKeyValue(table, newkeyvalue.key, true, &oldkeyvalue)) {
     LinkedList_Push(chain, (LLPayload_t)newcopy);
 
     return true;
@@ -153,7 +153,7 @@ bool HashTable_Find(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   Verify333(table != NULL);
 
   // STEP 2: implement HashTable_Find.
-  if (FindKeyValue(table, key, false, keyvalue)) {
+  if (FindKeyValue(table, key, false, &keyvalue)) {
     return true;
   }
 
@@ -164,7 +164,7 @@ bool HashTable_Remove(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   Verify333(table != NULL);
 
   // STEP 3: implement HashTable_Remove.
-  if (FindKeyValue(table, key, true, keyvalue)) {
+  if (FindKeyValue(table, key, true, &keyvalue)) {
     return true;
   }
 
@@ -315,7 +315,7 @@ static void MaybeResize(HashTable *ht) {
 // Helper functions
 
 bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
-                  HTKeyValue_t *keyvaluefound) {
+                  HTKeyValue_t **keyvaluefound) {
   int bucket_idx;
   LLIterator *bucket_it;
 
@@ -325,7 +325,7 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
   while (LLIterator_IsValid(bucket_it)) {
     LLIterator_Get(bucket_it, (LLPayload_t)keyvaluefound);
 
-    if ((*keyvaluefound).key == key) {
+    if ((*keyvaluefound)->key == key) {
       if (remove) {
         LLIterator_Remove(bucket_it, LLNoOpFree);
       }

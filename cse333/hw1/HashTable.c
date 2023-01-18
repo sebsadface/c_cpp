@@ -136,12 +136,15 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // and optionally remove a key within a chain, rather than putting
   // all that logic inside here.  You might also find that your helper
   // can be reused in steps 2 and 3.
+  HTKeyValue_t *newcopy = (HTKeyValue_t *)malloc(sizeof(HTKeyValue_t));
+  newcopy->key = newkeyvalue.key;
+  newcopy->value = newkeyvalue.value;
   if (FindKeyValue(table, newkeyvalue.key, false, oldkeyvalue)) {
-    LinkedList_Push(chain, (LLPayload_t)&newkeyvalue);
+    LinkedList_Push(chain, (LLPayload_t)newcopy);
 
     return true;
   }
-  LinkedList_Push(chain, (LLPayload_t)&newkeyvalue);
+  LinkedList_Push(chain, (LLPayload_t)newcopy);
   table->num_elements++;
   return false;  // you may need to change this return value
 }

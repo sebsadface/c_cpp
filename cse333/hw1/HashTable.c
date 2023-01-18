@@ -238,7 +238,8 @@ bool HTIterator_Next(HTIterator *iter) {
 
   // STEP 5: implement HTIterator_Next.
   while (HTIterator_IsValid(iter)) {
-    if (LLIterator_Next(iter->bucket_it)) {
+    if (LLIterator_IsValid(iter->bucket_it) &&
+        LLIterator_Next(iter->bucket_it)) {
       return true;
     }
     iter->bucket_idx++;
@@ -253,14 +254,14 @@ bool HTIterator_Get(HTIterator *iter, HTKeyValue_t *keyvalue) {
   Verify333(iter != NULL);
 
   // STEP 6: implement HTIterator_Get.
-  if ((iter->ht->num_elements == 0) || !HTIterator_IsValid(iter)) {
-    return false;
+  if (HTIterator_IsValid(iter)) {
+    HTKeyValue_t *payload;
+    LLIterator_Get(iter->bucket_it, (LLPayload_t *)&payload);
+    payload->key = keyvalue->key;
+    payload->value = keyvalue->value;
+    return true;
   }
-  HTKeyValue_t *payload;
-  LLIterator_Get(iter->bucket_it, (LLPayload_t *)&payload);
-  payload->key = keyvalue->key;
-  payload->value = keyvalue->value;
-  return true;  // you may need to change this return value
+  return false;  // you may need to change this return value
 }
 
 bool HTIterator_Remove(HTIterator *iter, HTKeyValue_t *keyvalue) {

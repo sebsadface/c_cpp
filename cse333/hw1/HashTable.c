@@ -36,8 +36,8 @@ int HashKeyToBucketNum(HashTable *ht, HTKey_t key) {
 static void LLNoOpFree(LLPayload_t freeme) {}
 static void HTNoOpFree(HTValue_t freeme) {}
 
-bool FindAndRemove(LinkedList *chain, HTKey_t key, bool remove,
-                   HTKeyValue_t *foundkeyvalue);
+bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
+                  HTKeyValue_t *keyvaluefound);
 
 ///////////////////////////////////////////////////////////////////////////////
 // HashTable implementation.
@@ -136,15 +136,14 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // and optionally remove a key within a chain, rather than putting
   // all that logic inside here.  You might also find that your helper
   // can be reused in steps 2 and 3.
-  HTKeyValue_t *foundkeyvalue;
-  if (FindAndRemove(chain, newkeyvalue.key, false, foundkeyvalue)) {
-    oldkeyvalue = foundkeyvalue;
-    foundkeyvalue = &newkeyvalue;
+
+  if (FindKeyValue(table, newkeyvalue.key, false, oldkeyvalue)) {
+    oldkeyvalue = &newkeyvalue;
+
     return true;
   }
-
   LinkedList_Push(chain, (LLPayload_t)&newkeyvalue);
-  table->num_elements++;
+
   return false;  // you may need to change this return value
 }
 
@@ -152,8 +151,7 @@ bool HashTable_Find(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   Verify333(table != NULL);
 
   // STEP 2: implement HashTable_Find.
-  if (FindAndRemove(table->buckets[HashKeyToBucketNum(table, key)], key, false,
-                    keyvalue)) {
+  if (FindKeyValue(table, key, false, keyvalue)) {
     return true;
   }
 
@@ -164,8 +162,7 @@ bool HashTable_Remove(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   Verify333(table != NULL);
 
   // STEP 3: implement HashTable_Remove.
-  if (FindAndRemove(table->buckets[HashKeyToBucketNum(table, key)], key, true,
-                    keyvalue)) {
+  if (FindKeyValue(table, key, true, keyvalue)) {
     return true;
   }
 
@@ -220,10 +217,7 @@ bool HTIterator_IsValid(HTIterator *iter) {
   Verify333(iter != NULL);
 
   // STEP 4: implement HTIterator_IsValid.
-
-  return ((iter->ht != NULL) && (iter->bucket_idx >= 0) &&
-          (iter->bucket_idx < iter->ht->num_buckets) &&
-          LLIterator_IsValid(iter->bucket_it));
+  return (!(iter->bucket_idx >= iter->ht->num_buckets));
   // you may need to change this return value
 }
 
@@ -231,15 +225,27 @@ bool HTIterator_Next(HTIterator *iter) {
   Verify333(iter != NULL);
 
   // STEP 5: implement HTIterator_Next.
+  while (iter->bucket_idx < iter->ht->num_buckets) {
+    if (LLIterator_Next(iter->bucket_it)) {
+      return true;
+    }
+    iter->bucket_idx++;
+    LLIterator_Free(iter->bucket_it);
+    iter->bucket_it = (iter->ht->buckets[iter->bucket_idx]);
+  }
 
-  return true;  // you may need to change this return value
+  return false;  // you may need to change this return value
 }
 
 bool HTIterator_Get(HTIterator *iter, HTKeyValue_t *keyvalue) {
   Verify333(iter != NULL);
 
   // STEP 6: implement HTIterator_Get.
+  if ((iter->ht->num_elements == 0) || !HTIterator_IsValid(iter)) {
+    return false;
+  }
 
+  LLIterator_Get(iter->bucket_it, (LLPayload_t *)keyvalue);
   return true;  // you may need to change this return value
 }
 
@@ -305,25 +311,31 @@ static void MaybeResize(HashTable *ht) {
 ///////////////////////////////////////////////////////////////////////////////
 // Helper functions
 
-bool FindAndRemove(LinkedList *chain, HTKey_t key, bool remove,
-                   HTKeyValue_t *foundkeyvalue) {
-  LLIterator *iter = LLIterator_Allocate(chain);
+bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
+                  HTKeyValue_t *keyvaluefound) {
+  int bucket_idx;
+  LLIterator *bucket_it;
 
-  while (LLIterator_IsValid(iter)) {
-    LLIterator_Get(iter, (LLPayload_t *)foundkeyvalue);
+  bucket_idx = HashKeyToBucketNum(table, key);
+  bucket_it = LLIterator_Allocate(table->buckets[bucket_idx]);
 
-    if (foundkeyvalue->key == key) {
+  while (LLIterator_IsValid(bucket_it)) {
+    LLIterator_Get(bucket_it, (LLPayload_t *)keyvaluefound);
+
+    if (keyvaluefound->key == key) {
       if (remove) {
-        LLIterator_Remove(iter, LLNoOpFree);
+        LLIterator_Remove(bucket_it, LLNoOpFree);
       }
 
-      LLIterator_Free(iter);
+      LLIterator_Free(bucket_it);
+
       return true;
     }
 
-    LLIterator_Next(iter);
+    LLIterator_Next(bucket_it);
   }
 
-  LLIterator_Free(iter);
+  LLIterator_Free(bucket_it);
+
   return false;
 }

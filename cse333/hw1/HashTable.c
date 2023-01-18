@@ -237,7 +237,7 @@ bool HTIterator_Next(HTIterator *iter) {
   Verify333(iter != NULL);
 
   // STEP 5: implement HTIterator_Next.
-  while (iter->bucket_idx < iter->ht->num_buckets) {
+  while (HTIterator_IsValid(iter)) {
     if (LLIterator_Next(iter->bucket_it)) {
       return true;
     }

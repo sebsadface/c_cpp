@@ -138,7 +138,7 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // can be reused in steps 2 and 3.
 
   if (FindKeyValue(table, newkeyvalue.key, false, oldkeyvalue)) {
-    oldkeyvalue = (HTKeyValue_t *)&newkeyvalue;
+    oldkeyvalue = &newkeyvalue;
 
     return true;
   }
@@ -217,7 +217,8 @@ bool HTIterator_IsValid(HTIterator *iter) {
   Verify333(iter != NULL);
 
   // STEP 4: implement HTIterator_IsValid.
-  return (!(iter->bucket_idx >= iter->ht->num_buckets));
+  return ((iter->ht->num_elements != 0) &&
+          !(iter->bucket_idx >= iter->ht->num_buckets));
   // you may need to change this return value
 }
 

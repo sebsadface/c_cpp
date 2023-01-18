@@ -231,7 +231,7 @@ TEST_F(Test_HashTable, Iterator) {
     ASSERT_TRUE(HTIterator_IsValid(it));
     ASSERT_TRUE(HTIterator_Get(it, &oldkv));
 
-    ASSERT_TRUE(&oldkv == NULL);
+    ASSERT_TRUE(oldkv.value == NULL);
 
     // Verify that we've never seen this key before, then increment the
     // number of times we've seen it.

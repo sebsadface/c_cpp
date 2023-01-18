@@ -139,7 +139,7 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   HTKeyValue_t *newcopy = (HTKeyValue_t *)malloc(sizeof(HTKeyValue_t));
   newcopy->key = newkeyvalue.key;
   newcopy->value = newkeyvalue.value;
-  if (FindKeyValue(table, newkeyvalue.key, false, oldkeyvalue)) {
+  if (FindKeyValue(table, newkeyvalue.key, true, oldkeyvalue)) {
     LinkedList_Push(chain, (LLPayload_t)newcopy);
 
     return true;

@@ -136,9 +136,11 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // and optionally remove a key within a chain, rather than putting
   // all that logic inside here.  You might also find that your helper
   // can be reused in steps 2 and 3.
-
+  HTKeyValue_t temp;
   if (FindKeyValue(table, newkeyvalue.key, false, &oldkeyvalue)) {
-    // oldkeyvalue = &newkeyvalue;
+    temp = *oldkeyvalue;
+    *oldkeyvalue = newkeyvalue;
+    oldkeyvalue = &temp;
 
     return true;
   }

@@ -238,16 +238,15 @@ bool HTIterator_Next(HTIterator *iter) {
   Verify333(iter != NULL);
 
   // STEP 5: implement HTIterator_Next.
-  while (HTIterator_IsValid(iter)) {
+  if (HTIterator_IsValid(iter)) {
     if (LLIterator_Next(iter->bucket_it)) {
       return true;
-    }
-    if (iter->bucket_idx >= iter->ht->num_buckets - 1) {
-      return false;
-    }
-    LLIterator_Free(iter->bucket_it);
-    iter->bucket_idx++;
-    if (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx]) != 0) {
+    } else if (iter->bucket_idx != iter->ht->num_buckets - 1) {
+      iter->bucket_idx++;
+      while (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx] == 0)) {
+        iter->bucket_idx++;
+      }
+      LLIterator_Free(iter->bucket_it);
       iter->bucket_it =
           LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
       return true;

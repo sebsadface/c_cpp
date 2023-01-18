@@ -257,7 +257,7 @@ bool HTIterator_Get(HTIterator *iter, HTKeyValue_t *keyvalue) {
     return false;
   }
 
-  LLIterator_Get(iter->bucket_it, (LLPayload_t *)keyvalue);
+  LLIterator_Get(iter->bucket_it, (LLPayload_t *)&keyvalue);
   return true;  // you may need to change this return value
 }
 

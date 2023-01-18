@@ -10,10 +10,10 @@
  */
 
 extern "C" {
-  #include "./HashTable.h"
-  #include "./HashTable_priv.h"
-  #include "./LinkedList.h"
-  #include "./LinkedList_priv.h"
+#include "./HashTable.h"
+#include "./HashTable_priv.h"
+#include "./LinkedList.h"
+#include "./LinkedList_priv.h"
 }
 
 #include "gtest/gtest.h"
@@ -34,9 +34,7 @@ class Test_HashTable : public ::testing::Test {
 
   // Code here will be called before each test executes (ie, before
   // each TEST_F).
-  virtual void SetUp() {
-    freeInvocations_ = 0;
-  }
+  virtual void SetUp() { freeInvocations_ = 0; }
 
   // A version of free() that verifies the payload before freeing it.
   static void VerifiedFree(HTValue_t payload) {
@@ -57,7 +55,6 @@ class Test_HashTable : public ::testing::Test {
 // statics:
 int Test_HashTable::freeInvocations_;
 const int Test_HashTable::kMagicNum;
-
 
 TEST_F(Test_HashTable, AllocFree) {
   HashTable *ht = HashTable_Allocate(3);
@@ -102,15 +99,15 @@ TEST_F(Test_HashTable, InsertFindRemove) {
     ASSERT_EQ(static_cast<HTValue_t>(&newkv), oldkv.value);
 
     // Lookup the newly-inserted value.
-    oldkv.key = -1;       // reinitialize "oldkv" so we can verify it was
-    oldkv.value = NULL;   // set by Find.
+    oldkv.key = -1;      // reinitialize "oldkv" so we can verify it was
+    oldkv.value = NULL;  // set by Find.
     ASSERT_TRUE(HashTable_Find(table, hashed_key, &oldkv));
     ASSERT_EQ(hashed_key, oldkv.key);
     ASSERT_EQ(static_cast<HTValue_t>(np), oldkv.value);
 
     // Lookup and remove a value that doesn't exist in the table.
-    ASSERT_FALSE(HashTable_Find(table, hashed_key+1, &oldkv));
-    ASSERT_FALSE(HashTable_Remove(table, hashed_key+1, &oldkv));
+    ASSERT_FALSE(HashTable_Find(table, hashed_key + 1, &oldkv));
+    ASSERT_FALSE(HashTable_Remove(table, hashed_key + 1, &oldkv));
 
     // Remove the item we just inserted.
     oldkv.key = -1;
@@ -123,7 +120,7 @@ TEST_F(Test_HashTable, InsertFindRemove) {
     // Insert it again.
     ASSERT_FALSE(HashTable_Insert(table, newkv, &oldkv));
     ASSERT_TRUE(HashTable_Insert(table, newkv, &oldkv));
-    ASSERT_EQ(i+1, HashTable_NumElements(table));
+    ASSERT_EQ(i + 1, HashTable_NumElements(table));
   }
   HW1Environment::AddPoints(20);
 
@@ -226,7 +223,7 @@ TEST_F(Test_HashTable, Iterator) {
   HW1Environment::AddPoints(5);
 
   // Now iterate through the table, verifying each value is found exactly once.
-  int num_times_seen[100] = { 0 };   // array of 100 0's
+  int num_times_seen[100] = {0};  // array of 100 0's
   for (i = 0; i < 100; i++) {
     Payload *op;
     int htkey;
@@ -330,7 +327,7 @@ TEST_F(Test_HashTable, Iterator) {
   HW1Environment::AddPoints(5);
 }
 
-static void NoOpFree(HTValue_t freeme) { }
+static void NoOpFree(HTValue_t freeme) {}
 
 TEST_F(Test_HashTable, Resize) {
   HW1Environment::OpenTestCase();
@@ -350,8 +347,8 @@ TEST_F(Test_HashTable, Resize) {
     ASSERT_EQ(newval.key, oldkv.key);
     ASSERT_EQ(newval.value, oldkv.value);
 
-    oldkv.key = -1;       // reinitialize "oldkv" so we can verify it was
-    oldkv.value = NULL;   // set by HashTable_Find.
+    oldkv.key = -1;      // reinitialize "oldkv" so we can verify it was
+    oldkv.value = NULL;  // set by HashTable_Find.
     ASSERT_TRUE(HashTable_Find(table, newval.key, &oldkv));
     ASSERT_EQ(newval.key, oldkv.key);
     ASSERT_EQ(newval.value, oldkv.value);
@@ -368,14 +365,14 @@ TEST_F(Test_HashTable, Resize) {
     HTKey_t key = i;
     HTValue_t value = reinterpret_cast<HTValue_t>(key);
 
-    oldkv.key = -1;       // reinitialize "oldkv" so we can verify it was
-    oldkv.value = NULL;   // set by HashTable_Find.
+    oldkv.key = -1;      // reinitialize "oldkv" so we can verify it was
+    oldkv.value = NULL;  // set by HashTable_Find.
     ASSERT_TRUE(HashTable_Find(table, key, &oldkv));
     ASSERT_EQ(key, oldkv.key);
     ASSERT_EQ(value, oldkv.value);
 
-    oldkv.key = -1;       // reinitialize "oldkv" so we can verify it was
-    oldkv.value = NULL;   // set by HashTable_Remove.
+    oldkv.key = -1;      // reinitialize "oldkv" so we can verify it was
+    oldkv.value = NULL;  // set by HashTable_Remove.
     ASSERT_TRUE(HashTable_Remove(table, key, &oldkv));
     ASSERT_EQ(key, oldkv.key);
     ASSERT_EQ(value, oldkv.value);

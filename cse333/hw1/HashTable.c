@@ -245,7 +245,7 @@ bool HTIterator_Next(HTIterator *iter) {
     if (iter->bucket_idx >= iter->ht->num_buckets - 1) {
       return false;
     }
-    // LLIterator_Free(iter->bucket_it);
+    LLIterator_Free(iter->bucket_it);
     iter->bucket_idx++;
     if (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx]) != 0) {
       iter->bucket_it =
@@ -262,8 +262,8 @@ bool HTIterator_Get(HTIterator *iter, HTKeyValue_t *keyvalue) {
   if (HTIterator_IsValid(iter)) {
     HTKeyValue_t *payload;
     LLIterator_Get(iter->bucket_it, (LLPayload_t *)&payload);
-    payload->key = keyvalue->key;
-    payload->value = keyvalue->value;
+    keyvalue->key = payload->key;
+    keyvalue->value = payload->value;
     return true;
   }
   return false;  // you may need to change this return value

@@ -320,7 +320,7 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
   bucket_it = LLIterator_Allocate(table->buckets[bucket_idx]);
 
   while (LLIterator_IsValid(bucket_it)) {
-    LLIterator_Get(bucket_it, (LLPayload_t *)keyvaluefound);
+    LLIterator_Get(bucket_it, (LLPayload_t)keyvaluefound);
 
     if (keyvaluefound->key == key) {
       if (remove) {

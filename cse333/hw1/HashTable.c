@@ -241,15 +241,16 @@ bool HTIterator_Next(HTIterator *iter) {
   if (HTIterator_IsValid(iter)) {
     if (LLIterator_Next(iter->bucket_it)) {
       return true;
-    } else if (iter->bucket_idx < iter->ht->num_buckets - 1) {
-      iter->bucket_idx++;
-      while (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx]) == 0) {
-        iter->bucket_idx++;
+    }
+    iter->bucket_idx++;
+    while (HTIterator_IsValid(iter)) {
+      if (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx]) != 0) {
+        LLIterator_Free(iter->bucket_it);
+        iter->bucket_it =
+            LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
+        return true;
       }
-      LLIterator_Free(iter->bucket_it);
-      iter->bucket_it =
-          LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
-      return true;
+      iter->bucket_idx++;
     }
   }
   return false;  // you may need to change this return value

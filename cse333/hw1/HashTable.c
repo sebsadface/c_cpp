@@ -242,10 +242,10 @@ bool HTIterator_Next(HTIterator *iter) {
     if (LLIterator_Next(iter->bucket_it)) {
       return true;
     }
-    if (iter->bucket_idx == iter->ht->num_buckets - 1) {
+    if (iter->bucket_idx >= iter->ht->num_buckets - 1) {
       return false;
     }
-    LLIterator_Free(iter->bucket_it);
+    // LLIterator_Free(iter->bucket_it);
     iter->bucket_idx++;
     if (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx]) != 0) {
       iter->bucket_it =

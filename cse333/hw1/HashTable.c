@@ -142,7 +142,7 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
 
     return true;
   }
-  LinkedList_Push(chain, (LLPayload_t *)&newkeyvalue);
+  LinkedList_Push(chain, &newkeyvalue);
 
   return false;  // you may need to change this return value
 }

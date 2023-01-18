@@ -37,7 +37,7 @@ static void LLNoOpFree(LLPayload_t freeme) {}
 static void HTNoOpFree(HTValue_t freeme) {}
 
 bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
-                  HTKeyValue_t **keyvaluefound);
+                  HTKeyValue_t *keyvaluefound);
 
 ///////////////////////////////////////////////////////////////////////////////
 // HashTable implementation.
@@ -136,12 +136,9 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // and optionally remove a key within a chain, rather than putting
   // all that logic inside here.  You might also find that your helper
   // can be reused in steps 2 and 3.
-  HTKeyValue_t temp;
-  if (FindKeyValue(table, newkeyvalue.key, false, &oldkeyvalue)) {
-    temp = *oldkeyvalue;
-    *oldkeyvalue = newkeyvalue;
-    oldkeyvalue = &temp;
 
+  if (FindKeyValue(table, newkeyvalue.key, true, &oldkeyvalue)) {
+    LinkedList_Push(chain, (LLPayload_t)&newkeyvalue);
     return true;
   }
   LinkedList_Push(chain, (LLPayload_t)&newkeyvalue);
@@ -315,7 +312,7 @@ static void MaybeResize(HashTable *ht) {
 // Helper functions
 
 bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
-                  HTKeyValue_t **keyvaluefound) {
+                  HTKeyValue_t *keyvaluefound) {
   int bucket_idx;
   LLIterator *bucket_it;
 
@@ -325,7 +322,7 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
   while (LLIterator_IsValid(bucket_it)) {
     LLIterator_Get(bucket_it, (LLPayload_t *)keyvaluefound);
 
-    if ((*keyvaluefound)->key == key) {
+    if (keyvaluefound->key == key) {
       if (remove) {
         LLIterator_Remove(bucket_it, LLNoOpFree);
       }

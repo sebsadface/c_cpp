@@ -322,7 +322,7 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
   while (LLIterator_IsValid(bucket_it)) {
     LLIterator_Get(bucket_it, (LLPayload_t *)keyvaluefound);
 
-    if (keyvaluefound->key == key) {
+    if ((HTKeyValue_t *)keyvaluefound->key == key) {
       if (remove) {
         LLIterator_Remove(bucket_it, LLNoOpFree);
       }

@@ -137,7 +137,7 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // all that logic inside here.  You might also find that your helper
   // can be reused in steps 2 and 3.
 
-  if (FindKeyValue(table, newkeyvalue.key, true, &oldkeyvalue)) {
+  if (FindKeyValue(table, newkeyvalue.key, true, oldkeyvalue)) {
     LinkedList_Push(chain, (LLPayload_t)&newkeyvalue);
     return true;
   }
@@ -150,7 +150,7 @@ bool HashTable_Find(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   Verify333(table != NULL);
 
   // STEP 2: implement HashTable_Find.
-  if (FindKeyValue(table, key, false, &keyvalue)) {
+  if (FindKeyValue(table, key, false, keyvalue)) {
     return true;
   }
 
@@ -161,7 +161,7 @@ bool HashTable_Remove(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   Verify333(table != NULL);
 
   // STEP 3: implement HashTable_Remove.
-  if (FindKeyValue(table, key, true, &keyvalue)) {
+  if (FindKeyValue(table, key, true, keyvalue)) {
     return true;
   }
 

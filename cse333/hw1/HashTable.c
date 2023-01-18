@@ -243,7 +243,7 @@ bool HTIterator_Next(HTIterator *iter) {
       return true;
     } else if (iter->bucket_idx != iter->ht->num_buckets - 1) {
       iter->bucket_idx++;
-      while (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx] == 0)) {
+      while (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx]) == 0) {
         iter->bucket_idx++;
       }
       LLIterator_Free(iter->bucket_it);

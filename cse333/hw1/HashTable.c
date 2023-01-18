@@ -334,6 +334,7 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
       LLIterator_Free(bucket_it);
       return true;
     }
+    LLIterator_Next(bucket_it);
   }
 
   LLIterator_Free(bucket_it);

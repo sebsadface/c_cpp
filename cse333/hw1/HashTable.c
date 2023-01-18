@@ -169,7 +169,10 @@ bool HashTable_Remove(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   Verify333(table != NULL);
 
   // STEP 3: implement HashTable_Remove.
-  if (FindKeyValue(table, key, true, &keyvalue)) {
+  HTKeyValue_t *payload;
+  if (FindKeyValue(table, key, true, &payload)) {
+    keyvalue->key = payload->key;
+    keyvalue->value = payload->value;
     return true;
   }
 

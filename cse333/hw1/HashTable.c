@@ -315,7 +315,7 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
                   HTKeyValue_t *keyvaluefound) {
   int bucket_idx;
   LLIterator *bucket_it;
-  LLPayload_t *currentpayload = (LLPayload_t **)&keyvaluefound;
+  LLPayload_t *currentpayload = (LLPayload_t *)&keyvaluefound;
 
   bucket_idx = HashKeyToBucketNum(table, key);
   bucket_it = LLIterator_Allocate(table->buckets[bucket_idx]);

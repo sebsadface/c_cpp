@@ -229,7 +229,8 @@ bool HTIterator_IsValid(HTIterator *iter) {
 
   // STEP 4: implement HTIterator_IsValid.
   return ((iter->ht->num_elements != 0) &&
-          !(iter->bucket_idx >= iter->ht->num_buckets));
+          !(iter->bucket_idx >= iter->ht->num_buckets) &&
+          (iter->bucket_it != NULL));
   // you may need to change this return value
 }
 
@@ -242,11 +243,8 @@ bool HTIterator_Next(HTIterator *iter) {
         LLIterator_Next(iter->bucket_it)) {
       return true;
     }
-    if (iter->bucket_idx >= iter->ht->num_buckets - 1) {
-      return false;
-    }
-    LLIterator_Free(iter->bucket_it);
     iter->bucket_idx++;
+    LLIterator_Free(iter->bucket_it);
     iter->bucket_it = LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
   }
 

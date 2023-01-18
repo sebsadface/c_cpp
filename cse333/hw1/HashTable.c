@@ -229,8 +229,8 @@ bool HTIterator_IsValid(HTIterator *iter) {
 
   // STEP 4: implement HTIterator_IsValid.
   return ((iter->ht->num_elements != 0) &&
-          !(iter->bucket_idx >= iter->ht->num_buckets) &&
-          (iter->bucket_it != NULL));
+          (iter->bucket_idx < iter->ht->num_buckets) &&
+          (LLIterator_IsValid(iter->bucket_it)));
   // you may need to change this return value
 }
 
@@ -239,15 +239,19 @@ bool HTIterator_Next(HTIterator *iter) {
 
   // STEP 5: implement HTIterator_Next.
   while (HTIterator_IsValid(iter)) {
-    if (LLIterator_IsValid(iter->bucket_it) &&
-        LLIterator_Next(iter->bucket_it)) {
+    if (LLIterator_Next(iter->bucket_it)) {
       return true;
     }
-    iter->bucket_idx++;
+    if (iter->bucket_idx == iter->ht->num_buckets - 1) {
+      return false;
+    }
     LLIterator_Free(iter->bucket_it);
-    iter->bucket_it = LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
+    iter->bucket_idx++;
+    if (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx]) != 0) {
+      iter->bucket_it =
+          LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
+    }
   }
-
   return false;  // you may need to change this return value
 }
 

@@ -37,7 +37,7 @@ static void LLNoOpFree(LLPayload_t freeme) {}
 static void HTNoOpFree(HTValue_t freeme) {}
 
 bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
-                  HTKeyValue_t *keyvaluefound);
+                  HTKeyValue_t **keyvaluefound);
 
 ///////////////////////////////////////////////////////////////////////////////
 // HashTable implementation.
@@ -137,7 +137,7 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // all that logic inside here.  You might also find that your helper
   // can be reused in steps 2 and 3.
 
-  if (FindKeyValue(table, newkeyvalue.key, false, oldkeyvalue)) {
+  if (FindKeyValue(table, newkeyvalue.key, false, &oldkeyvalue)) {
     oldkeyvalue = &newkeyvalue;
 
     return true;
@@ -313,7 +313,7 @@ static void MaybeResize(HashTable *ht) {
 // Helper functions
 
 bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
-                  HTKeyValue_t *keyvaluefound) {
+                  HTKeyValue_t **keyvaluefound) {
   int bucket_idx;
   LLIterator *bucket_it;
 
@@ -321,19 +321,16 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
   bucket_it = LLIterator_Allocate(table->buckets[bucket_idx]);
 
   while (LLIterator_IsValid(bucket_it)) {
-    LLIterator_Get(bucket_it, (LLPayload_t *)keyvaluefound);
+    LLIterator_Get(bucket_it, keyvaluefound);
 
-    if ((keyvaluefound->key) == key) {
+    if ((*keyvaluefound)->key == key) {
       if (remove) {
         LLIterator_Remove(bucket_it, LLNoOpFree);
       }
 
       LLIterator_Free(bucket_it);
-
       return true;
     }
-
-    LLIterator_Next(bucket_it);
   }
 
   LLIterator_Free(bucket_it);

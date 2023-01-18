@@ -231,7 +231,7 @@ bool HTIterator_Next(HTIterator *iter) {
     }
     iter->bucket_idx++;
     LLIterator_Free(iter->bucket_it);
-    iter->bucket_it = (iter->ht->buckets[iter->bucket_idx]);
+    iter->bucket_it = LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
   }
 
   return false;  // you may need to change this return value

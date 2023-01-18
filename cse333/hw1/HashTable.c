@@ -242,12 +242,12 @@ bool HTIterator_Next(HTIterator *iter) {
         LLIterator_Next(iter->bucket_it)) {
       return true;
     }
-    if (iter->bucket_idx < iter->ht->num_buckets - 1) {
-      iter->bucket_idx++;
-      LLIterator_Free(iter->bucket_it);
-      iter->bucket_it =
-          LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
+    if (iter->bucket_idx >= iter->ht->num_buckets - 1) {
+      return false;
     }
+    LLIterator_Free(iter->bucket_it);
+    iter->bucket_idx++;
+    iter->bucket_it = LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
   }
 
   return false;  // you may need to change this return value

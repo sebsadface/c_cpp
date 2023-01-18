@@ -138,7 +138,7 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // can be reused in steps 2 and 3.
 
   if (FindKeyValue(table, newkeyvalue.key, false, oldkeyvalue)) {
-    oldkeyvalue = &newkeyvalue;
+    *oldkeyvalue = newkeyvalue;
 
     return true;
   }

@@ -243,6 +243,7 @@ bool HTIterator_Next(HTIterator *iter) {
       return true;
     }
   }
+
   while (HTIterator_IsValid(iter)) {
     if (iter->bucket_idx < iter->ht->num_buckets - 1) {
       LLIterator_Free(iter->bucket_it);
@@ -253,7 +254,7 @@ bool HTIterator_Next(HTIterator *iter) {
         return true;
       }
     } else {
-      return false;
+      break;
     }
   }
   return false;  // you may need to change this return value

@@ -291,36 +291,47 @@ bool HTIterator_IsValid(HTIterator *iter) {
 
   // STEP 4: implement HTIterator_IsValid.
 
-  // The iterator is valid if the number of elements in the hash table is
-  // greater than zero. The iterator is also valid when the iterator is not in
-  // the last bucket with a non-valid bucket iterator.
+  // The iterator is valid when the number of elements in the hash table is
+  // greater than zero and when the iterator is not in
+  // the last bucket with an invalid bucket iterator.
   return ((iter->ht->num_elements > 0) &&
           ((iter->bucket_idx < iter->ht->num_buckets - 1) ||
            LLIterator_IsValid(iter->bucket_it)));
-  // you may need to change this return value
 }
 
 bool HTIterator_Next(HTIterator *iter) {
   Verify333(iter != NULL);
 
   // STEP 5: implement HTIterator_Next.
+
+  // This is the easiest situation when the iteratior is pointing at a valid
+  // element and the node next to the current one contains the next element in
+  // that hash table.
   if (LLIterator_IsValid(iter->bucket_it)) {
     if (LLIterator_Next(iter->bucket_it)) {
       return true;
     }
   }
 
+  // Go throught the rest of the buckets and find the next non-empty bucket
+  // (means it contains the next element in the hash table).
   while (HTIterator_IsValid(iter)) {
+    // Move to the next bucket
     iter->bucket_idx++;
+
+    // Check if the current bucket is empty
     if (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx]) != 0) {
+      // Free the previous bucket iterator and allocate a new one that will be
+      // pointing at the next element.
       LLIterator_Free(iter->bucket_it);
       iter->bucket_it =
           LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
+
       return true;
     }
   }
 
-  return false;  // you may need to change this return value
+  return false;
 }
 
 bool HTIterator_Get(HTIterator *iter, HTKeyValue_t *keyvalue) {
@@ -329,11 +340,15 @@ bool HTIterator_Get(HTIterator *iter, HTKeyValue_t *keyvalue) {
   // STEP 6: implement HTIterator_Get.
   if (HTIterator_IsValid(iter)) {
     HTKeyValue_t *payload;
+
+    // Get the keyvalue from the bucket iterator
     LLIterator_Get(iter->bucket_it, (LLPayload_t *)&payload);
+
+    // Copy the keyvalue to the output argument
     CopyAndFree(payload, keyvalue, false);
     return true;
   }
-  return false;  // you may need to change this return value
+  return false;
 }
 
 bool HTIterator_Remove(HTIterator *iter, HTKeyValue_t *keyvalue) {

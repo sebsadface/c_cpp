@@ -155,10 +155,10 @@ bool HashTable_Find(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   Verify333(table != NULL);
 
   // STEP 2: implement HashTable_Find.
-  HTKeyValue_t *payload;
-  if (FindKeyValue(table, key, false, &payload)) {
-    keyvalue->key = payload->key;
-    keyvalue->value = payload->value;
+  // HTKeyValue_t *payload;
+  if (FindKeyValue(table, key, false, &keyvalue)) {
+    // keyvalue->key = payload->key;
+    // keyvalue->value = payload->value;
     return true;
   }
 

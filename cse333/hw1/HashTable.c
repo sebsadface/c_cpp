@@ -37,9 +37,39 @@ static void LLNoOpFree(LLPayload_t freeme) {}
 static void HTNoOpFree(HTValue_t freeme) {}
 
 bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
-                  HTKeyValue_t **keyvaluefound);
+                  HTKeyValue_t **keyvaluefound) {
+  int bucket_idx;
+  LLIterator *bucket_it;
 
-void CopyAndFree(HTKeyValue_t *source, HTKeyValue_t *dest, bool free_source);
+  bucket_idx = HashKeyToBucketNum(table, key);
+  bucket_it = LLIterator_Allocate(table->buckets[bucket_idx]);
+
+  while (LLIterator_IsValid(bucket_it)) {
+    LLIterator_Get(bucket_it, (LLPayload_t *)keyvaluefound);
+
+    if ((*keyvaluefound)->key == key) {
+      if (remove) {
+        LLIterator_Remove(bucket_it, LLNoOpFree);
+      }
+
+      LLIterator_Free(bucket_it);
+      return true;
+    }
+    LLIterator_Next(bucket_it);
+  }
+
+  LLIterator_Free(bucket_it);
+
+  return false;
+}
+
+void CopyAndFree(HTKeyValue_t *source, HTKeyValue_t *dest, bool free_source) {
+  dest->key = source->key;
+  dest->value = source->value;
+  if (free_source) {
+    free(source);
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // HashTable implementation.
@@ -326,42 +356,4 @@ static void MaybeResize(HashTable *ht) {
   // Done!  Clean up our iterator and temporary table.
   HTIterator_Free(it);
   HashTable_Free(newht, &HTNoOpFree);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Helper functions
-
-bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
-                  HTKeyValue_t **keyvaluefound) {
-  int bucket_idx;
-  LLIterator *bucket_it;
-
-  bucket_idx = HashKeyToBucketNum(table, key);
-  bucket_it = LLIterator_Allocate(table->buckets[bucket_idx]);
-
-  while (LLIterator_IsValid(bucket_it)) {
-    LLIterator_Get(bucket_it, (LLPayload_t *)keyvaluefound);
-
-    if ((*keyvaluefound)->key == key) {
-      if (remove) {
-        LLIterator_Remove(bucket_it, LLNoOpFree);
-      }
-
-      LLIterator_Free(bucket_it);
-      return true;
-    }
-    LLIterator_Next(bucket_it);
-  }
-
-  LLIterator_Free(bucket_it);
-
-  return false;
-}
-
-void CopyAndFree(HTKeyValue_t *source, HTKeyValue_t *dest, bool free_source) {
-  dest->key = source->key;
-  dest->value = source->value;
-  if (free_source) {
-    free(source);
-  }
 }

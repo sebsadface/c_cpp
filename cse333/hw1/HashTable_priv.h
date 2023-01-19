@@ -28,26 +28,30 @@
 // its contents.
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
 // The hash table implementation.
 //
 // A hash table is an array of buckets, where each bucket is a linked list
 // of HTKeyValue structs.
 typedef struct ht {
-  int             num_buckets;   // # of buckets in this HT?
-  int             num_elements;  // # of elements currently in this HT?
-  LinkedList    **buckets;       // the array of buckets
+  int num_buckets;       // # of buckets in this HT?
+  int num_elements;      // # of elements currently in this HT?
+  LinkedList **buckets;  // the array of buckets
 } HashTable;
 
 // The hash table iterator.
 typedef struct ht_it {
-  HashTable  *ht;          // the HT we're pointing into
-  int         bucket_idx;  // which bucket are we in?
-  LLIterator *bucket_it;   // iterator for the bucket, or NULL
+  HashTable *ht;          // the HT we're pointing into
+  int bucket_idx;         // which bucket are we in?
+  LLIterator *bucket_it;  // iterator for the bucket, or NULL
 } HTIterator;
 
 // This is the internal hash function we use to map from HTKey_t keys to a
 // bucket number.
 int HashKeyToBucketNum(HashTable *ht, HTKey_t key);
+
+bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
+                  HTKeyValue_t **keyvaluefound);
+
+void CopyAndFree(HTKeyValue_t *source, HTKeyValue_t *dest, bool free_source);
 
 #endif  // HW1_HASHTABLE_PRIV_H_

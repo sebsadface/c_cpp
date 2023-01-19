@@ -144,10 +144,12 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
     oldkeyvalue->key = oldpayload->key;
     oldkeyvalue->value = oldpayload->value;
     oldpayload->value = newcopy->value;
+    free(newcopy);
     return true;
   }
   LinkedList_Push(chain, (LLPayload_t)newcopy);
   table->num_elements++;
+  free(newcopy);
   return false;  // you may need to change this return value
 }
 
@@ -253,6 +255,7 @@ bool HTIterator_Next(HTIterator *iter) {
       return true;
     }
   }
+
   return false;  // you may need to change this return value
 }
 

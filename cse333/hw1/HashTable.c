@@ -229,8 +229,8 @@ bool HTIterator_IsValid(HTIterator *iter) {
 
   // STEP 4: implement HTIterator_IsValid.
   return ((iter->ht->num_elements != 0) &&
-          (iter->bucket_idx != iter->ht->num_buckets - 1) &&
-          LLIterator_IsValid(iter->bucket_it));
+          ((iter->bucket_idx != iter->ht->num_buckets - 1) ||
+           LLIterator_IsValid(iter->bucket_it)));
   // you may need to change this return value
 }
 

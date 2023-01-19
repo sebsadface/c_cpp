@@ -137,8 +137,7 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // all that logic inside here.  You might also find that your helper
   // can be reused in steps 2 and 3.
   HTKeyValue_t *oldpayload;
-  // HTKeyValue_t *newcopy = (HTKeyValue_t *)malloc(sizeof(HTKeyValue_t));
-  HTKeyValue_t *newcopy = &newkeyvalue;
+  HTKeyValue_t *newcopy = (HTKeyValue_t *)malloc(sizeof(HTKeyValue_t));
   newcopy->key = newkeyvalue.key;
   newcopy->value = newkeyvalue.value;
   if (FindKeyValue(table, newkeyvalue.key, false, &oldpayload)) {

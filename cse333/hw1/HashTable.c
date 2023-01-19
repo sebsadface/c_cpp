@@ -39,6 +39,8 @@ static void HTNoOpFree(HTValue_t freeme) {}
 bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
                   HTKeyValue_t **keyvaluefound);
 
+void CopyAndFree(HTKeyValue_t *source, HTKeyValue_t *dest, bool free_source);
+
 ///////////////////////////////////////////////////////////////////////////////
 // HashTable implementation.
 
@@ -155,10 +157,10 @@ bool HashTable_Find(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   Verify333(table != NULL);
 
   // STEP 2: implement HashTable_Find.
-  // HTKeyValue_t *payload;
-  if (FindKeyValue(table, key, false, &keyvalue)) {
-    // keyvalue->key = payload->key;
-    // keyvalue->value = payload->value;
+  HTKeyValue_t *payload;
+  if (FindKeyValue(table, key, false, &payload)) {
+    keyvalue->key = payload->key;
+    keyvalue->value = payload->value;
     return true;
   }
 
@@ -171,9 +173,7 @@ bool HashTable_Remove(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
   // STEP 3: implement HashTable_Remove.
   HTKeyValue_t *payload;
   if (FindKeyValue(table, key, true, &payload)) {
-    keyvalue->key = payload->key;
-    keyvalue->value = payload->value;
-    free(payload);
+    CopyAndFree(payload, keyvalue, true);
     table->num_elements--;
     return true;
   }
@@ -359,4 +359,12 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
   LLIterator_Free(bucket_it);
 
   return false;
+}
+
+void CopyAndFree(HTKeyValue_t *source, HTKeyValue_t *dest, bool free_source) {
+  dest->key = source->key;
+  dest->value = source->value;
+  if (free_source) {
+    free(source);
+  }
 }

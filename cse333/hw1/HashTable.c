@@ -346,6 +346,11 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
 
     if ((*keyvaluefound)->key == key) {
       if (remove) {
+        HTKeyValue_t *keyvaluecopy;
+        keyvaluecopy->key = (*keyvaluefound)->key;
+        keyvaluecopy->value = (*keyvaluefound)->value;
+        free(*keyvaluefound);
+        keyvaluefound = &keyvaluecopy;
         LLIterator_Remove(bucket_it, LLNoOpFree);
       }
 

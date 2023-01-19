@@ -249,6 +249,8 @@ bool HTIterator_Next(HTIterator *iter) {
       if (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx]) != 0) {
         return true;
       }
+    } else {
+      return false;
     }
   }
   return false;  // you may need to change this return value

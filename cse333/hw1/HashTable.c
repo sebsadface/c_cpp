@@ -294,7 +294,8 @@ bool HTIterator_IsValid(HTIterator *iter) {
   // The iterator is valid if the number of elements in the hash table is
   // greater than zero. The iterator is also valid when the iterator is not in
   // the last bucket with a non-valid bucket iterator.
-  return (((iter->bucket_idx < iter->ht->num_buckets - 1) ||
+  return ((iter->ht->num_elements > 0) &&
+          ((iter->bucket_idx < iter->ht->num_buckets - 1) ||
            LLIterator_IsValid(iter->bucket_it)));
   // you may need to change this return value
 }

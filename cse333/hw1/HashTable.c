@@ -228,6 +228,10 @@ bool HTIterator_IsValid(HTIterator *iter) {
   Verify333(iter != NULL);
 
   // STEP 4: implement HTIterator_IsValid.
+  if ((iter->bucket_idx == iter->ht->num_buckets - 1) &&
+      !LLIterator_IsValid(iter->bucket_it)) {
+    return false;
+  }
   return ((iter->ht->num_elements != 0) &&
           (iter->bucket_idx < iter->ht->num_buckets));
   // you may need to change this return value

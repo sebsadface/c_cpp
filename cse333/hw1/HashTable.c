@@ -247,7 +247,7 @@ bool HTIterator_Next(HTIterator *iter) {
       iter->bucket_idx++;
       iter->bucket_it =
           LLIterator_Allocate(iter->ht->buckets[iter->bucket_idx]);
-      if (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx] != 0)) {
+      if (LinkedList_NumElements(iter->ht->buckets[iter->bucket_idx]) != 0) {
         return true;
       }
     }

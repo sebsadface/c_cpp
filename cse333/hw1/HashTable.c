@@ -263,8 +263,7 @@ bool HTIterator_Get(HTIterator *iter, HTKeyValue_t *keyvalue) {
   if (HTIterator_IsValid(iter)) {
     HTKeyValue_t *payload;
     LLIterator_Get(iter->bucket_it, (LLPayload_t *)&payload);
-    keyvalue->key = payload->key;
-    keyvalue->value = payload->value;
+    CopyAndFree(payload, keyvalue, false);
     return true;
   }
   return false;  // you may need to change this return value

@@ -49,9 +49,27 @@ typedef struct ht_it {
 // bucket number.
 int HashKeyToBucketNum(HashTable *ht, HTKey_t key);
 
+// Find and optionally remove a keyvalue from the hash table
+//
+// Arguments:
+// - table: the hash table to search
+// - key: the key for the wanted keyvalue pair
+// - remove: whether to remove the keyvalue pair once found
+// - keyvaluefound: a pointer to the keyvalue pair found using the given key
+//
+// Returns:
+//
+// - true if the keyvalue pair was found, false otherwise
 bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
                   HTKeyValue_t **keyvaluefound);
 
+// Copy a keyvalue from a source to a destination and optionally free the memory
+// of a source.
+//
+// Arguments:
+// - source: the keyvalue pair that will be copied from and opionally freed
+// - destination: the destination that the keyvalue pair will be copied to
+// - free_source: whether to free the memory of the souce keyvalue pair
 void CopyAndFree(HTKeyValue_t *source, HTKeyValue_t *dest, bool free_source);
 
 #endif  // HW1_HASHTABLE_PRIV_H_

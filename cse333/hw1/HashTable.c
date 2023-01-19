@@ -41,13 +41,18 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
   int bucket_idx;
   LLIterator *bucket_it;
 
+  // Initialize a bucket iterator
   bucket_idx = HashKeyToBucketNum(table, key);
   bucket_it = LLIterator_Allocate(table->buckets[bucket_idx]);
 
+  // Traverse through the bucket till we find a matching key
   while (LLIterator_IsValid(bucket_it)) {
+    // Get the keyvalue pair from the current bucket node
     LLIterator_Get(bucket_it, (LLPayload_t *)keyvaluefound);
 
+    // Compare the key found in the current bucket node with the given key
     if ((*keyvaluefound)->key == key) {
+      // Optionally remove the keyvalue pair from the bucket
       if (remove) {
         LLIterator_Remove(bucket_it, LLNoOpFree);
       }
@@ -55,6 +60,7 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
       LLIterator_Free(bucket_it);
       return true;
     }
+    // Move to the next bucket node
     LLIterator_Next(bucket_it);
   }
 
@@ -64,8 +70,11 @@ bool FindKeyValue(HashTable *table, HTKey_t key, bool remove,
 }
 
 void CopyAndFree(HTKeyValue_t *source, HTKeyValue_t *dest, bool free_source) {
+  // Copy the key can value from the source to the destination
   dest->key = source->key;
   dest->value = source->value;
+
+  // Optionally free the memory allocated for the source
   if (free_source) {
     free(source);
   }
@@ -169,17 +178,32 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // all that logic inside here.  You might also find that your helper
   // can be reused in steps 2 and 3.
   HTKeyValue_t *oldpayload;
+
+  // Acclocate memory for the newkeyvalue, needed when the key isn't found in
+  // the hash table
   HTKeyValue_t *newcopy = (HTKeyValue_t *)malloc(sizeof(HTKeyValue_t));
   *newcopy = newkeyvalue;
+
+  // Find the key value in the hash table
   if (FindKeyValue(table, newkeyvalue.key, false, &oldpayload)) {
+    // Copy the old keyvalue to the output argument
     CopyAndFree(oldpayload, oldkeyvalue, false);
+
+    // Set the value to the new value
     oldpayload->value = newkeyvalue.value;
+
     free(newcopy);
     return true;
   }
+
+  // Push the newkeyvalue to the hash table because the key is not found in the
+  // hash table
   LinkedList_Push(chain, (LLPayload_t)newcopy);
+
+  // Update the element counter
   table->num_elements++;
-  return false;  // you may need to change this return value
+
+  return false;
 }
 
 bool HashTable_Find(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
@@ -187,12 +211,15 @@ bool HashTable_Find(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
 
   // STEP 2: implement HashTable_Find.
   HTKeyValue_t *payload;
+
+  // Find the key value in the hash table
   if (FindKeyValue(table, key, false, &payload)) {
+    // Copy the found keyvalue to the output argument
     CopyAndFree(payload, keyvalue, false);
     return true;
   }
 
-  return false;  // you may need to change this return value
+  return false;
 }
 
 bool HashTable_Remove(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
@@ -200,8 +227,14 @@ bool HashTable_Remove(HashTable *table, HTKey_t key, HTKeyValue_t *keyvalue) {
 
   // STEP 3: implement HashTable_Remove.
   HTKeyValue_t *payload;
+
+  // Find and remove the key value in the hash table
   if (FindKeyValue(table, key, true, &payload)) {
+    // Copy the found keyvalue to the output argument and free the memory of the
+    // payload
     CopyAndFree(payload, keyvalue, true);
+
+    // Update the element counter
     table->num_elements--;
     return true;
   }
@@ -257,7 +290,10 @@ bool HTIterator_IsValid(HTIterator *iter) {
   Verify333(iter != NULL);
 
   // STEP 4: implement HTIterator_IsValid.
-  return ((iter->ht->num_elements != 0) &&
+
+  // The iterator is valid if the number of elements in the hash table is
+  // greater than zero
+  return ((iter->ht->num_elements > 0) &&
           ((iter->bucket_idx < iter->ht->num_buckets - 1) ||
            LLIterator_IsValid(iter->bucket_it)));
   // you may need to change this return value

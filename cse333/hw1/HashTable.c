@@ -138,13 +138,12 @@ bool HashTable_Insert(HashTable *table, HTKeyValue_t newkeyvalue,
   // can be reused in steps 2 and 3.
   HTKeyValue_t *oldpayload;
   HTKeyValue_t *newcopy = (HTKeyValue_t *)malloc(sizeof(HTKeyValue_t));
-  // newcopy->key = newkeyvalue.key;
-  // newcopy->value = newkeyvalue.value;
   *newcopy = newkeyvalue;
   if (FindKeyValue(table, newkeyvalue.key, false, &oldpayload)) {
     oldkeyvalue->key = oldpayload->key;
     oldkeyvalue->value = oldpayload->value;
-    oldpayload->value = newcopy->value;
+    oldpayload->value = newkeyvalue.value;
+    free(newcopy);
     return true;
   }
   LinkedList_Push(chain, (LLPayload_t)newcopy);

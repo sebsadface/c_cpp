@@ -41,7 +41,9 @@ int main(int argc, char** argv) {
 
   struct dirent* direntry = readdir(dirp);
   while (direntry != NULL) {
-    printf("%s\n", direntry->d_name);
+    if (IsTxtFile(direntry->d_name)) {
+      printf("%s\n", direntry->d_name);
+    }
     direntry = readdir(dirp);
   }
   closedir(dirp);

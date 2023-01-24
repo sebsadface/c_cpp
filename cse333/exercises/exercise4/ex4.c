@@ -24,7 +24,7 @@ char* Concatenate(char* dirname, char* filename);
  *   without adding any additional characters or formatting.
  *   Eventually reading the files with ro_file module.
  */
-int main(int argc, char** argv) {
+int main(int argc, char* argv) {
   // TODO: Write this function
   if (argc != 2) {
     fprintf(stderr,
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
 
-  DIR* dirp = opendir((*argv)[1]);
+  DIR* dirp = opendir(argv[1]);
   if (dirp == NULL) {
     fprintf(stderr, "Error: Cannot open directory.\n");
     return EXIT_FAILURE;

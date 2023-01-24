@@ -2,9 +2,9 @@
 #include <stdlib.h>   // for EXIT_SUCCESS, NULL
 #include <string.h>   // for strrchr, strcmp, strlen
 #include <stdbool.h>  // for bool
+#include <dirent.h>   // DIR
 
 #include "ro_file.h"
-
 
 /*** HELPER FUNCTION DECLARATIONS ******************************************/
 
@@ -14,7 +14,6 @@ bool IsTxtFile(char* filename);
 // Concatenate the directory and file names into a full path. The caller is
 // responsible for freeing the allocated string. Exits if an error occurs.
 char* Concatenate(char* dirname, char* filename);
-
 
 /*
  * This program:
@@ -27,9 +26,28 @@ char* Concatenate(char* dirname, char* filename);
  */
 int main(int argc, char** argv) {
   // TODO: Write this function
+  if (argc != 2) {
+    fprintf(stderr,
+            "Usage: ./ex4 DIRECTORY_NAME, where DIRECTORY_NAME can be a simple "
+            "name or a longer file path.\n");
+    return EXIT_FAILURE;
+  }
+
+  DIR* dirp = opendir(*argv[1]);
+  if (dirp == NULL) {
+    fprintf(stderr, "Error: Cannot open directory.\n");
+    return EXIT_FAILURE;
+  }
+
+  struct dirent* direntry = readdir(dirp);
+  while (direntry != NULL) {
+    printf("%s\n", direntry->d_name);
+    direntry = readdir(dirp);
+  }
+  closedir(dirp);
+
   return EXIT_SUCCESS;
 }
-
 
 /*** HELPER FUNCTION DEFINITIONS *******************************************/
 
@@ -46,7 +64,7 @@ char* Concatenate(char* dirname, char* filename) {
   // Malloc space for full path name:
   // dlen + strlen("/") + flen + strlen('\0') = dlen + flen + 2
   int size_to_malloc = has_trailing_slash ? dlen + flen + 1 : dlen + flen + 2;
-  char* fullpath = (char*) malloc(sizeof(char) * (size_to_malloc));
+  char* fullpath = (char*)malloc(sizeof(char) * (size_to_malloc));
   if (fullpath == NULL) {
     fprintf(stderr, "Error on malloc.\n");
     exit(EXIT_FAILURE);

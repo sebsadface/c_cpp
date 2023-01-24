@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
 
-  DIR* dirp = opendir(*argv[1]);
+  DIR* dirp = opendir((*argv)[1]);
   if (dirp == NULL) {
     fprintf(stderr, "Error: Cannot open directory.\n");
     return EXIT_FAILURE;

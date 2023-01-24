@@ -6,6 +6,7 @@
 
 #include "ro_file.h"
 
+#define READBUFSIZE 512
 /*** HELPER FUNCTION DECLARATIONS ******************************************/
 
 // Returns whether or not a filename ends in ".txt".
@@ -32,17 +33,46 @@ int main(int argc, char** argv) {
             "name or a longer file path.\n");
     return EXIT_FAILURE;
   }
+  char* dirname;
+  DIR* dirp;
+  struct dirent* direntry;
+  char* filepath;
+  FILE* fin;
+  char readbuf[READBUFSIZE];
+  size_t readlen;
 
-  DIR* dirp = opendir(argv[1]);
+  dirname = argv[1];
+  dirp = opendir(dirname);
   if (dirp == NULL) {
     fprintf(stderr, "Error: Cannot open directory.\n");
     return EXIT_FAILURE;
   }
 
-  struct dirent* direntry = readdir(dirp);
+  direntry = readdir(dirp);
   while (direntry != NULL) {
     if (IsTxtFile(direntry->d_name)) {
-      printf("%s\n", direntry->d_name);
+      filepath = Concatenate(dirname, direntry->d_name);
+      fin = fopen(filepath, "rb");
+
+      if (fin == NULL) {
+        perror("fopen for read failed");
+        return EXIT_FAILURE;
+      }
+
+      while ((readlen = fread(readbuf, 1, READBUFSIZE, fin)) > 0) {
+        if (ferror(fin)) {
+          perror("fread failed");
+          fclose(fin);
+          return EXIT_FAILURE;
+        }
+
+        if (fwrite(readbuf, 1, readlen, stdout) < readlen) {
+          perror("fwrite failed");
+          fclose(fin);
+          return EXIT_FAILURE;
+        }
+      }
+      fclose(fin);
     }
     direntry = readdir(dirp);
   }

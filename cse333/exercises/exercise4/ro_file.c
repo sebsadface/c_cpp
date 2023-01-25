@@ -5,15 +5,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-
 /*** INTERNAL DATA TYPES AND CONSTANTS **************************************/
 
 static const int RO_FILE_BUF_LEN = 512;  // do not modify
 
 struct ro_file_st {
-  int fd;         // The file descriptor we are currently managing.
+  int fd;  // The file descriptor we are currently managing.
 
-  char* buf;      // Pointer to our internal buffer for this file.
+  char* buf;  // Pointer to our internal buffer for this file.
 
   off_t buf_pos;  // The position in the file that the beginning of our
                   // internal buffer currently corresponds to.
@@ -21,12 +20,11 @@ struct ro_file_st {
   int buf_index;  // The index in our internal buffer that corresponds to the
                   // user's current position in the file.
 
-  int buf_end;    // How many bytes currently in our internal buffer are
-                  // actually from the file.
-                  // To understand why this is important to track, consider
-                  // the case when the file length is < RO_FILE_BUF_LEN.
+  int buf_end;  // How many bytes currently in our internal buffer are
+                // actually from the file.
+                // To understand why this is important to track, consider
+                // the case when the file length is < RO_FILE_BUF_LEN.
 };
-
 
 /*** STATIC HELPER FUNCTION DECLARATIONS ************************************/
 
@@ -39,20 +37,24 @@ static size_t flush_buffer(RO_FILE* file, char* out, int amount);
 // Returns the number of bytes copied into the buffer, or -1 on any error.
 static ssize_t fill_buffer(RO_FILE* file);
 
-
 /*** FUNCTION DEFINITIONS ***************************************************/
 
 // TODO: Write this function
 RO_FILE* ro_open(char* filename) {
   // 1. Allocate a new RO_FILE
-
+  RO_FILE* ro_file = (RO_FILE*)malloc(sizeof(RO_FILE));
   // 2. Get the file descriptor for the file
-
+  ro_file->fd = open(filename, O_RDONLY);
+  if (ro_file->fd == -1) {
+    perror("open failed");
+    exit(EXIT_FAILURE);
+  }
   // 3. Allocate the internal buffer
-
+  ro_file->buf = (char*)malloc(RO_FILE_BUF_LEN * sizeof(char));
   // 4. Initialize the other fields (no reading done yet)
+  ro_file->buf_pos = ro_file->buf_index = ro_file->buf_end = 0;
 
-  return NULL;
+  return ro_file;
 }
 
 ssize_t ro_read(char* ptr, size_t len, RO_FILE* file) {
@@ -73,8 +75,8 @@ ssize_t ro_read(char* ptr, size_t len, RO_FILE* file) {
     }
 
     // 3. Copy filled bytes into 'ptr'.
-    num_copied_out += flush_buffer(file, ptr+num_copied_out,
-                                   len-num_copied_out);
+    num_copied_out +=
+        flush_buffer(file, ptr + num_copied_out, len - num_copied_out);
 
     // 4. Repeat steps 2-3 until request is fulfilled.
   }
@@ -106,7 +108,6 @@ int ro_close(RO_FILE* file) {
   // Clean up all RO_FILE resources, returns non-zero on error
   return 0;
 }
-
 
 /*** STATIC HELPER FUNCTION DEFINITIONS *************************************/
 

@@ -140,7 +140,7 @@ size_t flush_buffer(RO_FILE* file, char* out, int amount) {
   if (amount < file->buf_end) {
     bytes_flushed = amount;
   } else {
-    bytes_flushed = file->buf_end;
+    bytes_flushed = file->buf_end - file->buf_index;
   }
 
   for (i = 0; i < bytes_flushed; i++) {

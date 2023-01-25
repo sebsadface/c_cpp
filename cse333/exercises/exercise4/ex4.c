@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
   DIR* dirp;
   struct dirent* direntry;
   char* filepath;
-  FILE* fin;
+  RO_FILE* fin;
   char readbuf[READBUFSIZE];
   size_t readlen;
 

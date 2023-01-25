@@ -1,6 +1,7 @@
 #include "ro_file.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -47,7 +48,7 @@ RO_FILE* ro_open(char* filename) {
   ro_file->fd = open(filename, O_RDONLY);
   if (ro_file->fd == -1) {
     perror("open failed");
-    exit(EXIT_FAILURE);
+    return NULL;
   }
   // 3. Allocate the internal buffer
   ro_file->buf = (char*)malloc(RO_FILE_BUF_LEN * sizeof(char));
@@ -94,11 +95,25 @@ off_t ro_tell(RO_FILE* file) {
 // TODO: Write this function
 int ro_seek(RO_FILE* file, off_t offset, int whence) {
   // 1. Check validity of arguments, where applicable.
-
+  if (whence != SEEK_CUR && whence != SEEK_END && whence != SEEK_SET) {
+    fprintf(stderr, "ro_seek: invalid whence");
+    return 1;
+  }
   // 2. Seek to specified offset from specified whence using lseek.
   //    No need to check if new position is already in our buffer.
+  off_t new_position = lseek(file->fd, offset, whence);
+  if (new_position == -1) {
+    perror("lseek failed");
+    return 1;
+  }
 
   // 3. Update our buffer indicators
+  if (file->buf_pos + RO_FILE_BUF_LEN >= new_position) {
+    file->buf_index = new_position - file->buf_pos;
+  } else {
+    file->buf_pos = new_position;
+    file->buf_index = file->buf_end = 0;
+  }
 
   return 0;
 }
@@ -106,6 +121,13 @@ int ro_seek(RO_FILE* file, off_t offset, int whence) {
 // TODO: Write this function
 int ro_close(RO_FILE* file) {
   // Clean up all RO_FILE resources, returns non-zero on error
+  int fd = file->fd;
+  free(file->buf);
+  free(file);
+  if (close(fd) == -1) {
+    perror("close failed");
+    return -1;
+  }
   return 0;
 }
 

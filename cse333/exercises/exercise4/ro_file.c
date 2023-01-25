@@ -46,7 +46,6 @@ RO_FILE* ro_open(char* filename) {
   // 2. Get the file descriptor for the file
   ro_file->fd = open(filename, O_RDONLY);
   if (ro_file->fd == -1) {
-    perror("open failed");
     return NULL;
   }
   // 3. Allocate the internal buffer
@@ -95,14 +94,12 @@ off_t ro_tell(RO_FILE* file) {
 int ro_seek(RO_FILE* file, off_t offset, int whence) {
   // 1. Check validity of arguments, where applicable.
   if (whence != SEEK_CUR && whence != SEEK_END && whence != SEEK_SET) {
-    perror("ro_seek: invalid whence");
     return 1;
   }
   // 2. Seek to specified offset from specified whence using lseek.
   //    No need to check if new position is already in our buffer.
   off_t new_position = lseek(file->fd, offset, whence);
   if (new_position == -1) {
-    perror("lseek failed");
     return 1;
   }
 
@@ -124,7 +121,6 @@ int ro_close(RO_FILE* file) {
   free(file->buf);
   free(file);
   if (close(fd) == -1) {
-    perror("close failed");
     return -1;
   }
   return 0;
@@ -147,7 +143,7 @@ size_t flush_buffer(RO_FILE* file, char* out, int amount) {
     bytes_flushed = file->buf_end;
   }
 
-    for (i = 0; i < bytes_flushed; i++) {
+  for (i = 0; i < bytes_flushed; i++) {
     file->buf[file->buf_index + i] = out[i];
   }
 
@@ -177,7 +173,6 @@ ssize_t fill_buffer(RO_FILE* file) {
                   RO_FILE_BUF_LEN - file->buf_index);
     if (result == -1) {
       if (errno != EINTR) {
-        perror("read failed");
         return -1;
       }
 

@@ -166,11 +166,12 @@ ssize_t fill_buffer(RO_FILE* file) {
   file->buf_pos += file->buf_index;
   file->buf_index = file->buf_end = 0;
 
+  int bytes_left = RO_FILE_BUF_LEN;
   int result;
 
-  while (file->buf_index < RO_FILE_BUF_LEN) {
-    result = read(file->fd, file->buf + file->buf_index,
-                  RO_FILE_BUF_LEN - file->buf_index);
+  while (bytes_left > 0) {
+    result =
+        read(file->fd, file->buf + (RO_FILE_BUF_LEN - bytes_left), bytes_left);
     if (result == -1) {
       if (errno != EINTR) {
         return -1;
@@ -181,6 +182,7 @@ ssize_t fill_buffer(RO_FILE* file) {
       break;
     }
     file->buf_end += result;
+    bytes_left -= result;
   }
 
   return file->buf_end;

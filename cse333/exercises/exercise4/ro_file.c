@@ -180,7 +180,6 @@ ssize_t fill_buffer(RO_FILE* file) {
     } else if (result == 0) {
       break;
     }
-    file->buf_index += result - 1;
     file->buf_end += result;
   }
 

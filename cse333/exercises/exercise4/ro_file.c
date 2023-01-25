@@ -164,6 +164,7 @@ ssize_t fill_buffer(RO_FILE* file) {
   //   the buffer (i.e., it's okay to re-read them from the file).
   // - You will need to implement a POSIX read loop with all appropriate
   //   return value checking.
+  file->buf_pos += file->buf_index;
   file->buf_index = file->buf_end = 0;
 
   int result;

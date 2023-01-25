@@ -52,27 +52,27 @@ int main(int argc, char** argv) {
   while (direntry != NULL) {
     if (IsTxtFile(direntry->d_name)) {
       filepath = Concatenate(dirname, direntry->d_name);
-      fin = ro_open(filepath);
+      fin = fopen(filepath, "rb");
 
       if (fin == NULL) {
         perror("fopen for read failed");
         return EXIT_FAILURE;
       }
 
-      while ((readlen = ro_read(readbuf, 1, fin)) > 0) {
-        if (readlen == -1) {
-          perror("ro_read failed");
-          ro_close(fin);
+      while ((readlen = fread(readbuf, 1, READBUFSIZE, fin)) > 0) {
+        if (ferror(fin)) {
+          perror("fread failed");
+          fclose(fin);
           return EXIT_FAILURE;
         }
 
         if (fwrite(readbuf, 1, readlen, stdout) < readlen) {
           perror("fwrite failed");
-          ro_close(fin);
+          fclose(fin);
           return EXIT_FAILURE;
         }
       }
-      ro_close(fin);
+      fclose(fin);
     }
     direntry = readdir(dirp);
   }

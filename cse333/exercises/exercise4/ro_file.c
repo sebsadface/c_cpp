@@ -1,7 +1,6 @@
 #include "ro_file.h"
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -96,7 +95,7 @@ off_t ro_tell(RO_FILE* file) {
 int ro_seek(RO_FILE* file, off_t offset, int whence) {
   // 1. Check validity of arguments, where applicable.
   if (whence != SEEK_CUR && whence != SEEK_END && whence != SEEK_SET) {
-    fprintf(stderr, "ro_seek: invalid whence");
+    perror("ro_seek: invalid whence");
     return 1;
   }
   // 2. Seek to specified offset from specified whence using lseek.
@@ -139,10 +138,18 @@ size_t flush_buffer(RO_FILE* file, char* out, int amount) {
   //    flushed should be the min of 'amount' and the remaining unflushed bytes
   //    in the buffer.
 
-  // 2. Advance buffer index by the number of bytes flushed.
+  int bytes_flushed = min(amount, file->buf_end);
+  int i;
 
+  for (i = 0; i < bytes_flushed; i++) {
+    file->buf[file->buf_index + i] = out[i];
+  }
+
+  // 2. Advance buffer index by the number of bytes flushed.
+  file->buf_index -= bytes_flushed;
+  file->buf_end -= bytes_flushed;
   // 3. Return the number of bytes flushed.
-  return 0;
+  return bytes_flushed;
 }
 
 // TODO: Write this function

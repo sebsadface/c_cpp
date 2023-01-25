@@ -6,7 +6,7 @@
 
 #include "ro_file.h"
 
-#define READBUFSIZE 512
+#define READBUFSIZE 1024
 /*** HELPER FUNCTION DECLARATIONS ******************************************/
 
 // Returns whether or not a filename ends in ".txt".

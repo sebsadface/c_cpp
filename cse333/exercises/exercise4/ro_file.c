@@ -149,7 +149,6 @@ size_t flush_buffer(RO_FILE* file, char* out, int amount) {
 
   // 2. Advance buffer index by the number of bytes flushed.
   file->buf_index += bytes_flushed;
-  file->buf_end -= bytes_flushed;
   // 3. Return the number of bytes flushed.
   return bytes_flushed;
 }

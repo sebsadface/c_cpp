@@ -138,10 +138,16 @@ size_t flush_buffer(RO_FILE* file, char* out, int amount) {
   //    flushed should be the min of 'amount' and the remaining unflushed bytes
   //    in the buffer.
 
-  int bytes_flushed = min(amount, file->buf_end);
+  int bytes_flushed;
   int i;
 
-  for (i = 0; i < bytes_flushed; i++) {
+  if (amount < file->buf_end) {
+    bytes_flushed = amount;
+  } else {
+    bytes_flushed = file->buf_end;
+  }
+
+    for (i = 0; i < bytes_flushed; i++) {
     file->buf[file->buf_index + i] = out[i];
   }
 
@@ -167,7 +173,7 @@ ssize_t fill_buffer(RO_FILE* file) {
   int result;
 
   while (file->buf_index < RO_FILE_BUF_LEN) {
-    result = read(file->fd, file->buf[file->buf_index],
+    result = read(file->fd, file->buf + file->buf_index,
                   RO_FILE_BUF_LEN - file->buf_index);
     if (result == -1) {
       if (errno != EINTR) {

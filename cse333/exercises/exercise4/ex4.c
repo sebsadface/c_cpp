@@ -82,9 +82,9 @@ int main(int argc, char** argv) {
       }
       ro_close(fin);
     }
+    free(filepath);
     direntry = readdir(dirp);
   }
-  free(filepath);
   closedir(dirp);
 
   return EXIT_SUCCESS;

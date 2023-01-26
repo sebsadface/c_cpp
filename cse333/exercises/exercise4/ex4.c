@@ -1,3 +1,8 @@
+// Copyright © 2023 Sebatian Liu.
+//
+// Name: Sebastian Liu
+// CSE Email Address: ll57@cs.washington.edu
+
 #include <stdio.h>    // for snprintf
 #include <stdlib.h>   // for EXIT_SUCCESS, NULL
 #include <string.h>   // for strrchr, strcmp, strlen
@@ -56,6 +61,7 @@ int main(int argc, char** argv) {
 
       if (fin == NULL) {
         perror("fopen for read failed");
+        free(filepath);
         return EXIT_FAILURE;
       }
 
@@ -63,12 +69,14 @@ int main(int argc, char** argv) {
         if (readlen == -1) {
           perror("ro_read failed");
           ro_close(fin);
+          free(filepath);
           return EXIT_FAILURE;
         }
 
         if (fwrite(readbuf, 1, readlen, stdout) < readlen) {
           perror("fwrite failed");
           ro_close(fin);
+          free(filepath);
           return EXIT_FAILURE;
         }
       }
@@ -76,6 +84,7 @@ int main(int argc, char** argv) {
     }
     direntry = readdir(dirp);
   }
+  free(filepath);
   closedir(dirp);
 
   return EXIT_SUCCESS;

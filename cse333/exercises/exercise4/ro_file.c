@@ -138,13 +138,13 @@ size_t flush_buffer(RO_FILE* file, char* out, int amount) {
   int bytes_flushed;
   int i;
 
-  if (amount < file->buf_end) {
+  if (amount < (file->buf_end - file->buf_index)) {
     bytes_flushed = amount;
   } else {
     bytes_flushed = file->buf_end - file->buf_index;
   }
 
-  for (i = 0; i < bytes_flushed - 1; i++) {
+  for (i = 0; i < bytes_flushed; i++) {
     out[i] = file->buf[file->buf_index + i];
   }
 

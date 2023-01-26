@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
       }
 
-      while ((readlen = ro_read(readbuf, 2, fin)) > 0) {
+      while ((readlen = ro_read(readbuf, 128, fin)) > 0) {
         if (readlen == -1) {
           perror("ro_read failed");
           ro_close(fin);

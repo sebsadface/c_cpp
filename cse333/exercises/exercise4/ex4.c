@@ -4,14 +4,14 @@
 // CSE Email Address: ll57@cs.washington.edu
 
 #include <stdio.h>    // for snprintf
-#include <stdlib.h>   // for EXIT_SUCCESS, NULL
+#include <stdlib.h>   // for EXIT_SUCCESS, NULL, malloc, free
 #include <string.h>   // for strrchr, strcmp, strlen
 #include <stdbool.h>  // for bool
 #include <dirent.h>   // DIR
 
 #include "ro_file.h"
 
-#define READBUFSIZE 1024
+#define READBUFSIZE 1024  // size of the read buffer
 /*** HELPER FUNCTION DECLARATIONS ******************************************/
 
 // Returns whether or not a filename ends in ".txt".
@@ -31,60 +31,74 @@ char* Concatenate(char* dirname, char* filename);
  *   Eventually reading the files with ro_file module.
  */
 int main(int argc, char** argv) {
-  // TODO: Write this function
+  // Check command line arguments
   if (argc != 2) {
     fprintf(stderr,
             "Usage: ./ex4 DIRECTORY_NAME, where DIRECTORY_NAME can be a simple "
             "name or a longer file path.\n");
     return EXIT_FAILURE;
   }
-  char* dirname;
-  DIR* dirp;
-  struct dirent* direntry;
-  char* filepath;
-  RO_FILE* fin;
-  char readbuf[READBUFSIZE];
+
+  DIR* dirp;  // a directory stream (used similarly to a file descriptor)
+  struct dirent* direntry;    // describe a directory entry
+  char* dirpath;              // the full path to the specified directory
+  RO_FILE* fin;               // file descriptor
+  char readbuf[READBUFSIZE];  // arbitrarily sized buffer
   size_t readlen;
 
-  dirname = argv[1];
-  dirp = opendir(dirname);
+  // Open the specified directory.
+  dirp = opendir(argv[1]);
   if (dirp == NULL) {
     fprintf(stderr, "Error: Cannot open directory.\n");
     return EXIT_FAILURE;
   }
 
+  // Get the next directory entry.
   direntry = readdir(dirp);
-  while (direntry != NULL) {
-    if (IsTxtFile(direntry->d_name)) {
-      filepath = Concatenate(dirname, direntry->d_name);
-      fin = ro_open(filepath);
 
+  // Go through all the directory entries
+  while (direntry != NULL) {
+    // Check if the current file is a .txt file
+    if (IsTxtFile(direntry->d_name)) {
+      // Get the full path to the .txt file
+      dirpath = Concatenate(argv[1], direntry->d_name);
+
+      // Opent the .txt file
+      fin = ro_open(dirpath);
       if (fin == NULL) {
         perror("fopen for read failed");
-        free(filepath);
+        free(dirpath);
         return EXIT_FAILURE;
       }
 
-      while ((readlen = ro_read(readbuf, 1, fin)) > 0) {
+      // Read through the .txt file and fill them into our read buffer
+      while ((readlen = ro_read(readbuf, READBUFSIZE, fin)) > 0) {
         if (readlen == -1) {
           perror("ro_read failed");
           ro_close(fin);
-          free(filepath);
+          free(dirpath);
           return EXIT_FAILURE;
         }
 
+        // Print the bytes in our read buffer to std out.
         if (fwrite(readbuf, 1, readlen, stdout) < readlen) {
           perror("fwrite failed");
           ro_close(fin);
-          free(filepath);
+          free(dirpath);
           return EXIT_FAILURE;
         }
       }
+
+      // Clean up
       ro_close(fin);
-      free(filepath);
+      free(dirpath);
     }
+
+    // Get the next directory entry.
     direntry = readdir(dirp);
   }
+
+  // Clean up
   closedir(dirp);
 
   return EXIT_SUCCESS;

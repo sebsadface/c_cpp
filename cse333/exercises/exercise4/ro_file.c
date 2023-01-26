@@ -5,10 +5,10 @@
 
 #include "ro_file.h"
 
-#include <stdlib.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include <stdlib.h>  // for malloc, free, NULL
+#include <errno.h>   // for EINTR
+#include <fcntl.h>   // for open, close, read, O_RDONLY
+#include <unistd.h>  // for SEEK_SET, SEEK_CUR, SEEK_END, size_t, ssize_t
 
 /*** INTERNAL DATA TYPES AND CONSTANTS **************************************/
 
@@ -44,7 +44,6 @@ static ssize_t fill_buffer(RO_FILE* file);
 
 /*** FUNCTION DEFINITIONS ***************************************************/
 
-// TODO: Write this function
 RO_FILE* ro_open(char* filename) {
   // 1. Allocate a new RO_FILE
   RO_FILE* ro_file = (RO_FILE*)malloc(sizeof(RO_FILE));
@@ -95,7 +94,6 @@ off_t ro_tell(RO_FILE* file) {
   return file->buf_pos + file->buf_index;
 }
 
-// TODO: Write this function
 int ro_seek(RO_FILE* file, off_t offset, int whence) {
   // 1. Check validity of arguments, where applicable.
   if (whence != SEEK_CUR && whence != SEEK_END && whence != SEEK_SET) {
@@ -110,9 +108,12 @@ int ro_seek(RO_FILE* file, off_t offset, int whence) {
 
   // 3. Update our buffer indicators
   if (file->buf_pos + RO_FILE_BUF_LEN >= new_position) {
-    // Set
+    // Move the buffer to the new postion when the new position is inside the
+    // current buffer.
     file->buf_index = new_position - file->buf_pos;
   } else {
+    // Move the whole buffer to the new postion and reset the buffer when the
+    // new postion is outside the current buffer
     file->buf_pos = new_position;
     file->buf_index = file->buf_end = 0;
   }
@@ -120,21 +121,19 @@ int ro_seek(RO_FILE* file, off_t offset, int whence) {
   return 0;
 }
 
-// TODO: Write this function
 int ro_close(RO_FILE* file) {
   // Clean up all RO_FILE resources, returns non-zero on error
   int fd = file->fd;
+
   free(file->buf);
   free(file);
-  if (close(fd) == -1) {
-    return -1;
-  }
-  return 0;
+
+  // Return -1 on error and zero on success
+  return close(fd);
 }
 
 /*** STATIC HELPER FUNCTION DEFINITIONS *************************************/
 
-// TODO: Write this function
 size_t flush_buffer(RO_FILE* file, char* out, int amount) {
   // 1. Copy/flush bytes to 'out' starting from the buffer index. The amount
   //    flushed should be the min of 'amount' and the remaining unflushed bytes
@@ -143,12 +142,15 @@ size_t flush_buffer(RO_FILE* file, char* out, int amount) {
   int bytes_flushed;
   int i;
 
+  // Get the smaller value between 'amount' and the remaining unflushed bytes
+  // in the buffer.
   if (amount < (file->buf_end - file->buf_index)) {
     bytes_flushed = amount;
   } else {
     bytes_flushed = file->buf_end - file->buf_index;
   }
 
+  // Copy bytes to 'out' starting from the buffer index
   for (i = 0; i < bytes_flushed; i++) {
     out[i] = file->buf[file->buf_index + i];
   }
@@ -159,7 +161,6 @@ size_t flush_buffer(RO_FILE* file, char* out, int amount) {
   return bytes_flushed;
 }
 
-// TODO: Write this function
 ssize_t fill_buffer(RO_FILE* file) {
   // NOTES:
   // - For maximum buffering benefit, we are "resetting" the buffer and then
@@ -169,24 +170,32 @@ ssize_t fill_buffer(RO_FILE* file) {
   //   the buffer (i.e., it's okay to re-read them from the file).
   // - You will need to implement a POSIX read loop with all appropriate
   //   return value checking.
+
+  // Resets the buffer
   file->buf_pos += file->buf_index;
   file->buf_index = file->buf_end = 0;
 
   int bytes_left = RO_FILE_BUF_LEN;
   int result;
 
+  //  Read through RO_FILE_BUF_LEN number of bytes and fill them into internal
+  //  buffer
   while (bytes_left > 0) {
     result =
         read(file->fd, file->buf + (RO_FILE_BUF_LEN - bytes_left), bytes_left);
     if (result == -1) {
       if (errno != EINTR) {
+        // A real error happened, so return an error result
         return -1;
       }
-
+      // EINTR happened, so do nothing and try again
       continue;
     } else if (result == 0) {
+      // EOF reached, so stop reading
       break;
     }
+
+    // Update the buffer end
     file->buf_end += result;
     bytes_left -= result;
   }

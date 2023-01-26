@@ -105,6 +105,7 @@ int ro_seek(RO_FILE* file, off_t offset, int whence) {
 
   // 3. Update our buffer indicators
   if (file->buf_pos + RO_FILE_BUF_LEN >= new_position) {
+    // Set
     file->buf_index = new_position - file->buf_pos;
   } else {
     file->buf_pos = new_position;
@@ -143,7 +144,7 @@ size_t flush_buffer(RO_FILE* file, char* out, int amount) {
     bytes_flushed = file->buf_end - file->buf_index;
   }
 
-  for (i = 0; i < bytes_flushed; i++) {
+  for (i = 0; i < bytes_flushed - 1; i++) {
     out[i] = file->buf[file->buf_index + i];
   }
 

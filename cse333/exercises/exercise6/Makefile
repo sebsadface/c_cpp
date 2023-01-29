@@ -1,0 +1,20 @@
+CC == g++
+CFLAGS = -Wall -g -std=c++17
+PROGS = Vector ex6
+
+all: $(PROGS)
+
+Vector: Vector.cc Vector.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+ex6: ex6.cc Vector.cc Vector.h
+	$(CC) $(CFLAGS) -o $@ $^
+
+Vector.o: Vector.cc Vector.h
+   $(CC) $(CFLAGS) -c $@ $<
+
+ex6.o: ex6.cc Vector.cc Vector.h
+   $(CC) $(CFLAGS) -c $@ $^
+
+clean:
+	rm -f $(PROGS) *.o

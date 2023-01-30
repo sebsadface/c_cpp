@@ -13,10 +13,12 @@ using std::endl;
 #define X_COORD2 34.25
 #define Y_COORD2 6.75
 #define Z_COORD2 -64.5
+#define AFTER_INCREMENT 1
 
 bool TestCtorAndOptor();
 void Increment(Vector v);
 bool VerifyAddress(Vector& vref, void* address);
+void IncrementTest(Vector v);
 
 int main(int argc, char** argv) {
   if (!TestCtorAndOptor()) {
@@ -25,15 +27,14 @@ int main(int argc, char** argv) {
   }
 
   Vector v;
+  Vector& vref = v;
   Increment(v);
+  IncrementTest(v);
 
-  if (v.get_x() != 1 || v.get_y() != 1 || v.get_z() != 1) {
-    cout << "Vector: pass-by-value" << endl;
-  } else {
-    cout << "Vector: pass-by-reference" << endl;
-  }
+  Increment(vref);
+  IncrementTest(vref);
 
-  if (VerifyAddress(v, &v)) {
+  if (VerifyAddress(vref, &v)) {
     cout << "Ref: same address" << endl;
   } else {
     cout << "Ref: different address" << endl;
@@ -101,5 +102,14 @@ bool VerifyAddress(Vector& vref, void* address) {
     return true;
   } else {
     return false;
+  }
+}
+
+void IncrementTest(Vector v) {
+  if (v.get_x() != AFTER_INCREMENT || v.get_y() != AFTER_INCREMENT ||
+      v.get_z() != AFTER_INCREMENT) {
+    cout << "Vector: pass-by-value" << endl;
+  } else {
+    cout << "Vector: pass-by-reference" << endl;
   }
 }

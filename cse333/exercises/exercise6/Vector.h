@@ -1,3 +1,8 @@
+// Copyright © 2023 Sebatian Liu.
+//
+// Name: Sebastian Liu
+// CSE Email Address: ll57@cs.washington.edu
+
 #ifndef VECTOR_H_
 #define VECTOR_H_
 

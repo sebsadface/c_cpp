@@ -1,3 +1,8 @@
+// Copyright © 2023 Sebatian Liu.
+//
+// Name: Sebastian Liu
+// CSE Email Address: ll57@cs.washington.edu
+
 #include "Vector.h"
 
 Vector::Vector() : x_(0), y_(0), z_(0) {}

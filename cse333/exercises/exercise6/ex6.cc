@@ -1,3 +1,8 @@
+// Copyright © 2023 Sebatian Liu.
+//
+// Name: Sebastian Liu
+// CSE Email Address: ll57@cs.washington.edu
+
 #include "Vector.h"
 
 #include <cstdlib>
@@ -27,8 +32,14 @@ int main(int argc, char** argv) {
   }
 
   Vector v;
-  Increment((Vector&)v);
-  IncrementTest(v);
+
+  Increment(v);
+  if (v.get_x() != AFTER_INCREMENT || v.get_y() != AFTER_INCREMENT ||
+      v.get_z() != AFTER_INCREMENT) {
+    cout << "Vector: pass-by-value" << endl;
+  } else {
+    cout << "Vector: pass-by-reference" << endl;
+  }
 
   if (VerifyAddress(v, &v)) {
     cout << "Ref: same address" << endl;
@@ -98,14 +109,5 @@ bool VerifyAddress(Vector& vref, void* address) {
     return true;
   } else {
     return false;
-  }
-}
-
-void IncrementTest(const Vector& v) {
-  if (v.get_x() != AFTER_INCREMENT || v.get_y() != AFTER_INCREMENT ||
-      v.get_z() != AFTER_INCREMENT) {
-    cout << "Vector: pass-by-value" << endl;
-  } else {
-    cout << "Vector: pass-by-reference" << endl;
   }
 }

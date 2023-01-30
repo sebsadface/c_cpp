@@ -1,4 +1,4 @@
-CC == g++
+CC = g++
 CFLAGS = -Wall -g -std=c++17
 PROGS = Vector ex6
 

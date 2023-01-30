@@ -9,10 +9,10 @@ using std::endl;
 
 #define X_COORD 14.625
 #define Y_COORD -25.25
-#define Z_COORD 3.1415
-#define X_COORD2 34.945
-#define Y_COORD2 6.564
-#define Z_COORD2 -64.544
+#define Z_COORD 3.5
+#define X_COORD2 34.25
+#define Y_COORD2 6.75
+#define Z_COORD2 -64.5
 
 bool TestCtorAndOptor();
 void Increment(Vector v);
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 bool TestCtorAndOptor() {
   Vector v1;
   if (v1.get_x() != 0 || v1.get_y() != 0 || v1.get_z() != 0) {
-    cerr << stderr << "Default vector constructor failed" << endl;
+    cerr << stderr << " Default vector constructor failed" << endl;
     return false;
   }
 
@@ -52,39 +52,39 @@ bool TestCtorAndOptor() {
   if (v2.get_x() != X_COORD || v2.get_y() != Y_COORD || v2.get_z() != Z_COORD ||
       v3.get_x() != X_COORD2 || v3.get_y() != Y_COORD2 ||
       v3.get_z() != Z_COORD2) {
-    cerr << stderr << "Three-parameter vector constructor failed" << endl;
+    cerr << stderr << " Three-parameter vector constructor failed" << endl;
     return false;
   }
 
   Vector cp(v2);
   if (cp.get_x() != X_COORD || cp.get_y() != Y_COORD || cp.get_z() != Z_COORD) {
-    cerr << stderr << "Copy vector constructor failed" << endl;
+    cerr << stderr << " Copy vector constructor failed" << endl;
     return false;
   }
 
   v1 = v2;
   if (v1.get_x() != X_COORD || v1.get_y() != Y_COORD || v1.get_z() != Z_COORD) {
-    cerr << stderr << "Overwritting assignment operator = failed" << endl;
+    cerr << stderr << " Overwritting assignment operator = failed" << endl;
     return false;
   }
 
   v2 += v3;
   if (v2.get_x() != X_COORD + X_COORD2 || v2.get_y() != Y_COORD + Y_COORD2 ||
       v2.get_z() != Z_COORD + Z_COORD2) {
-    cerr << stderr << "Overwritting operator += failed" << endl;
+    cerr << stderr << " Overwritting operator += failed" << endl;
     return false;
   }
 
   v2 -= v3;
   if (v2.get_x() != X_COORD || v2.get_y() != Y_COORD || v2.get_z() != Z_COORD) {
-    cerr << stderr << "Overwritting operator -= failed" << endl;
+    cerr << stderr << " Overwritting operator -= failed" << endl;
     return false;
   }
 
   float dotProduct = v2 * v3;
   if (dotProduct != v2.get_x() * v3.get_x() + v2.get_y() * v3.get_y() +
                         v2.get_z() * v3.get_z()) {
-    cerr << stderr << "Overwritting operator * failed" << endl;
+    cerr << stderr << " Overwritting operator * failed" << endl;
     return false;
   }
 

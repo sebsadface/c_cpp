@@ -27,8 +27,8 @@ int main(int argc, char** argv) {
   }
 
   Vector v;
-  Increment(v);
-  IncrementTest((Vector&)v);
+  Increment((Vector&)v);
+  IncrementTest(v);
 
   if (VerifyAddress(v, &v)) {
     cout << "Ref: same address" << endl;

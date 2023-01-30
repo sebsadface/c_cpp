@@ -12,7 +12,7 @@ all: $(PROGS)
 ex6: ex6.o Vector.o
 	$(CC) $(CFLAGS) -o $@ $^
 
-ex6.o: ex6.cc
+ex6.o: ex6.cc Vector.o
 	$(CC) $(CFLAGS) -c $@ $<
 
 Vector.o: Vector.cc Vector.h

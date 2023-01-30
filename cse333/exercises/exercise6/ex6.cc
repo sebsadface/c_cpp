@@ -14,7 +14,7 @@ using std::endl;
 
 #define X_COORD 14.625
 #define Y_COORD -25.25
-#define Z_COORD 3.5
+#define Z_COORD 3.75
 #define X_COORD2 34.25
 #define Y_COORD2 6.75
 #define Z_COORD2 -64.5

@@ -18,7 +18,7 @@ using std::endl;
 bool TestCtorAndOptor();
 void Increment(Vector v);
 bool VerifyAddress(Vector& vref, void* address);
-void IncrementTest(const Vector v);
+void IncrementTest(const Vector& v);
 
 int main(int argc, char** argv) {
   if (!TestCtorAndOptor()) {
@@ -101,7 +101,7 @@ bool VerifyAddress(Vector& vref, void* address) {
   }
 }
 
-void IncrementTest(const Vector v) {
+void IncrementTest(const Vector& v) {
   if (v.get_x() != AFTER_INCREMENT || v.get_y() != AFTER_INCREMENT ||
       v.get_z() != AFTER_INCREMENT) {
     cout << "Vector: pass-by-value" << endl;

@@ -18,7 +18,7 @@ using std::endl;
 bool TestCtorAndOptor();
 void Increment(Vector v);
 bool VerifyAddress(Vector& vref, void* address);
-void IncrementTest(Vector& v);
+void IncrementTest(const Vector v);
 
 int main(int argc, char** argv) {
   if (!TestCtorAndOptor()) {
@@ -27,14 +27,10 @@ int main(int argc, char** argv) {
   }
 
   Vector v;
-  Vector& vref = v;
   Increment(v);
-  IncrementTest(v);
+  IncrementTest((Vector&)v);
 
-  Increment(vref);
-  IncrementTest(v);
-
-  if (VerifyAddress(vref, &v)) {
+  if (VerifyAddress(v, &v)) {
     cout << "Ref: same address" << endl;
   } else {
     cout << "Ref: different address" << endl;
@@ -105,7 +101,7 @@ bool VerifyAddress(Vector& vref, void* address) {
   }
 }
 
-void IncrementTest(Vector& v) {
+void IncrementTest(const Vector v) {
   if (v.get_x() != AFTER_INCREMENT || v.get_y() != AFTER_INCREMENT ||
       v.get_z() != AFTER_INCREMENT) {
     cout << "Vector: pass-by-value" << endl;

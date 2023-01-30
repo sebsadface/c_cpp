@@ -6,8 +6,6 @@
 CC = g++
 CFLAGS = -Wall -g -std=c++17
 
-all: ex6
-
 ex6: ex6.o Vector.o
 	$(CC) $(CFLAGS) -o $@ $^
 

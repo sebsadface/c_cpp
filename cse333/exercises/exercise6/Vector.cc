@@ -41,3 +41,5 @@ Vector& Vector::operator-=(const Vector& rhs) {
 float Vector::operator*(const Vector& rhs) const {
   return x_ * rhs.x_ + y_ * rhs.y_ + z_ * rhs.z_;
 }
+
+Vector::~Vector() {}

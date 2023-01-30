@@ -11,10 +11,10 @@ ex6: ex6.cc Vector.cc Vector.h
 	$(CC) $(CFLAGS) -o $@ $^
 
 Vector.o: Vector.cc Vector.h
-   $(CC) $(CFLAGS) -c $@ $<
+	$(CC) $(CFLAGS) -c $@ $<
 
 ex6.o: ex6.cc Vector.cc Vector.h
-   $(CC) $(CFLAGS) -c $@ $^
+	$(CC) $(CFLAGS) -c $@ $^
 
 clean:
 	rm -f $(PROGS) *.o

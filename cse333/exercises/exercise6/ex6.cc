@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
   IncrementTest(v);
 
   Increment(vref);
-  IncrementTest(vref);
+  IncrementTest(v);
 
   if (VerifyAddress(vref, &v)) {
     cout << "Ref: same address" << endl;

@@ -28,7 +28,6 @@
 #include "libhw1/CSE333.h"
 #include "./MemIndex.h"
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // Constants and declarations of internal helper functions
 
@@ -36,11 +35,11 @@
 
 // Frees a WordPositions.positions's payload, which is just a
 // DocPositionOffset_t.
-static void NoOpFree(LLPayload_t payload) { }
+static void NoOpFree(LLPayload_t payload) {}
 
 // Frees a WordPositions struct.
 static void FreeWordPositions(HTValue_t payload) {
-  WordPositions* pos = (WordPositions*) payload;
+  WordPositions* pos = (WordPositions*)payload;
   LinkedList_Free(pos->positions, &NoOpFree);
   free(pos->word);
   free(pos);
@@ -53,7 +52,6 @@ static void AddWordPosition(HashTable* tab, char* word,
 // Parse the passed-in string into normalized words and insert into a HashTable
 // of WordPositions structures.
 static void InsertContent(HashTable* tab, char* content);
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Publically-exported functions
@@ -69,25 +67,28 @@ char* ReadFileToString(const char* file_name, int* size) {
   // Use the stat system call to fetch a "struct stat" that describes
   // properties of the file. ("man 2 stat"). You can assume we're on a 64-bit
   // system, with a 64-bit off_t field.
-
-
+  if (stat(file_name, &file_stat) == -1) {
+    return NULL;
+  }
 
   // STEP 2.
   // Make sure this is a "regular file" and not a directory or something else
   // (use the S_ISREG macro described in "man 2 stat").
-
-
+  if (!(S_ISREG(file_stat.st_mode))) {
+    return NULL;
+  }
 
   // STEP 3.
   // Attempt to open the file for reading (see also "man 2 open").
-
-
+  fd = open(file_name, O_RDONLY);
+  if (fd == -1) {
+    return NULL;
+  }
 
   // STEP 4.
   // Allocate space for the file, plus 1 extra byte to
   // '\0'-terminate the string.
-
-
+  buf = (char*)malloc(file_stat.st_size + 1);
 
   // STEP 5.
   // Read in the file contents using the read() system call (see also
@@ -99,6 +100,21 @@ char* ReadFileToString(const char* file_name, int* size) {
   // particular what the return values -1 and 0 imply.
   left_to_read = file_stat.st_size;
   while (left_to_read > 0) {
+    num_read = read(fd, buf + (file_stat.st_size - left_to_read), left_to_read);
+
+    // Reached EOF
+    if (num_read == 0) {
+      break;
+      // Reached error, check for error code
+    } else if (num_read < 0) {
+      if (errno == EINTR || errno == EAGAIN) {
+        continue;
+      }
+
+      // Return NULL on POSIX error
+      return NULL;
+    }
+    left_to_read -= num_read;
   }
 
   // Great, we're done!  We hit the end of the file and we read
@@ -131,7 +147,7 @@ HashTable* ParseIntoWordPositionsTable(char* file_contents) {
   // Unicode friendly.
   for (i = 0; i < file_len; i++) {
     if (file_contents[i] == '\0' ||
-        (unsigned char) file_contents[i] > ASCII_UPPER_BOUND) {
+        (unsigned char)file_contents[i] > ASCII_UPPER_BOUND) {
       free(file_contents);
       return NULL;
     }
@@ -160,10 +176,9 @@ HashTable* ParseIntoWordPositionsTable(char* file_contents) {
   return tab;
 }
 
-void FreeWordPositionsTable(HashTable *table) {
+void FreeWordPositionsTable(HashTable* table) {
   HashTable_Free(table, &FreeWordPositions);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Internal helper functions
@@ -200,8 +215,14 @@ static void InsertContent(HashTable* tab, char* content) {
   // AddWordPosition() helper with appropriate arguments, e.g.,
   // AddWordPosition(tab, wordstart, pos);
 
-  while (1) {
-    break;  // you may want to change this
+  while (*cur_ptr != '\0') {
+    if (!isalpha(*cur_ptr)) {
+      *cur_ptr = '\0';
+      AddWordPosition(tab, tolower(*cur_ptr),
+                      (DocPositionOffset_t)(word_start - content));
+      word_start = cur_ptr + 1;
+    }
+    cur_ptr++;
   }  // end while-loop
 }
 
@@ -209,10 +230,10 @@ static void AddWordPosition(HashTable* tab, char* word,
                             DocPositionOffset_t pos) {
   HTKey_t hash_key;
   HTKeyValue_t kv;
-  WordPositions *wp;
+  WordPositions* wp;
 
   // Hash the string.
-  hash_key = FNVHash64((unsigned char*) word, strlen(word));
+  hash_key = FNVHash64((unsigned char*)word, strlen(word));
 
   // Have we already encountered this word within this file?  If so, it's
   // already in the hashtable.
@@ -221,17 +242,23 @@ static void AddWordPosition(HashTable* tab, char* word,
     // how we're casting the DocPositionOffset_t position variable to an
     // LLPayload_t to store it in the linked list payload without needing to
     // malloc space for it.  Ugly, but it works!
-    wp = (WordPositions*) kv.value;
+    wp = (WordPositions*)kv.value;
 
     // Ensure we don't have hash collisions (two different words that hash to
     // the same key, which is very unlikely).
     Verify333(strcmp(wp->word, word) == 0);
 
-    LinkedList_Append(wp->positions, (LLPayload_t) (int64_t) pos);
+    LinkedList_Append(wp->positions, (LLPayload_t)(int64_t)pos);
   } else {
     // STEP 7.
     // No; this is the first time we've seen this word.  Allocate and prepare
     // a new WordPositions structure, and append the new position to its list
     // using a similar ugly hack as right above.
+    wp = LinkedList_Allocate();
+    wp->word = word;
+    LinkedList_Append(wp->positions, (LLPayload_t)(int64_t)pos);
+    kv.key = hash_key;
+    kv.value = (HTValue_t)wp;
+    Verify333(HashTable_Insert(tab, kv, &kv) == false);
   }
 }

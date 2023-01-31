@@ -257,6 +257,7 @@ static void AddWordPosition(HashTable* tab, char* word,
     // No; this is the first time we've seen this word.  Allocate and prepare
     // a new WordPositions structure, and append the new position to its list
     // using a similar ugly hack as right above.
+    wp = (WordPositions*)malloc(sizeof(WordPositions));
     wp->word = word;
     wp->positions = LinkedList_Allocate();
     LinkedList_Append(wp->positions, (LLPayload_t)(int64_t)pos);

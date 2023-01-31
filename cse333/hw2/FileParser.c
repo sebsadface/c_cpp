@@ -200,7 +200,7 @@ static void InsertContent(HashTable* tab, char* content) {
   //
   // For example, here's a string with its words underlined with "=" and
   // boundary characters underlined with "+":
-  //    \\   \ 
+  //
   // The  Fox  Can't   CATCH the  Chicken.
   // ===++===++===+=+++=====+===++=======+
   //

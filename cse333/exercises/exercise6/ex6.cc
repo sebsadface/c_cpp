@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
   if (!TestDefaultCtor() || !Test3ArgCtor() || !TestCopyCtor() ||
       !TestAssignOptor() || !TestAddOptor() || !TestSubOptor() ||
       !TestProductOptor()) {
-    cerr << stderr << "Testing failed" << endl;
+    cerr << "Testing failed" << endl;
 
     return EXIT_FAILURE;
   }
@@ -101,7 +101,7 @@ static bool TestDefaultCtor() {
   const Vector v;
 
   if (v.get_x() != 0 || v.get_y() != 0 || v.get_z() != 0) {
-    cerr << stderr << " Default vector constructor failed" << endl;
+    cerr << "Default vector constructor failed" << endl;
     return false;
   }
   return true;
@@ -111,7 +111,7 @@ static bool Test3ArgCtor() {
   const Vector v(X_COORD1, Y_COORD1, Z_COORD1);
 
   if (v.get_x() != X_COORD1 || v.get_y() != Y_COORD1 || v.get_z() != Z_COORD1) {
-    cerr << stderr << " Three-parameter vector constructor failed" << endl;
+    cerr << "Three-parameter vector constructor failed" << endl;
 
     return false;
   }
@@ -125,7 +125,7 @@ static bool TestCopyCtor() {
 
   if (cp.get_x() != v.get_x() || cp.get_y() != v.get_y() ||
       cp.get_z() != v.get_z()) {
-    cerr << stderr << " Copy vector constructor failed" << endl;
+    cerr << "Copy vector constructor failed" << endl;
     return false;
   }
   return true;
@@ -139,7 +139,7 @@ static bool TestAssignOptor() {
 
   if (lhs.get_x() != X_COORD1 || lhs.get_y() != Y_COORD1 ||
       lhs.get_z() != Z_COORD1) {
-    cerr << stderr << " Overwritting assignment operator = failed" << endl;
+    cerr << "Overwritting assignment operator = failed" << endl;
     return false;
   }
   return true;
@@ -154,7 +154,7 @@ static bool TestAddOptor() {
   if (lhs.get_x() != X_COORD1 + X_COORD2 ||
       lhs.get_y() != Y_COORD1 + Y_COORD2 ||
       lhs.get_z() != Z_COORD1 + Z_COORD2) {
-    cerr << stderr << " Overwritting operator += failed" << endl;
+    cerr << "Overwritting operator += failed" << endl;
     return false;
   }
   return true;
@@ -169,7 +169,7 @@ static bool TestSubOptor() {
   if (lhs.get_x() != X_COORD1 - X_COORD2 ||
       lhs.get_y() != Y_COORD1 - Y_COORD2 ||
       lhs.get_z() != Z_COORD1 - Z_COORD2) {
-    cerr << stderr << " Overwritting operator -= failed" << endl;
+    cerr << "Overwritting operator -= failed" << endl;
     return false;
   }
   return true;
@@ -183,7 +183,7 @@ static bool TestProductOptor() {
 
   if (dotProduct !=
       X_COORD1 * X_COORD2 + Y_COORD1 * Y_COORD2 + Z_COORD1 * Z_COORD2) {
-    cerr << stderr << " Overwritting operator * failed" << endl;
+    cerr << "Overwritting operator * failed" << endl;
     return false;
   }
   return true;

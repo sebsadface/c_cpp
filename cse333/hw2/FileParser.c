@@ -226,6 +226,7 @@ static void InsertContent(HashTable* tab, char* content) {
     *cur_ptr = '\0';
     *word_start = tolower(*word_start);
     AddWordPosition(tab, word_start, word_start - content);
+    cur_ptr++;
   }  // end while-loop
 }
 

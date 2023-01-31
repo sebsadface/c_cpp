@@ -231,6 +231,8 @@ static void InsertContent(HashTable* tab, char* content) {
           tab,
           strcpy((char*)malloc(sizeof(char) * strlen(word_start)), word_start),
           word_start - content);
+
+      word_start = cur_ptr;
     }
     cur_ptr++;
   }  // end while-loop

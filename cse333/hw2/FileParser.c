@@ -200,7 +200,7 @@ static void InsertContent(HashTable* tab, char* content) {
   //
   // For example, here's a string with its words underlined with "=" and
   // boundary characters underlined with "+":
-  //
+  //    \\   \ 
   // The  Fox  Can't   CATCH the  Chicken.
   // ===++===++===+=+++=====+===++=======+
   //
@@ -223,7 +223,10 @@ static void InsertContent(HashTable* tab, char* content) {
         AddWordPosition(tab, word_start,
                         (DocPositionOffset_t)(word_start - content));
       }
-      word_start = cur_ptr + 1;
+      while (!isalpha(*cur_ptr)) {
+        cur_ptr++;
+      }
+      word_start = cur_ptr;
     }
     cur_ptr++;
   }  // end while-loop

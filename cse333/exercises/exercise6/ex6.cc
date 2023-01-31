@@ -23,46 +23,46 @@ using std::endl;
 // Test that the default (0-argument) constructor initializes a Vector to
 // (0,0,0).
 // Returns true if tests pass, false otherwise.
-bool TestDefaultCtor();
+static bool TestDefaultCtor();
 
 // Test that the 3-argument constructor initializes a Vector to
 // the given value (x,y,z).
 // Returns true if tests pass, false otherwise.
-bool Test3ArgCtor();
+static bool Test3ArgCtor();
 
 // Test that the copy constructor initializes a new Vector to
 // have the same value as the given Vector.
 // Returns true if tests pass, false otherwise.
-bool TestCopyCtor();
+static bool TestCopyCtor();
 
 // Test that the assignment operator "=", assign the coordinate values of the
 // left hand side Vector to the right hand side Vector element-by-element.
 // Returns true if tests pass, false otherwise.
-bool TestAssignOptor();
+static bool TestAssignOptor();
 
 // Test that the operator "+=" updates assignments on vectors that perform
 // element-by-element addition of the Vector components.
 // Returns true if tests pass, false otherwise.
-bool TestAddOptor();
+static bool TestAddOptor();
 
 // Test that the operator "-=" updates assignments on vectors that perform
 // element-by-element subtraction of the Vector components.
 // Returns true if tests pass, false otherwise.
-bool TestSubOptor();
+static bool TestSubOptor();
 
 // Test that the operator "*" computes the dot product of two Vectors as a
 // float.
 // Returns true if tests pass, false otherwise.
-bool TestProductOptor();
+static bool TestProductOptor();
 
 // Accepts an instance of a Vector as an argument, and increments the values
 // stored in the vector by one.
-void Increment(Vector v);
+static void Increment(Vector v);
 
 // Accepts a Vector reference and a void* as arguments.
 // Returns true if the address of the aliased Vector has the same numeric value
 // as the passed-in void*, and returns false otherwise.
-bool VerifyAddress(const Vector& vref, void* address);
+static bool VerifyAddress(const Vector& vref, void* address);
 
 int main(int argc, char** argv) {
   // Tests all functions defined in Vector.h.
@@ -97,7 +97,7 @@ int main(int argc, char** argv) {
   return EXIT_SUCCESS;
 }
 
-bool TestDefaultCtor() {
+static bool TestDefaultCtor() {
   const Vector v;
 
   if (v.get_x() != 0 || v.get_y() != 0 || v.get_z() != 0) {
@@ -107,7 +107,7 @@ bool TestDefaultCtor() {
   return true;
 }
 
-bool Test3ArgCtor() {
+static bool Test3ArgCtor() {
   const Vector v(X_COORD1, Y_COORD1, Z_COORD1);
 
   if (v.get_x() != X_COORD1 || v.get_y() != Y_COORD1 || v.get_z() != Z_COORD1) {
@@ -119,7 +119,7 @@ bool Test3ArgCtor() {
   return true;
 }
 
-bool TestCopyCtor() {
+static bool TestCopyCtor() {
   const Vector v(X_COORD1, Y_COORD1, Z_COORD1);
   const Vector cp(v);
 
@@ -131,7 +131,7 @@ bool TestCopyCtor() {
   return true;
 }
 
-bool TestAssignOptor() {
+static bool TestAssignOptor() {
   Vector lhs;
   const Vector rhs(X_COORD1, Y_COORD1, Z_COORD1);
 
@@ -145,7 +145,7 @@ bool TestAssignOptor() {
   return true;
 }
 
-bool TestAddOptor() {
+static bool TestAddOptor() {
   Vector lhs(X_COORD1, Y_COORD1, Z_COORD1);
   const Vector rhs(X_COORD2, Y_COORD2, Z_COORD2);
 
@@ -160,7 +160,7 @@ bool TestAddOptor() {
   return true;
 }
 
-bool TestSubOptor() {
+static bool TestSubOptor() {
   Vector lhs(X_COORD1, Y_COORD1, Z_COORD1);
   const Vector rhs(X_COORD2, Y_COORD2, Z_COORD2);
 
@@ -175,7 +175,7 @@ bool TestSubOptor() {
   return true;
 }
 
-bool TestProductOptor() {
+static bool TestProductOptor() {
   const Vector v1(X_COORD1, Y_COORD1, Z_COORD1);
   const Vector v2(X_COORD2, Y_COORD2, Z_COORD2);
 
@@ -189,12 +189,12 @@ bool TestProductOptor() {
   return true;
 }
 
-void Increment(Vector v) {
+static void Increment(Vector v) {
   const Vector one(1, 1, 1);
   v += one;
 }
 
-bool VerifyAddress(const Vector& vref, void* address) {
+static bool VerifyAddress(const Vector& vref, void* address) {
   if (&vref == address) {
     return true;
   } else {

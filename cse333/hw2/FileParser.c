@@ -218,8 +218,10 @@ static void InsertContent(HashTable* tab, char* content) {
   while (*cur_ptr != '\0') {
     if (!isalpha(*cur_ptr)) {
       *cur_ptr = '\0';
-      AddWordPosition(tab, tolower(*cur_ptr),
-                      (DocPositionOffset_t)(word_start - content));
+      if (word_start != cur_ptr) {
+        AddWordPosition(tab, tolower(*cur_ptr),
+                        (DocPositionOffset_t)(word_start - content));
+      }
       word_start = cur_ptr + 1;
     }
     cur_ptr++;

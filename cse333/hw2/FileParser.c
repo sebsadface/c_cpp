@@ -216,16 +216,22 @@ static void InsertContent(HashTable* tab, char* content) {
   // AddWordPosition(tab, wordstart, pos);
 
   while (*cur_ptr != '\0') {
-    while (!isalpha(*cur_ptr)) {
-      cur_ptr++;
+    if (isalpha(*cur_ptr)) {
+      *cur_ptr = tolower(*cur_ptr);
+
+      if (!isalpha(*word_start)) {
+        word_start = cur_ptr;
+      }
     }
-    word_start = cur_ptr;
-    while (isalpha(*cur_ptr)) {
-      cur_ptr++;
+
+    if (!isalpha(*cur_ptr) && isalpha(*word_start)) {
+      *cur_ptr = '\0';
+
+      AddWordPosition(
+          tab,
+          strcpy((char*)malloc(sizeof(char) * strlen(word_start)), word_start),
+          word_start - content);
     }
-    *cur_ptr = '\0';
-    *word_start = tolower(*word_start);
-    AddWordPosition(tab, word_start, word_start - content);
     cur_ptr++;
   }  // end while-loop
 }
@@ -259,6 +265,8 @@ static void AddWordPosition(HashTable* tab, char* word,
     // a new WordPositions structure, and append the new position to its list
     // using a similar ugly hack as right above.
     wp = (WordPositions*)malloc(sizeof(WordPositions));
+    Verify333(wp != NULL);
+
     wp->word = word;
     wp->positions = LinkedList_Allocate();
     LinkedList_Append(wp->positions, (LLPayload_t)(int64_t)pos);

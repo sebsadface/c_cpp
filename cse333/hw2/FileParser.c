@@ -232,7 +232,7 @@ static void InsertContent(HashTable* tab, char* content) {
 
       char word = *word_start;
       // AddWordPosition(tab, strcpy(word, word_start), word_start - content);
-      AddWordPosition(tab, word, word_start - content);
+      AddWordPosition(tab, &word, word_start - content);
 
       word_start = cur_ptr;
     }

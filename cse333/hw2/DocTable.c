@@ -48,15 +48,14 @@ void DocTable_Free(DocTable* table) {
   if (num_elements != 0) {
     HTIterator* id_to_name_iter = HTIterator_Allocate(table->id_to_name);
     HTIterator* name_to_id_iter = HTIterator_Allocate(table->name_to_id);
-    HTKeyValue_t* id_to_name_kv;
-    HTKeyValue_t* name_to_id_kv;
+    HTKeyValue_t kv;
     int i;
 
     for (i = 0; i < num_elements; i++) {
-      HTIterator_Get(id_to_name_iter, id_to_name_kv);
-      HTIterator_Get(name_to_id_iter, name_to_id_kv);
-      free(id_to_name_kv);
-      free(name_to_id_kv);
+      HTIterator_Get(id_to_name_iter, &kv);
+      free(&kv);
+      HTIterator_Get(name_to_id_iter, &kv);
+      free(&kv);
       HTIterator_Next(id_to_name_iter);
       HTIterator_Next(name_to_id_iter);
     }
@@ -87,7 +86,8 @@ DocID_t DocTable_Add(DocTable* table, char* doc_name) {
   if (HashTable_Find(table->name_to_id,
                      FNVHash64((unsigned char*)doc_name, strlen(doc_name)),
                      &old_kv)) {
-    return old_kv.value;
+    res = (DocID_t)(old_kv.value);
+    return res;
   }
 
   doc_copy = (char*)malloc(sizeof(char) * strlen(doc_name));
@@ -129,7 +129,8 @@ DocID_t DocTable_GetDocID(DocTable* table, char* doc_name) {
   // Try to find the passed-in doc in name_to_id table.
   key = FNVHash64((unsigned char*)doc_name, strlen(doc_name));
   if (HashTable_Find(table->name_to_id, key, &kv)) {
-    return kv.value;
+    res = (DocID_t)kv.value;
+    return res;
   }
 
   return INVALID_DOCID;  // you may want to change this

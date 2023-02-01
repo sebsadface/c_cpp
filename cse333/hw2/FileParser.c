@@ -227,10 +227,6 @@ static void InsertContent(HashTable* tab, char* content) {
     if (!isalpha(*cur_ptr) && isalpha(*word_start)) {
       *cur_ptr = '\0';
 
-      // char* word = (char*)malloc(sizeof(char) * strlen(word_start));
-      // Verify333(word != NULL);
-
-        // AddWordPosition(tab, strcpy(word, word_start), word_start - content);
       AddWordPosition(tab, word_start, word_start - content);
 
       word_start = cur_ptr;
@@ -269,7 +265,7 @@ static void AddWordPosition(HashTable* tab, char* word,
     // using a similar ugly hack as right above.
     wp = (WordPositions*)malloc(sizeof(WordPositions));
     Verify333(wp != NULL);
-    wp->word = (char*)malloc(sizeof(char) * strlen(word));
+    wp->word = (char*)malloc(sizeof(char) * (strlen(word) - 1));
     strcpy(wp->word, word);
     wp->positions = LinkedList_Allocate();
     LinkedList_Append(wp->positions, (LLPayload_t)(int64_t)pos);

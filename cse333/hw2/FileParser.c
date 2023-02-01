@@ -59,7 +59,7 @@ static void InsertContent(HashTable* tab, char* content);
 char* ReadFileToString(const char* file_name, int* size) {
   struct stat file_stat;
   char* buf;
-  int result, fd;
+  int fd;
   ssize_t num_read;
   size_t left_to_read;
 

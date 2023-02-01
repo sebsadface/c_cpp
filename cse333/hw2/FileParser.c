@@ -230,9 +230,8 @@ static void InsertContent(HashTable* tab, char* content) {
       // char* word = (char*)malloc(sizeof(char) * strlen(word_start));
       // Verify333(word != NULL);
 
-      char word = *word_start;
-      // AddWordPosition(tab, strcpy(word, word_start), word_start - content);
-      AddWordPosition(tab, &word, word_start - content);
+        // AddWordPosition(tab, strcpy(word, word_start), word_start - content);
+      AddWordPosition(tab, word_start, word_start - content);
 
       word_start = cur_ptr;
     }
@@ -270,8 +269,8 @@ static void AddWordPosition(HashTable* tab, char* word,
     // using a similar ugly hack as right above.
     wp = (WordPositions*)malloc(sizeof(WordPositions));
     Verify333(wp != NULL);
-
-    wp->word = word;
+    wp->word = (char*)malloc(sizeof(char) * strlen(word));
+    strcpy(wp->word, word);
     wp->positions = LinkedList_Allocate();
     LinkedList_Append(wp->positions, (LLPayload_t)(int64_t)pos);
     kv.key = hash_key;

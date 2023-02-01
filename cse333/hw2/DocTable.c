@@ -48,14 +48,14 @@ void DocTable_Free(DocTable* table) {
   if (num_elements != 0) {
     HTIterator* id_to_name_iter = HTIterator_Allocate(table->id_to_name);
     HTIterator* name_to_id_iter = HTIterator_Allocate(table->name_to_id);
-    HTKeyValue_t kv;
+    HTKeyValue_t* kv;
     int i;
 
     for (i = 0; i < num_elements; i++) {
-      HTIterator_Get(id_to_name_iter, &kv);
-      free(&kv);
-      HTIterator_Get(name_to_id_iter, &kv);
-      free(&kv);
+      HTIterator_Get(id_to_name_iter, kv);
+      free(kv);
+      HTIterator_Get(name_to_id_iter, kv);
+      free(kv);
       HTIterator_Next(id_to_name_iter);
       HTIterator_Next(name_to_id_iter);
     }

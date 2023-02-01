@@ -86,7 +86,7 @@ DocID_t DocTable_Add(DocTable* table, char* doc_name) {
   if (HashTable_Find(table->name_to_id,
                      FNVHash64((unsigned char*)doc_name, strlen(doc_name)),
                      &old_kv)) {
-    res = (DocID_t)(old_kv.value);
+    res = *(DocID_t*)(old_kv.value);
     return res;
   }
 
@@ -129,7 +129,7 @@ DocID_t DocTable_GetDocID(DocTable* table, char* doc_name) {
   // Try to find the passed-in doc in name_to_id table.
   key = FNVHash64((unsigned char*)doc_name, strlen(doc_name));
   if (HashTable_Find(table->name_to_id, key, &kv)) {
-    res = (DocID_t)kv.value;
+    res = *(DocID_t*)(kv.value);
     return res;
   }
 

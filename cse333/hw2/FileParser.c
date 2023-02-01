@@ -227,10 +227,11 @@ static void InsertContent(HashTable* tab, char* content) {
     if (!isalpha(*cur_ptr) && isalpha(*word_start)) {
       *cur_ptr = '\0';
 
-      char* word = (char*)malloc(sizeof(char) * strlen(word_start));
-      Verify333(word != NULL);
+      // char* word = (char*)malloc(sizeof(char) * strlen(word_start));
+      // Verify333(word != NULL);
 
-      AddWordPosition(tab, strcpy(word, word_start), word_start - content);
+      // AddWordPosition(tab, strcpy(word, word_start), word_start - content);
+      AddWordPosition(tab, word_start, word_start - content);
 
       word_start = cur_ptr;
     }

@@ -43,26 +43,8 @@ void DocTable_Free(DocTable* table) {
   Verify333(table != NULL);
 
   // STEP 1.
-  int num_elements = HashTable_NumElements(table->id_to_name);
-
-  if (num_elements != 0) {
-    HTIterator* id_to_name_iter = HTIterator_Allocate(table->id_to_name);
-    HTIterator* name_to_id_iter = HTIterator_Allocate(table->name_to_id);
-    HTKeyValue_t* kv;
-    int i;
-
-    for (i = 0; i < num_elements; i++) {
-      HTIterator_Get(id_to_name_iter, kv);
-      free(kv);
-      HTIterator_Get(name_to_id_iter, kv);
-      free(kv);
-      HTIterator_Next(id_to_name_iter);
-      HTIterator_Next(name_to_id_iter);
-    }
-
-    HTIterator_Free(id_to_name_iter);
-    HTIterator_Free(name_to_id_iter);
-  }
+  HashTable_Free(table->id_to_name, (ValueFreeFnPtr)(*free));
+  HashTable_Free(table->name_to_id, (ValueFreeFnPtr)(*free));
   free(table);
 }
 

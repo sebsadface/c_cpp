@@ -31,15 +31,14 @@
 #define MAX_PATHNAME_LENGTH 1024  // max len of a directory item's path + name
 
 struct entry_st {
-  char *path_name;
+  char* path_name;
   bool is_dir;
 };
 
 // Return the relative ordering of two strings, according to the signature
 // required by "man 3 qsort".
 int alphasort(const void* v1, const void* v2) {
-  struct entry_st* e1 = (struct entry_st*) v1,
-    *e2 = (struct entry_st*) v2;
+  struct entry_st *e1 = (struct entry_st*)v1, *e2 = (struct entry_st*)v2;
   return strncmp(e1->path_name, e2->path_name, MAX_PATHNAME_LENGTH);
 }
 
@@ -52,12 +51,11 @@ int alphasort(const void* v1, const void* v2) {
 // to generate consistent DocTables and MemIndices, we do two passes over the
 // contents: the first to extract the data necessary for populating
 // entry_name_st and the second to actually handle the recursive call.
-static void HandleDir(char* dir_path, DIR* d,
-                      DocTable** doc_table, MemIndex** index);
+static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
+                      MemIndex** index);
 
 // Read and parse the specified file, then inject it into the MemIndex.
 static void HandleFile(char* file_path, DocTable** doc_table, MemIndex** index);
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Externally-exported functions
@@ -65,7 +63,7 @@ static void HandleFile(char* file_path, DocTable** doc_table, MemIndex** index);
 
 bool CrawlFileTree(char* root_dir, DocTable** doc_table, MemIndex** index) {
   struct stat root_stat;
-  DIR *rd;
+  DIR* rd;
 
   // Verify we got some valid args.
   if (root_dir == NULL || doc_table == NULL || index == NULL) {
@@ -73,7 +71,7 @@ bool CrawlFileTree(char* root_dir, DocTable** doc_table, MemIndex** index) {
   }
 
   // Verify that rootdir is a directory.
-  if (stat((char*) root_dir, &root_stat) == -1) {
+  if (stat((char*)root_dir, &root_stat) == -1) {
     // We got some kind of error stat'ing the file. Give up
     // and return an error.
     return false;
@@ -104,7 +102,6 @@ bool CrawlFileTree(char* root_dir, DocTable** doc_table, MemIndex** index) {
   return true;
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Internal helper functions
 //////////////////////////////////////////////////////////////////////////////
@@ -115,14 +112,16 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
   // all the metadata necessary to process its entries; the second iterates
   // does the actual recursive descent.
   int entries_capacity = 16;
-  struct entry_st* entries = (struct entry_st* )
-      malloc(sizeof(struct entry_st) * entries_capacity);
+  struct entry_st* entries =
+      (struct entry_st*)malloc(sizeof(struct entry_st) * entries_capacity);
   Verify333(entries != NULL);
 
-  int i;
+  int i = 0;
   int path_name_len;
   struct dirent* dirent;
   struct stat st;
+  char current_dir = ".";
+  char parent_dir = "..";
 
   int num_entries;
 
@@ -132,13 +131,17 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
   // Change/add to this loop to use the "readdir()" system call to
   // read the directory entries in the loop ("man 3 readdir").
   // Exit out of the loop when we reach the end of the directory.
-  for (i = 0 ; false; i++) {
+  for (dirent = readdir(d); dirent != NULL; dirent = readdir(d)) {
     // STEP 2.
     // If the directory entry is named "." or "..", ignore it.  Use the C
     // "continue" expression to begin the next iteration of the loop.  What
     // field in the dirent could we use to find out the name of the entry?
     // How do you compare strings in C?
 
+    if (strcmp(dirent->d_name, &current_dir) == 0 ||
+        strcmp(dirent->d_name, &parent_dir) == 0) {
+      continue;
+    }
 
     //
     // Record the name and directory status.
@@ -147,24 +150,24 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
     // Resize the entries array if it's too small.
     if (i == entries_capacity) {
       entries_capacity *= 2;
-      entries = (struct entry_st*)
-        realloc(entries, sizeof(struct entry_st) * entries_capacity);
+      entries = (struct entry_st*)realloc(
+          entries, sizeof(struct entry_st) * entries_capacity);
     }
 
     // We need to append the name of the file to the name of the directory
     // we're in to get the full filename. So, we'll malloc space for:
     //     dirpath + "/" + dirent->d_name + '\0'
     path_name_len = strlen(dir_path) + 1 + strlen(dirent->d_name) + 1;
-    entries[i].path_name = (char*) malloc(path_name_len);
+    entries[i].path_name = (char*)malloc(path_name_len);
     Verify333(entries[i].path_name != NULL);
-    if (dir_path[strlen(dir_path)-1] == '/') {
+    if (dir_path[strlen(dir_path) - 1] == '/') {
       // No need to add an additional '/'.
-      snprintf(entries[i].path_name, path_name_len,
-               "%s%s", dir_path, dirent->d_name);
+      snprintf(entries[i].path_name, path_name_len, "%s%s", dir_path,
+               dirent->d_name);
     } else {
       // We do need to add an additional '/'.
-      snprintf(entries[i].path_name, path_name_len,
-               "%s/%s", dir_path, dirent->d_name);
+      snprintf(entries[i].path_name, path_name_len, "%s/%s", dir_path,
+               dirent->d_name);
     }
 
     // Use the "stat()" system call to ask the operating system to give us
@@ -183,7 +186,18 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
       // using/ HandleDir() in our second pass.
       //
       // If it is neither, skip the file.
+
+      if (S_ISREG(st.st_mode)) {
+        HandleFile(entries[i].path_name, doc_table, index);
+      }
+
+      if (S_ISDIR(st.st_mode)) {
+        DIR* sub_dir = opendir(entries[i].path_name);
+        HandleDir(entries[i].path_name, sub_dir, doc_table, index);
+      }
     }
+
+    i++;
   }  // end iteration over directory contents ("first pass").
 
   // Sort the directory's metadata alphabetically.
@@ -195,7 +209,7 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
     if (!entries[i].is_dir) {
       HandleFile(entries[i].path_name, doc_table, index);
     } else {
-      DIR *sub_dir = opendir(entries[i].path_name);
+      DIR* sub_dir = opendir(entries[i].path_name);
       if (sub_dir != NULL) {
         HandleDir(entries[i].path_name, sub_dir, doc_table, index);
         closedir(sub_dir);
@@ -209,7 +223,7 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
 }
 
 static void HandleFile(char* file_path, DocTable** doc_table,
-                        MemIndex** index) {
+                       MemIndex** index) {
   int file_len = 0;
   HashTable* tab = NULL;
   DocID_t doc_id;
@@ -218,13 +232,10 @@ static void HandleFile(char* file_path, DocTable** doc_table,
   // STEP 4.
   // Invoke ParseIntoWordPositionsTable() to build the word hashtable out
   // of the file.
-
-
-
+  tab = ParseIntoWordPositionsTable(ReadFileToString(file_path, &file_len));
   // STEP 5.
   // Invoke DocTable_Add() to register the new file with the doc_table.
-
-
+  doc_id = DocTable_Add(*doc_table, file_path);
 
   // Loop through the newly-built hash table.
   it = HTIterator_Allocate(tab);
@@ -237,9 +248,9 @@ static void HandleFile(char* file_path, DocTable** doc_table,
     // Use HTIterator_Remove() to extract the next WordPositions structure out
     // of the hashtable. Then, use MemIndex_AddPostingList() to add the word,
     // document ID, and positions linked list into the inverted index.
-
-
-
+    Verify333(HTIterator_Remove(it, &kv) == true);
+    wp = kv.value;
+    MemIndex_AddPostingList(index, kv.key, doc_id, wp);
     // Since we've transferred ownership of the memory associated with both
     // the "word" and "positions" field of this WordPositions structure, and
     // since we've removed it from the table, we can now free the

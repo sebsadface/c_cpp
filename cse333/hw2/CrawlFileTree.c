@@ -247,7 +247,7 @@ static void HandleFile(char* file_path, DocTable** doc_table,
     // document ID, and positions linked list into the inverted index.
     Verify333(HTIterator_Remove(it, &kv) == true);
     wp = kv.value;
-    MemIndex_AddPostingList(index, kv.key, doc_id, wp);
+    MemIndex_AddPostingList(*index, kv.key, doc_id, wp);
     // Since we've transferred ownership of the memory associated with both
     // the "word" and "positions" field of this WordPositions structure, and
     // since we've removed it from the table, we can now free the

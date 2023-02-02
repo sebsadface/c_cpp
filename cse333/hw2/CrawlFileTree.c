@@ -120,11 +120,6 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
   int path_name_len;
   struct dirent* dirent;
   struct stat st;
-  char* current_dir;
-  char* parent_dir;
-
-  *current_dir = ".";
-  *parent_dir = "..";
 
   int num_entries;
 
@@ -141,8 +136,7 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
     // field in the dirent could we use to find out the name of the entry?
     // How do you compare strings in C?
 
-    if (strcmp(dirent->d_name, current_dir) == 0 ||
-        strcmp(dirent->d_name, parent_dir) == 0) {
+    if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) {
       continue;
     }
 

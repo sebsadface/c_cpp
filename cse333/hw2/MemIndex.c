@@ -168,7 +168,8 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   // structure (the initial computed rank is the number of times the word
   // appears in that document).  Finally, append the SearchResult onto retline.
   key = (HTKey_t)FNVHash64((unsigned char*)query[0], strlen(query[0]));
-  if (HashTable_Find((HashTable*)index, key, (HTKeyValue_t*)wp)) {
+  if (HashTable_Find((HashTable*)index, key, &kv)) {
+    wp = (WordPostings*)kv.value;
     HTIterator* posting_iter = HTIterator_Allocate(wp->postings);
     while (HTIterator_IsValid(posting_iter)) {
       Verify333(HTIterator_Get(posting_iter, &kv));
@@ -199,7 +200,7 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
     // If there are no matches, it means the overall query
     // should return no documents, so free retlist and return NULL.
     key = (HTKey_t)FNVHash64((unsigned char*)query[i], strlen(query[i]));
-    if (!HashTable_Find((HashTable*)index, key, (HTKeyValue_t*)wp)) {
+    if (!HashTable_Find((HashTable*)index, key, &kv)) {
       LinkedList_Free(ret_list, (LLPayloadFreeFnPtr)free);
       return NULL;
     }
@@ -217,6 +218,7 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
     ll_it = LLIterator_Allocate(ret_list);
     Verify333(ll_it != NULL);
     num_docs = LinkedList_NumElements(ret_list);
+    wp = (WordPostings*)kv.value;
     for (j = 0; j < num_docs; j++) {
       LLIterator_Get(ll_it, (LLPayload_t*)res);
       if (HashTable_Find((HashTable*)wp->postings, (HTKey_t)res->doc_id, &kv)) {

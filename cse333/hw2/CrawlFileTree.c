@@ -183,13 +183,14 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
       // using/ HandleDir() in our second pass.
       //
       // If it is neither, skip the file.
+      entries[i]->is_dir = false;
 
       if (S_ISREG(st.st_mode)) {
         HandleFile(entries[i].path_name, doc_table, index);
       }
 
       if (S_ISDIR(st.st_mode)) {
-        entries->is_dir = true;
+        entries[i]->is_dir = true;
         DIR* sub_dir = opendir(entries[i].path_name);
         if (sub_dir != NULL) {
           HandleDir(entries[i].path_name, sub_dir, doc_table, index);

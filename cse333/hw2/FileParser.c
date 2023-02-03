@@ -271,6 +271,6 @@ static void AddWordPosition(HashTable* tab, char* word,
     LinkedList_Append(wp->positions, (LLPayload_t)(int64_t)pos);
     kv.key = hash_key;
     kv.value = (HTValue_t)wp;
-    Verify333(HashTable_Insert(tab, kv, &kv) == false);
+    Verify333(!HashTable_Insert(tab, kv, &kv));
   }
 }

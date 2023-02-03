@@ -43,8 +43,8 @@ void DocTable_Free(DocTable* table) {
   Verify333(table != NULL);
 
   // STEP 1.
-  HashTable_Free(table->id_to_name, (ValueFreeFnPtr)(*free));
-  HashTable_Free(table->name_to_id, (ValueFreeFnPtr)(*free));
+  HashTable_Free(table->id_to_name, (ValueFreeFnPtr)free);
+  HashTable_Free(table->name_to_id, (ValueFreeFnPtr)free);
   free(table);
 }
 
@@ -84,7 +84,7 @@ DocID_t DocTable_Add(DocTable* table, char* doc_name) {
   kv.key = *doc_id;
   kv.value = doc_copy;
 
-  Verify333(HashTable_Insert(table->id_to_name, kv, &old_kv) == false);
+  Verify333(!HashTable_Insert(table->id_to_name, kv, &old_kv));
 
   // STEP 4.
   // Set up the key/value for the name->id, and/ do the insert.
@@ -94,7 +94,7 @@ DocID_t DocTable_Add(DocTable* table, char* doc_name) {
   kv.key = FNVHash64((unsigned char*)doc_copy, strlen(doc_copy));
   kv.value = doc_id;
 
-  Verify333(HashTable_Insert(table->name_to_id, kv, &old_kv) == false);
+  Verify333(!HashTable_Insert(table->name_to_id, kv, &old_kv));
 
   return *doc_id;
 }

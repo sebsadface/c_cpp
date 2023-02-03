@@ -243,7 +243,7 @@ static void HandleFile(char* file_path, DocTable** doc_table,
       // Use HTIterator_Remove() to extract the next WordPositions structure out
       // of the hashtable. Then, use MemIndex_AddPostingList() to add the word,
       // document ID, and positions linked list into the inverted index.
-      Verify333(HTIterator_Remove(it, &kv) == true);
+      Verify333(HTIterator_Remove(it, &kv));
       wp = (WordPositions*)kv.value;
       MemIndex_AddPostingList(*index, wp->word, doc_id, wp->positions);
       // Since we've transferred ownership of the memory associated with both

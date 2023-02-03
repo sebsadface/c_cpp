@@ -149,7 +149,7 @@ void MemIndex_AddPostingList(MemIndex* index, char* word, DocID_t doc_id,
 
 LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   LinkedList* ret_list = NULL;
-  WordPostings* wp = NULL;
+  WordPostings* wp;
   HTKeyValue_t kv;
   HTKey_t key;
   int i;

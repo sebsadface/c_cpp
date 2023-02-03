@@ -229,8 +229,10 @@ static void HandleFile(char* file_path, DocTable** doc_table,
   // STEP 4.
   // Invoke ParseIntoWordPositionsTable() to build the word hashtable out
   // of the file.
-  tab = ParseIntoWordPositionsTable(ReadFileToString(file_path, &file_len));
-  if (tab != NULL) {
+  char* file_contents = ReadFileToString(file_path, &file_len);
+  if (file_contents != NULL) {
+    tab = ParseIntoWordPositionsTable(file_contents);
+
     // STEP 5.
     // Invoke DocTable_Add() to register the new file with the doc_table.
     doc_id = DocTable_Add(*doc_table, file_path);

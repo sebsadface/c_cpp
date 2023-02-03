@@ -253,7 +253,6 @@ static void HandleFile(char* file_path, DocTable** doc_table,
       // the "word" and "positions" field of this WordPositions structure, and
       // since we've removed it from the table, we can now free the
       // WordPositions structure!
-      free(wp->word);
       free(wp);
     }
     HTIterator_Free(it);

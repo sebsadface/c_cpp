@@ -229,10 +229,8 @@ static void HandleFile(char* file_path, DocTable** doc_table,
   // STEP 4.
   // Invoke ParseIntoWordPositionsTable() to build the word hashtable out
   // of the file.
-  char* file_contents = ReadFileToString(file_path, &file_len);
-  if (file_contents != NULL) {
-    tab = ParseIntoWordPositionsTable(file_contents);
-
+  tab = ParseIntoWordPositionsTable(ReadFileToString(file_path, &file_len));
+  if (tab != NULL) {
     // STEP 5.
     // Invoke DocTable_Add() to register the new file with the doc_table.
     doc_id = DocTable_Add(*doc_table, file_path);
@@ -258,9 +256,8 @@ static void HandleFile(char* file_path, DocTable** doc_table,
       free(wp);
     }
     HTIterator_Free(it);
-
-    // We're all done with the word hashtable for this file, since we've added
-    // all of its contents to the inverted index. Free the table and return.
-    FreeWordPositionsTable(tab);
   }
+  // We're all done with the word hashtable for this file, since we've added
+  // all of its contents to the inverted index. Free the table and return.
+  FreeWordPositionsTable(tab);
 }

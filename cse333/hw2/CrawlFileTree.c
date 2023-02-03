@@ -261,5 +261,4 @@ static void HandleFile(char* file_path, DocTable** doc_table,
     // all of its contents to the inverted index. Free the table and return.
     FreeWordPositionsTable(tab);
   }
-  free(tab);
 }

@@ -170,6 +170,7 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   key = (HTKey_t)FNVHash64((unsigned char*)query[0], strlen(query[0]));
   if (HashTable_Find((HashTable*)index, key, &kv)) {
     wp = (WordPostings*)kv.value;
+    ret_list = LinkedList_Allocate();
     HTIterator* posting_iter = HTIterator_Allocate(wp->postings);
     while (HTIterator_IsValid(posting_iter)) {
       Verify333(HTIterator_Get(posting_iter, &kv));

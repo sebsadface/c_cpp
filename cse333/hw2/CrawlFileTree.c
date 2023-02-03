@@ -190,7 +190,10 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
 
       if (S_ISDIR(st.st_mode)) {
         DIR* sub_dir = opendir(entries[i].path_name);
-        HandleDir(entries[i].path_name, sub_dir, doc_table, index);
+        if (sub_dir != NULL) {
+          HandleDir(entries[i].path_name, sub_dir, doc_table, index);
+          closedir(sub_dir);
+        }
       }
     }
 
@@ -230,38 +233,35 @@ static void HandleFile(char* file_path, DocTable** doc_table,
   // Invoke ParseIntoWordPositionsTable() to build the word hashtable out
   // of the file.
   tab = ParseIntoWordPositionsTable(ReadFileToString(file_path, &file_len));
+  if (tab != NULL) {
+    // STEP 5.
+    // Invoke DocTable_Add() to register the new file with the doc_table.
+    doc_id = DocTable_Add(*doc_table, file_path);
 
-  if (tab == NULL) {
-    return;
+    // Loop through the newly-built hash table.
+    it = HTIterator_Allocate(tab);
+    Verify333(it != NULL);
+    while (HTIterator_IsValid(it)) {
+      WordPositions* wp;
+      HTKeyValue_t kv;
+
+      // STEP 6.
+      // Use HTIterator_Remove() to extract the next WordPositions structure out
+      // of the hashtable. Then, use MemIndex_AddPostingList() to add the word,
+      // document ID, and positions linked list into the inverted index.
+      Verify333(HTIterator_Remove(it, &kv) == true);
+      wp = (WordPositions*)kv.value;
+      MemIndex_AddPostingList(*index, wp->word, doc_id, wp->positions);
+      // Since we've transferred ownership of the memory associated with both
+      // the "word" and "positions" field of this WordPositions structure, and
+      // since we've removed it from the table, we can now free the
+      // WordPositions structure!
+      free(wp);
+    }
+    HTIterator_Free(it);
+
+    // We're all done with the word hashtable for this file, since we've added
+    // all of its contents to the inverted index. Free the table and return.
+    FreeWordPositionsTable(tab);
   }
-
-  // STEP 5.
-  // Invoke DocTable_Add() to register the new file with the doc_table.
-  doc_id = DocTable_Add(*doc_table, file_path);
-
-  // Loop through the newly-built hash table.
-  it = HTIterator_Allocate(tab);
-  Verify333(it != NULL);
-  while (HTIterator_IsValid(it)) {
-    WordPositions* wp;
-    HTKeyValue_t kv;
-
-    // STEP 6.
-    // Use HTIterator_Remove() to extract the next WordPositions structure out
-    // of the hashtable. Then, use MemIndex_AddPostingList() to add the word,
-    // document ID, and positions linked list into the inverted index.
-    Verify333(HTIterator_Remove(it, &kv) == true);
-    wp = kv.value;
-    MemIndex_AddPostingList(*index, wp->word, doc_id, wp->positions);
-    // Since we've transferred ownership of the memory associated with both
-    // the "word" and "positions" field of this WordPositions structure, and
-    // since we've removed it from the table, we can now free the
-    // WordPositions structure!
-    free(wp);
-  }
-  HTIterator_Free(it);
-
-  // We're all done with the word hashtable for this file, since we've added
-  // all of its contents to the inverted index. Free the table and return.
-  FreeWordPositionsTable(tab);
 }

@@ -167,10 +167,10 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   // each document that matches, allocate and initialize a SearchResult
   // structure (the initial computed rank is the number of times the word
   // appears in that document).  Finally, append the SearchResult onto retline.
+  ret_list = LinkedList_Allocate();
   key = (HTKey_t)FNVHash64((unsigned char*)query[0], strlen(query[0]));
   if (HashTable_Find((HashTable*)index, key, &kv)) {
     wp = (WordPostings*)kv.value;
-    ret_list = LinkedList_Allocate();
     HTIterator* posting_iter = HTIterator_Allocate(wp->postings);
     while (HTIterator_IsValid(posting_iter)) {
       Verify333(HTIterator_Get(posting_iter, &kv));

@@ -195,7 +195,7 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   for (i = 1; i < query_len; i++) {
     LLIterator* ll_it;
     int j, num_docs;
-    SearchResult* res;
+    SearchResult res;
 
     // STEP 5.
     // Look up the next query word (query[i]) in the inverted index.
@@ -222,9 +222,9 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
     num_docs = LinkedList_NumElements(ret_list);
     wp = (WordPostings*)kv.value;
     for (j = 0; j < num_docs; j++) {
-      LLIterator_Get(ll_it, (LLPayload_t*)res);
-      if (HashTable_Find((HashTable*)wp->postings, (HTKey_t)res->doc_id, &kv)) {
-        res->rank += LinkedList_NumElements(kv.value);
+      LLIterator_Get(ll_it, (LLPayload_t*)&res);
+      if (HashTable_Find((HashTable*)wp->postings, (HTKey_t)res.doc_id, &kv)) {
+        res.rank += LinkedList_NumElements(kv.value);
       } else {
         LLIterator_Remove(ll_it, (LLPayloadFreeFnPtr)free);
       }

@@ -195,6 +195,7 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
           closedir(sub_dir);
         }
       }
+      free(entries[i].path_name);
     }
 
     i++;

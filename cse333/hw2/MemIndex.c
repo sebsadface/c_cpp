@@ -148,7 +148,7 @@ void MemIndex_AddPostingList(MemIndex* index, char* word, DocID_t doc_id,
 }
 
 LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
-  LinkedList* ret_list = NULL;
+  LinkedList* ret_list;
   WordPostings* wp;
   HTKeyValue_t kv;
   HTKey_t key;
@@ -178,8 +178,6 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
       LinkedList_Append(ret_list, (LLPayload_t)res);
       HTIterator_Next(posting_iter);
     }
-  } else {
-    return NULL;
   }
   // Great; we have our search results for the first query
   // word.  If there is only one query word, we're done!

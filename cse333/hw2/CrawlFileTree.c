@@ -256,8 +256,8 @@ static void HandleFile(char* file_path, DocTable** doc_table,
       free(wp);
     }
     HTIterator_Free(it);
-    // We're all done with the word hashtable for this file, since we've added
-    // all of its contents to the inverted index. Free the table and return.
-    FreeWordPositionsTable(tab);
   }
+  // We're all done with the word hashtable for this file, since we've added
+  // all of its contents to the inverted index. Free the table and return.
+  FreeWordPositionsTable(tab);
 }

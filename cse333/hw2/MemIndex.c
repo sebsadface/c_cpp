@@ -148,9 +148,9 @@ void MemIndex_AddPostingList(MemIndex* index, char* word, DocID_t doc_id,
 }
 
 LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
-  LinkedList* ret_list;
+  LinkedList* ret_list = NULL;
+  WordPostings* wp = NULL;
   HTKeyValue_t kv;
-  WordPostings* wp;
   HTKey_t key;
   int i;
 
@@ -167,8 +167,8 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   // each document that matches, allocate and initialize a SearchResult
   // structure (the initial computed rank is the number of times the word
   // appears in that document).  Finally, append the SearchResult onto retline.
-  key = (HTKey_t)FNVHash64(query[0], strlen(query[0]));
-  if (HashTable_Find((HashTable*)index, key, wp)) {
+  key = (HTKey_t)FNVHash64((unsigned char*)query[0], strlen(query[0]));
+  if (HashTable_Find((HashTable*)index, key, (HTKeyValue_t*)wp)) {
     HTIterator* posting_iter = HTIterator_Allocate(wp->postings);
     while (HTIterator_IsValid(posting_iter)) {
       Verify333(HTIterator_Get(posting_iter, &kv));
@@ -192,13 +192,13 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   for (i = 1; i < query_len; i++) {
     LLIterator* ll_it;
     int j, num_docs;
-    SearchResult* res;
+    SearchResult* res = NULL;
 
     // STEP 5.
     // Look up the next query word (query[i]) in the inverted index.
     // If there are no matches, it means the overall query
     // should return no documents, so free retlist and return NULL.
-    key = (HTKey_t)FNVHash64(query[i], strlen(query[i]));
+    key = (HTKey_t)FNVHash64((unsigned char*)query[i], strlen(query[i]));
     if (!HashTable_Find((HashTable*)index, key, (HTKeyValue_t*)wp)) {
       LinkedList_Free(ret_list, (LLPayloadFreeFnPtr)free);
       return NULL;
@@ -218,7 +218,7 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
     Verify333(ll_it != NULL);
     num_docs = LinkedList_NumElements(ret_list);
     for (j = 0; j < num_docs; j++) {
-      LLIterator_Get(ll_it, res);
+      LLIterator_Get(ll_it, (LLPayload_t*)res);
       if (HashTable_Find((HashTable*)wp->postings, (HTKey_t)res->doc_id, &kv)) {
         res->rank += LinkedList_NumElements(kv.value);
       } else {

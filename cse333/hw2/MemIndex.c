@@ -225,10 +225,10 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
       LLIterator_Get(ll_it, (LLPayload_t*)&res);
       if (HashTable_Find((HashTable*)wp->postings, (HTKey_t)res.doc_id, &kv)) {
         res.rank += LinkedList_NumElements(kv.value);
+        LLIterator_Next(ll_it);
       } else {
         LLIterator_Remove(ll_it, (LLPayloadFreeFnPtr)free);
       }
-      LLIterator_Next(ll_it);
     }
     LLIterator_Free(ll_it);
 

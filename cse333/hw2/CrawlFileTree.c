@@ -189,13 +189,13 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
       }
 
       if (S_ISDIR(st.st_mode)) {
+        entries->is_dir = true;
         DIR* sub_dir = opendir(entries[i].path_name);
         if (sub_dir != NULL) {
           HandleDir(entries[i].path_name, sub_dir, doc_table, index);
           closedir(sub_dir);
         }
       }
-      free(entries[i].path_name);
     }
 
     i++;

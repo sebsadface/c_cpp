@@ -129,7 +129,7 @@ static int GetNextLine(FILE* f, char** ret_str) {
       query_len++;
       token = strtok_r(NULL, " ", &saveptr);
     }
-    strchr(ret_str[query_len - 1], '\n');
+    eof = strchr(ret_str[query_len - 1], '\n');
     *eof = '\0';
 
     return query_len;

@@ -171,23 +171,27 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   // structure (the initial computed rank is the number of times the word
   // appears in that document).  Finally, append the SearchResult onto retline.
   ret_list = LinkedList_Allocate();
+  Verify333(ret_list != NULL);
   key = (HTKey_t)FNVHash64((unsigned char*)query[0], strlen(query[0]));
-  if (HashTable_Find((HashTable*)index, key, &kv)) {
-    wp = (WordPostings*)kv.value;
-    HTIterator* posting_iter = HTIterator_Allocate(wp->postings);
-    while (HTIterator_IsValid(posting_iter)) {
-      Verify333(HTIterator_Get(posting_iter, &kv));
-      SearchResult* res = (SearchResult*)malloc(sizeof(SearchResult));
-      res->doc_id = kv.key;
-      res->rank = LinkedList_NumElements((LinkedList*)kv.value);
-      LinkedList_Append(ret_list, (LLPayload_t)res);
-      HTIterator_Next(posting_iter);
-    }
-    HTIterator_Free(posting_iter);
-  } else {
+
+  if (!HashTable_Find((HashTable*)index, key, &kv)) {
     LinkedList_Free(ret_list, (LLPayloadFreeFnPtr)free);
     return NULL;
   }
+
+  wp = (WordPostings*)kv.value;
+  HTIterator* posting_iter = HTIterator_Allocate(wp->postings);
+  while (HTIterator_IsValid(posting_iter)) {
+    Verify333(HTIterator_Get(posting_iter, &kv));
+    SearchResult* res = (SearchResult*)malloc(sizeof(SearchResult));
+    Verify333(res != NULL);
+    res->doc_id = kv.key;
+    res->rank = LinkedList_NumElements((LinkedList*)kv.value);
+    LinkedList_Append(ret_list, (LLPayload_t)res);
+    HTIterator_Next(posting_iter);
+  }
+  HTIterator_Free(posting_iter);
+
   // Great; we have our search results for the first query
   // word.  If there is only one query word, we're done!
   // Sort the result list and return it to the caller.
@@ -201,7 +205,7 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   for (i = 1; i < query_len; i++) {
     LLIterator* ll_it;
     int j, num_docs;
-    SearchResult res;
+    SearchResult* res;
 
     // STEP 5.
     // Look up the next query word (query[i]) in the inverted index.
@@ -229,8 +233,8 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
     wp = (WordPostings*)kv.value;
     for (j = 0; j < num_docs; j++) {
       LLIterator_Get(ll_it, (LLPayload_t*)&res);
-      if (HashTable_Find((HashTable*)wp->postings, (HTKey_t)res.doc_id, &kv)) {
-        res.rank += LinkedList_NumElements(kv.value);
+      if (HashTable_Find((HashTable*)wp->postings, (HTKey_t)res->doc_id, &kv)) {
+        res->rank += LinkedList_NumElements(kv.value);
         LLIterator_Next(ll_it);
       } else {
         LLIterator_Remove(ll_it, (LLPayloadFreeFnPtr)free);

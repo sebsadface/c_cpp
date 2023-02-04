@@ -81,17 +81,17 @@ static void Usage(void) {
 }
 
 static void ProcessQueries(DocTable* dt, MemIndex* mi) {
-  char* line;
+  char line;
   char* word;
   char** query;
   LinkedList* ret_list;
   SearchResult* res;
   int i;
 
-  while (*line != '\0') {
+  while (line != '\0') {
     printf("enter query:\n");
-    if (fgets(line, _XOPEN_SOURCE, stdin) != NULL) {
-      word = strtok(line, " ");
+    if (fgets(&line, _XOPEN_SOURCE, stdin) != NULL) {
+      word = strtok(&line, " ");
       i = 0;
       while (word != NULL) {
         query[i] = word;

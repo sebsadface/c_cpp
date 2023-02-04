@@ -124,7 +124,7 @@ static int GetNextLine(FILE* f, char** ret_str) {
     return -1;
   }
 
-  while (buffer[i] != '\n') {
+  while (buffer[i] != '\0') {
     buffer[i] = (char)tolower((int)buffer[i]);
     i++;
   }

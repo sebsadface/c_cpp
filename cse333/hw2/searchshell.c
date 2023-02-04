@@ -85,6 +85,7 @@ static void Usage(void) {
 static void ProcessQueries(DocTable* dt, MemIndex* mi) {
   LinkedList* res_list;
   SearchResult* res;
+  LLIterator* iter;
   char* query[LINE_SIZE];
   int query_len;
 
@@ -92,10 +93,16 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
   while (query_len != -1) {
     res_list = MemIndex_Search(mi, query, query_len);
 
-    while (LinkedList_Pop(res_list, (LLPayload_t*)&res)) {
-      printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id), res->rank);
-    }
+    if (res_list != NULL) {
+      iter = LLIterator_Allocate(res_list);
 
+      while (LLIterator_IsValid(iter)) {
+        LLIterator_Get(iter, (LLPayload_t*)&res);
+        printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id), res->rank);
+        LLIterator_Next(iter);
+      }
+      LLIterator_Free(iter);
+    }
     query_len = GetNextLine(stdin, query);
   }
 }

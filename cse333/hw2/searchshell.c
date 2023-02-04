@@ -105,9 +105,9 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
       }
       LLIterator_Free(iter);
     }
+    LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
     qurey_len = GetNextLine(stdin, qurey);
   }
-  LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
   free(qurey);
 }
 
@@ -124,7 +124,7 @@ static int GetNextLine(FILE* f, char** ret_str) {
     return -1;
   }
 
-  while (buffer[i] != '\0') {
+  while (buffer[i] != '\n') {
     buffer[i] = (char)tolower((int)buffer[i]);
     i++;
   }

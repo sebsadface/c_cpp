@@ -111,6 +111,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 static int GetNextLine(FILE* f, char** ret_str) {
   char buffer[LINE_SIZE];
   char* token;
+  char* last;
   int ret_len = 0;
 
   printf("enter query:\n");
@@ -118,12 +119,12 @@ static int GetNextLine(FILE* f, char** ret_str) {
     return -1;
   }
 
-  token = strtok_r((char*)buffer, " ", (char**)&buffer);
-  while (token != NULL || *token != '\n') {
+  token = strtok_r(buffer, " ", &last);
+  while (token != NULL) {
     *token = (char)tolower((int)*token);
     ret_str[ret_len] = token;
     ret_len++;
-    token = strtok_r(NULL, " ", (char**)&buffer);
+    token = strtok_r(NULL, " ", &last);
   }
   *strchr(ret_str[ret_len - 1], '\n') = '\0';
 

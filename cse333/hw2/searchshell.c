@@ -29,7 +29,6 @@ static void Usage(void);
 static void ProcessQueries(DocTable* dt, MemIndex* mi);
 static int GetNextLine(FILE* f, char** ret_str);
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Main
 int main(int argc, char** argv) {
@@ -54,9 +53,21 @@ int main(int argc, char** argv) {
   // Note that you should make sure the fomatting of your
   // searchshell output exactly matches our solution binaries
   // to get full points on this part.
+
+  MemIndex* mi;
+  DocTable* dt;
+
+  printf("Indexing '%s'\n", argv[1]);
+
+  if (!CrawlFileTree(argv[1], &dt, &mi)) {
+    fprintf(stderr, "Path '%s' is not indexable\n", argv[1]);
+    Usage();
+  }
+
+  ProcessQueries(dt, mi);
+
   return EXIT_SUCCESS;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper function definitions
@@ -64,14 +75,39 @@ int main(int argc, char** argv) {
 static void Usage(void) {
   fprintf(stderr, "Usage: ./searchshell <docroot>\n");
   fprintf(stderr,
-          "where <docroot> is an absolute or relative " \
+          "where <docroot> is an absolute or relative "
           "path to a directory to build an index under.\n");
   exit(EXIT_FAILURE);
 }
 
 static void ProcessQueries(DocTable* dt, MemIndex* mi) {
+  char* line;
+  char* word;
+  char* file_path;
+  char* ret_str;
+  char** query;
+  LinkedList* ret_list;
+  SearchResult* res;
+  int i;
+
+  while (*line != '\0') {
+    printf("enter query:\n");
+    if (!getline(&line, stdin) == -1) {
+      word = strtok(line, " ");
+      i = 0;
+      while (word != NULL) {
+        query[i] = word;
+        i++;
+        word = strtok(NULL, " ");
+      }
+      ret_list = MemIndex_Search(mi, query, i + 1);
+      while (LinkedList_Pop(ret_list, (LLPayload_t*)&res)) {
+        printf("  %s. (%d)\n", DocTable_GetDocName(dt, res->doc_id), res->rank);
+      }
+    }
+  }
 }
 
-static int GetNextLine(FILE *f, char **ret_str) {
+static int GetNextLine(FILE* f, char** ret_str) {
   return -1;  // you may want to change this
 }

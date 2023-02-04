@@ -115,7 +115,9 @@ static int GetNextLine(FILE* f, char** ret_str) {
   char buffer[LINE_SIZE];
   char* token;
   char* last;
-  int i, ret_len = 0;
+  int i, ret_len;
+
+  ret_len = i = 0;
 
   printf("enter query:\n");
   if (fgets(buffer, sizeof(buffer), f) == NULL) {

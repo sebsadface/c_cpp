@@ -23,7 +23,7 @@
 #include "./DocTable.h"
 #include "./MemIndex.h"
 
-#define LINE_SIZE 256
+#define LINE_SIZE 1024
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper function declarations, constants, etc
@@ -60,7 +60,6 @@ int main(int argc, char** argv) {
   DocTable* dt;
 
   printf("Indexing '%s'\n", argv[1]);
-
   if (!CrawlFileTree(argv[1], &dt, &mi)) {
     fprintf(stderr, "Path '%s' is not indexable\n", argv[1]);
     Usage();
@@ -68,9 +67,9 @@ int main(int argc, char** argv) {
 
   ProcessQueries(dt, mi);
 
-  printf("shutting down...");
-  DocTable_Free(dt);
+  printf("shutting down...\n");
   MemIndex_Free(mi);
+  DocTable_Free(dt);
 
   return EXIT_SUCCESS;
 }
@@ -87,52 +86,46 @@ static void Usage(void) {
 }
 
 static void ProcessQueries(DocTable* dt, MemIndex* mi) {
-  LinkedList* res_list;
-  SearchResult* res;
+  LinkedList* ll;
   LLIterator* iter;
-  int query_len;
-  char** query = (char**)malloc(sizeof(char) * LINE_SIZE);
+  SearchResult* res;
+  int qurey_len;
+  char** qurey = (char**)malloc(sizeof(char*) * LINE_SIZE);
+  Verify333(qurey != NULL);
 
-  query_len = GetNextLine(stdin, query);
-  while (query_len != -1) {
-    res_list = MemIndex_Search(mi, query, query_len);
-
-    if (res_list != NULL) {
-      iter = LLIterator_Allocate(res_list);
-
-      while (LLIterator_IsValid(iter)) {
-        LLIterator_Get(iter, (LLPayload_t*)&res);
-        printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id), res->rank);
-        LLIterator_Next(iter);
-      }
-      LLIterator_Free(iter);
+  qurey_len = GetNextLine(stdin, qurey);
+  while (qurey_len != -1) {
+    ll = MemIndex_Search(dt, qurey, qurey_len);
+    iter = LLIterator_Allocate(ll);
+    while (LLIterator_IsValid(iter)) {
+      LLIterator_Get(iter, &res);
+      printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id), res->rank);
+      LLIterator_Next(iter);
     }
-    query_len = GetNextLine(stdin, query);
+    LLIterator_Free(iter);
+    qurey_len = GetNextLine(stdin, qurey);
   }
-  free(query);
+  free(qurey);
 }
 
 static int GetNextLine(FILE* f, char** ret_str) {
-  char line[LINE_SIZE];
-  char* saveptr;
+  char buffer[LINE_SIZE];
   char* token;
-  char* eof;
-  int query_len;
+  int ret_len = 0;
+
   printf("enter query:\n");
-  fgets(line, LINE_SIZE, f);
-
-  if (line != NULL) {
-    query_len = 0;
-    token = strtok_r(line, " ", &saveptr);
-    while (token != NULL) {
-      ret_str[query_len] = token;
-      query_len++;
-      token = strtok_r(NULL, " ", &saveptr);
-    }
-    eof = strchr(ret_str[query_len - 1], '\n');
-    *eof = '\0';
-
-    return query_len;
+  if (fgets(buffer, sizeof(buffer), f) == NULL) {
+    return -1;
   }
-  return -1;  // you may want to change this
+
+  token = strtok_r(buffer, " ", &buffer);
+  while (token != NULL || *token != '\n') {
+    *token = (char)tolower((int)*token);
+    ret_str[ret_len] = token;
+    ret_len++;
+    token = strtok_r(NULL, " ", &buffer);
+  }
+  *strchr(ret_str[ret_len - 1], '\n') = '\0';
+
+  return ret_len;  // you may want to change this
 }

@@ -186,7 +186,7 @@ static void HandleDir(char* dir_path, DIR* d, DocTable** doc_table,
 
       if (S_ISREG(st.st_mode)) {
         entries[i].is_dir = false;
-      } else if (entries[i].is_dir) {
+      } else if (S_ISDIR(st.st_mode)) {
         entries[i].is_dir = true;
       }
     }

@@ -33,7 +33,7 @@
 # Bug 3
 
 ## A) How is your program acting differently than you expect it to?
-- 
+- searchshell does not display the results in the subdirectories, and gives a segfault when giveing ctrl+d as a entry.
 
 ## B) Brainstorm a few possible causes of the bug
 - 

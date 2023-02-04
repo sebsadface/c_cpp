@@ -11,7 +11,6 @@
 
 // Feature test macro for strtok_r (c.f., Linux Programming Interface p. 63)
 #define _XOPEN_SOURCE 600
-#define _GNU_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,7 +90,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 
   while (*line != '\0') {
     printf("enter query:\n");
-    if (!getline(&line, stdin) == -1) {
+    if (fgets(line, _XOPEN_SOURCE, stdin) != NULL) {
       word = strtok(line, " ");
       i = 0;
       while (word != NULL) {

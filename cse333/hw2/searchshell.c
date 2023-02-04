@@ -95,10 +95,10 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 
   qurey_len = GetNextLine(stdin, qurey);
   while (qurey_len != -1) {
-    ll = MemIndex_Search(dt, qurey, qurey_len);
+    ll = MemIndex_Search(mi, qurey, qurey_len);
     iter = LLIterator_Allocate(ll);
     while (LLIterator_IsValid(iter)) {
-      LLIterator_Get(iter, &res);
+      LLIterator_Get(iter, (LLPayload_t*)&res);
       printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id), res->rank);
       LLIterator_Next(iter);
     }
@@ -118,12 +118,12 @@ static int GetNextLine(FILE* f, char** ret_str) {
     return -1;
   }
 
-  token = strtok_r(buffer, " ", &buffer);
+  token = strtok_r((char*)buffer, " ", (char**)&buffer);
   while (token != NULL || *token != '\n') {
     *token = (char)tolower((int)*token);
     ret_str[ret_len] = token;
     ret_len++;
-    token = strtok_r(NULL, " ", &buffer);
+    token = strtok_r(NULL, " ", (char**)&buffer);
   }
   *strchr(ret_str[ret_len - 1], '\n') = '\0';
 

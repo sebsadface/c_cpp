@@ -104,8 +104,8 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
         LLIterator_Next(iter);
       }
       LLIterator_Free(iter);
-      qurey_len = GetNextLine(stdin, qurey);
     }
+    qurey_len = GetNextLine(stdin, qurey);
   }
   free(qurey);
 }

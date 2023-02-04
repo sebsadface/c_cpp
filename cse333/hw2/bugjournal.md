@@ -19,11 +19,11 @@
 # Bug 2
 
 ## A) How is your program acting differently than you expect it to?
-- 
+- Failing Test on test_memindex.cc:89. NULL is returned from MemIndex_Search but it supposed to be non-empty linked list.
 
 ## B) Brainstorm a few possible causes of the bug
-- 
-- 
+- The word posting wasn't added to the Index correctly in MemIndex_AddPostingList. As a result NULL gets returned in MemeIndexSearch at line 179, when we can't find the key inside the the index.
+- The SearchResults was not added to the ret_list correctly. As a result, in MemIndex_Search line 240, all the Linked List Nodes were removed because we couldn't find a match in postings.
 - 
 
 ## C) How you fixed the bug and why the fix was necessary

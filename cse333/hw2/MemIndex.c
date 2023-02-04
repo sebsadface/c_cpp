@@ -174,23 +174,20 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   Verify333(ret_list != NULL);
   key = (HTKey_t)FNVHash64((unsigned char*)query[0], strlen(query[0]));
 
-  if (!HashTable_Find((HashTable*)index, key, &kv)) {
-    LinkedList_Free(ret_list, (LLPayloadFreeFnPtr)free);
-    return NULL;
+  if (HashTable_Find((HashTable*)index, key, &kv)) {
+    wp = (WordPostings*)kv.value;
+    HTIterator* posting_iter = HTIterator_Allocate(wp->postings);
+    while (HTIterator_IsValid(posting_iter)) {
+      Verify333(HTIterator_Get(posting_iter, &kv));
+      SearchResult* res = (SearchResult*)malloc(sizeof(SearchResult));
+      Verify333(res != NULL);
+      res->doc_id = kv.key;
+      res->rank = LinkedList_NumElements((LinkedList*)kv.value);
+      LinkedList_Append(ret_list, (LLPayload_t)res);
+      HTIterator_Next(posting_iter);
+    }
+    HTIterator_Free(posting_iter);
   }
-
-  wp = (WordPostings*)kv.value;
-  HTIterator* posting_iter = HTIterator_Allocate(wp->postings);
-  while (HTIterator_IsValid(posting_iter)) {
-    Verify333(HTIterator_Get(posting_iter, &kv));
-    SearchResult* res = (SearchResult*)malloc(sizeof(SearchResult));
-    Verify333(res != NULL);
-    res->doc_id = kv.key;
-    res->rank = LinkedList_NumElements((LinkedList*)kv.value);
-    LinkedList_Append(ret_list, (LLPayload_t)res);
-    HTIterator_Next(posting_iter);
-  }
-  HTIterator_Free(posting_iter);
 
   // Great; we have our search results for the first query
   // word.  If there is only one query word, we're done!

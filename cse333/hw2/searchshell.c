@@ -86,8 +86,8 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
   LinkedList* res_list;
   SearchResult* res;
   LLIterator* iter;
-  char* query[LINE_SIZE];
   int query_len;
+  char** query = (char**)malloc(sizeof(char) * LINE_SIZE);
 
   query_len = GetNextLine(stdin, query);
   while (query_len != -1) {
@@ -108,7 +108,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 }
 
 static int GetNextLine(FILE* f, char** ret_str) {
-  char line[LINE_SIZE];
+  char* line;
   char* saveptr;
   char* token;
   int query_len;
@@ -126,5 +126,7 @@ static int GetNextLine(FILE* f, char** ret_str) {
     query_len++;
     token = strtok_r(NULL, " ", &saveptr);
   }
+  *strchr(ret_str[query_len - 1], '\n') = '\0';
+
   return query_len;  // you may want to change this
 }

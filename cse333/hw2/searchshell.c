@@ -11,13 +11,13 @@
 
 // Feature test macro for strtok_r (c.f., Linux Programming Interface p. 63)
 #define _XOPEN_SOURCE 600
+#define _GNU_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
-#include <sys/types.h>
 
 #include "libhw1/CSE333.h"
 #include "./CrawlFileTree.h"

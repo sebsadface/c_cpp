@@ -23,7 +23,7 @@
 #include "./DocTable.h"
 #include "./MemIndex.h"
 
-#define LINE_SIZE 1024
+#define LINE_SIZE 8192
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper function declarations, constants, etc

@@ -108,7 +108,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 }
 
 static int GetNextLine(FILE* f, char** ret_str) {
-  char* line;
+  char line[LINE_SIZE];
   char* saveptr;
   char* token;
   int query_len;

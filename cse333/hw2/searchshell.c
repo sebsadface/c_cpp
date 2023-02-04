@@ -107,6 +107,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
     }
     qurey_len = GetNextLine(stdin, qurey);
   }
+  LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
   free(qurey);
 }
 
@@ -114,16 +115,19 @@ static int GetNextLine(FILE* f, char** ret_str) {
   char buffer[LINE_SIZE];
   char* token;
   char* last;
-  int ret_len = 0;
+  int i, ret_len = 0;
 
   printf("enter query:\n");
   if (fgets(buffer, sizeof(buffer), f) == NULL) {
     return -1;
   }
 
+  while (buffer[i] != '\n') {
+    buffer[i] = (char)tolower((int)buffer[i]);
+  }
+
   token = strtok_r(buffer, " ", &last);
   while (token != NULL) {
-    *token = (char)tolower((int)*token);
     ret_str[ret_len] = token;
     ret_len++;
     token = strtok_r(NULL, " ", &last);

@@ -114,6 +114,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 
 static int GetNextLine(FILE* f, char** ret_str) {
   char line[LINE_SIZE];
+  char* saveptr;
   char* token;
   char* eof;
   int query_len;
@@ -122,11 +123,11 @@ static int GetNextLine(FILE* f, char** ret_str) {
 
   if (line != NULL) {
     query_len = 0;
-    token = strtok_r(line, " ", &line);
+    token = strtok_r(line, " ", &saveptr);
     while (token != NULL) {
       ret_str[query_len] = token;
       query_len++;
-      token = strtok_r(NULL, " ", &line);
+      token = strtok_r(NULL, " ", &saveptr);
     }
     eof = strchr(ret_str[query_len - 1], '\n');
     *eof = '\0';

@@ -174,7 +174,7 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   Verify333(ret_list != NULL);
   key = (HTKey_t)FNVHash64((unsigned char*)query[0], strlen(query[0]));
 
-  if (HashTable_Find((HashTable*)index, key, &kv)) {
+  if (!HashTable_Find((HashTable*)index, key, &kv)) {
     LinkedList_Free(ret_list, (LLPayloadFreeFnPtr)free);
     return NULL;
   }

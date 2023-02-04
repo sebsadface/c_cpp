@@ -23,7 +23,7 @@
 #include "./DocTable.h"
 #include "./MemIndex.h"
 
-#define LINE_SIZE 100
+#define LINE_SIZE 256
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper function declarations, constants, etc
@@ -85,8 +85,8 @@ static void Usage(void) {
 static void ProcessQueries(DocTable* dt, MemIndex* mi) {
   LinkedList* res_list;
   SearchResult* res;
-  char** query;
-  int i, query_len;
+  char* query[LINE_SIZE];
+  int query_len;
 
   query_len = GetNextLine(stdin, query);
   while (query_len != -1) {
@@ -101,7 +101,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 }
 
 static int GetNextLine(FILE* f, char** ret_str) {
-  char* line;
+  char line[LINE_SIZE];
   int i;
   printf("enter query:\n");
   fgets(line, LINE_SIZE, f);

@@ -109,8 +109,11 @@ void MemIndex_AddPostingList(MemIndex* index, char* word, DocID_t doc_id,
     //   (3) insert the the new WordPostings into the inverted index (ie, into
     //       the "index" table).
     wp = (WordPostings*)malloc(sizeof(WordPostings));
+    Verify333(wp != NULL);
+
     wp->word = word;
     wp->postings = HashTable_Allocate(16);
+    Verify333(wp->postings != NULL);
 
     mi_kv.key = key;
     mi_kv.value = (HTValue_t)wp;
@@ -181,6 +184,9 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
       HTIterator_Next(posting_iter);
     }
     HTIterator_Free(posting_iter);
+  } else {
+    LinkedList_Free(ret_list, (LLPayloadFreeFnPtr)free);
+    return NULL;
   }
   // Great; we have our search results for the first query
   // word.  If there is only one query word, we're done!

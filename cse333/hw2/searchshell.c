@@ -68,6 +68,10 @@ int main(int argc, char** argv) {
 
   ProcessQueries(dt, mi);
 
+  printf("shutting down...");
+  DocTable_Free(dt);
+  MemIndex_Free(mi);
+
   return EXIT_SUCCESS;
 }
 
@@ -105,29 +109,30 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
     }
     query_len = GetNextLine(stdin, query);
   }
+  free(query);
 }
 
 static int GetNextLine(FILE* f, char** ret_str) {
   char line[LINE_SIZE];
   char* saveptr;
   char* token;
+  char* eof;
   int query_len;
   printf("enter query:\n");
   fgets(line, LINE_SIZE, f);
 
-  if (line == NULL) {
-    return -1;
-  }
+  if (line != NULL) {
+    query_len = 0;
+    token = strtok_r(line, " ", &saveptr);
+    while (token != NULL) {
+      ret_str[query_len] = token;
+      query_len++;
+      token = strtok_r(NULL, " ", &saveptr);
+    }
+    strchr(ret_str[query_len - 1], '\n');
+    *eof = '\0';
 
-  query_len = 0;
-  token = strtok_r(line, " ", &saveptr);
-  while (token != NULL) {
-    ret_str[query_len] = token;
-    query_len++;
-    token = strtok_r(NULL, " ", &saveptr);
+    return query_len;
   }
-  char* eof = strchr(ret_str[query_len - 1], '\n');
-  *eof = '\0';
-
-  return query_len;  // you may want to change this
+  return -1;  // you may want to change this
 }

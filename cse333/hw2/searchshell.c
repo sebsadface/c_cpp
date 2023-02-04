@@ -17,6 +17,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <sys/stat.h>
 
 #include "libhw1/CSE333.h"
 #include "./CrawlFileTree.h"
@@ -83,8 +84,6 @@ static void Usage(void) {
 static void ProcessQueries(DocTable* dt, MemIndex* mi) {
   char* line;
   char* word;
-  char* file_path;
-  char* ret_str;
   char** query;
   LinkedList* ret_list;
   SearchResult* res;

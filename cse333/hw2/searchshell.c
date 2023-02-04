@@ -23,6 +23,8 @@
 #include "./DocTable.h"
 #include "./MemIndex.h"
 
+#define LINE_SIZE 100
+
 //////////////////////////////////////////////////////////////////////////////
 // Helper function declarations, constants, etc
 static void Usage(void);
@@ -81,31 +83,39 @@ static void Usage(void) {
 }
 
 static void ProcessQueries(DocTable* dt, MemIndex* mi) {
-  char line;
-  char* word;
-  char** query;
-  LinkedList* ret_list;
+  LinkedList* res_list;
   SearchResult* res;
-  int i;
+  char** query;
+  int i, query_len;
 
-  while (line != '\0') {
-    printf("enter query:\n");
-    if (fgets(&line, _XOPEN_SOURCE, stdin) != NULL) {
-      word = strtok(&line, " ");
-      i = 0;
-      while (word != NULL) {
-        query[i] = word;
-        i++;
-        word = strtok(NULL, " ");
-      }
-      ret_list = MemIndex_Search(mi, query, i + 1);
-      while (LinkedList_Pop(ret_list, (LLPayload_t*)&res)) {
-        printf("  %s. (%d)\n", DocTable_GetDocName(dt, res->doc_id), res->rank);
-      }
+  query_len = GetNextLine(stdin, query);
+  while (query_len != -1) {
+    res_list = MemIndex_Search(mi, query, query_len);
+
+    while (LinkedList_Pop(res_list, (LLPayload_t*)&res)) {
+      printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id), res->rank);
     }
+
+    query_len = GetNextLine(stdin, query);
   }
 }
 
 static int GetNextLine(FILE* f, char** ret_str) {
-  return -1;  // you may want to change this
+  char* line;
+  int i;
+  printf("enter query:\n");
+  fgets(line, LINE_SIZE, f);
+
+  if (line == NULL) {
+    return -1;
+  }
+
+  i = 0;
+  ret_str[i] = strtok(line, " ");
+  while (ret_str[i] != NULL) {
+    i++;
+    ret_str[i] = strtok(NULL, " ");
+  }
+
+  return i;  // you may want to change this
 }

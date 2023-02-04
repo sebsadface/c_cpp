@@ -102,6 +102,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 
 static int GetNextLine(FILE* f, char** ret_str) {
   char line[LINE_SIZE];
+  char* saveptr;
   int i;
   printf("enter query:\n");
   fgets(line, LINE_SIZE, f);
@@ -111,10 +112,10 @@ static int GetNextLine(FILE* f, char** ret_str) {
   }
 
   i = 0;
-  ret_str[i] = strtok(line, " ");
+  ret_str[i] = strtok_r(line, " ", &saveptr);
   while (ret_str[i] != NULL) {
     i++;
-    ret_str[i] = strtok(NULL, " ");
+    ret_str[i] = strtok_r(NULL, " ", &saveptr);
   }
 
   return i;  // you may want to change this

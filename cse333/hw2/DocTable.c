@@ -68,14 +68,21 @@ DocID_t DocTable_Add(DocTable* table, char* doc_name) {
   if (HashTable_Find(table->name_to_id,
                      FNVHash64((unsigned char*)doc_name, strlen(doc_name)),
                      &old_kv)) {
+    // The document already exist
     res = *(DocID_t*)(old_kv.value);
     return res;
   }
 
+  // The document does not exist so we need to allocate spcae for the new ID
   doc_copy = (char*)malloc(sizeof(char) * (strlen(doc_name) + 1));
+  Verify333(doc_copy != NULL);
   doc_id = (DocID_t*)malloc(sizeof(DocID_t));
+  Verify333(doc_id != NULL);
 
+  // Make a copy of the document name
   strncpy(doc_copy, doc_name, strlen(doc_name) + 1);
+
+  // Update the doc_id
   *doc_id = table->max_id;
   table->max_id++;
 
@@ -115,7 +122,7 @@ DocID_t DocTable_GetDocID(DocTable* table, char* doc_name) {
     return res;
   }
 
-  return INVALID_DOCID;  // you may want to change this
+  return INVALID_DOCID;
 }
 
 char* DocTable_GetDocName(DocTable* table, DocID_t doc_id) {
@@ -133,7 +140,7 @@ char* DocTable_GetDocName(DocTable* table, DocID_t doc_id) {
     return kv.value;
   }
 
-  return NULL;  // you may want to change this
+  return NULL;
 }
 
 HashTable* DT_GetIDToNameTable(DocTable* table) {

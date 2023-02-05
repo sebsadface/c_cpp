@@ -217,18 +217,24 @@ static void InsertContent(HashTable* tab, char* content) {
 
   while (*cur_ptr != '\0') {
     if (isalpha(*cur_ptr)) {
+      // We found a new valid character
       *cur_ptr = tolower(*cur_ptr);
 
       if (!isalpha(*word_start)) {
+        // This valid character is the beginning of a new word
         word_start = cur_ptr;
       }
     }
 
     if (!isalpha(*cur_ptr) && isalpha(*word_start)) {
+      // We found a new word
+
       *cur_ptr = '\0';
 
       AddWordPosition(tab, word_start, word_start - content);
 
+      // Move the word pointer to the null terminator and we will move it again
+      // when we find the next valid character
       word_start = cur_ptr;
     }
     cur_ptr++;
@@ -263,12 +269,20 @@ static void AddWordPosition(HashTable* tab, char* word,
     // No; this is the first time we've seen this word.  Allocate and prepare
     // a new WordPositions structure, and append the new position to its list
     // using a similar ugly hack as right above.
+
+    // Allocate and prepare a new WordPositions structure
     wp = (WordPositions*)malloc(sizeof(WordPositions));
     Verify333(wp != NULL);
     wp->word = (char*)malloc(sizeof(char) * (strlen(word) + 1));
-    strncpy(wp->word, word, strlen(word) + 1);
+    Verify333(wp->word != NULL);
     wp->positions = LinkedList_Allocate();
+    Verify333(wp->positions != NULL);
+
+    // Copy the word and append the postion into the WordPosition structure
+    strncpy(wp->word, word, strlen(word) + 1);
     LinkedList_Append(wp->positions, (LLPayload_t)(int64_t)pos);
+
+    // Prepare and add the WordPosition structure to the hash table
     kv.key = hash_key;
     kv.value = (HTValue_t)wp;
     Verify333(!HashTable_Insert(tab, kv, &kv));

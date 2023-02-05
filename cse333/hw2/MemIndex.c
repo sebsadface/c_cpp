@@ -172,22 +172,37 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   // appears in that document).  Finally, append the SearchResult onto retline.
   ret_list = LinkedList_Allocate();
   Verify333(ret_list != NULL);
+
+  // Get the key
   key = (HTKey_t)FNVHash64((unsigned char*)query[0], strlen(query[0]));
 
   if (!HashTable_Find((HashTable*)index, key, &kv)) {
+    // Did not find the key
     LinkedList_Free(ret_list, (LLPayloadFreeFnPtr)free);
     return NULL;
   }
 
+  // Get the word postings
   wp = (WordPostings*)kv.value;
+
   HTIterator* posting_iter = HTIterator_Allocate(wp->postings);
+
+  // Iterate through all the postings
   while (HTIterator_IsValid(posting_iter)) {
     Verify333(HTIterator_Get(posting_iter, &kv));
+
+    // Allocate new search result
     SearchResult* res = (SearchResult*)malloc(sizeof(SearchResult));
     Verify333(res != NULL);
+
+    // Add values to the search result
     res->doc_id = kv.key;
     res->rank = LinkedList_NumElements((LinkedList*)kv.value);
+
+    // Add the search result to the result list
     LinkedList_Append(ret_list, (LLPayload_t)res);
+
+    // Move to the next posting
     HTIterator_Next(posting_iter);
   }
   HTIterator_Free(posting_iter);
@@ -229,14 +244,18 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
     // If it isn't, we delete that docID from the search result list.
     ll_it = LLIterator_Allocate(ret_list);
     Verify333(ll_it != NULL);
+
     num_docs = LinkedList_NumElements(ret_list);
     wp = (WordPostings*)kv.value;
+
     for (j = 0; j < num_docs; j++) {
       LLIterator_Get(ll_it, (LLPayload_t*)&res);
       if (HashTable_Find((HashTable*)wp->postings, (HTKey_t)res->doc_id, &kv)) {
+        // We found a matching document, add the reank
         res->rank += LinkedList_NumElements(kv.value);
         LLIterator_Next(ll_it);
       } else {
+        // We didn't find a matching document, remove it from the result list
         LLIterator_Remove(ll_it, (LLPayloadFreeFnPtr)free);
       }
     }

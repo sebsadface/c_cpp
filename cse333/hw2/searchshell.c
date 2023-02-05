@@ -23,12 +23,18 @@
 #include "./DocTable.h"
 #include "./MemIndex.h"
 
-#define LINE_SIZE 8192
+#define LINE_SIZE 8192  // size of the query buffer
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper function declarations, constants, etc
 static void Usage(void);
+
+// Get the queries, process the quries, and print the results
 static void ProcessQueries(DocTable* dt, MemIndex* mi);
+
+// Get the next line of query and parse it into words
+// Returns -1 when eof reached, 0 when query is empty (no valid characters), and
+// the length of the query array otherwise.
 static int GetNextLine(FILE* f, char** ret_str);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -60,13 +66,17 @@ int main(int argc, char** argv) {
   DocTable* dt;
 
   printf("Indexing '%s'\n", argv[1]);
+
   if (!CrawlFileTree(argv[1], &dt, &mi)) {
+    // Crawling failed
     fprintf(stderr, "Path '%s' is not indexable\n", argv[1]);
     Usage();
   }
 
+  // Get the queries, process the quries, and print the results
   ProcessQueries(dt, mi);
 
+  // Cleaning up
   printf("shutting down...\n");
   MemIndex_Free(mi);
   DocTable_Free(dt);
@@ -86,73 +96,93 @@ static void Usage(void) {
 }
 
 static void ProcessQueries(DocTable* dt, MemIndex* mi) {
-  LinkedList* ll;
-  LLIterator* iter;
-  SearchResult* res;
+  LinkedList* ll;     // Result list
+  LLIterator* iter;   // Result list iterator
+  SearchResult* res;  // A single search result
   int qurey_len, i;
-  char** qurey = (char**)malloc((sizeof(char*)) * (LINE_SIZE));
+  char** qurey = (char**)malloc((sizeof(char*)) * (LINE_SIZE));  // Query array
   Verify333(qurey != NULL);
 
-  qurey_len = GetNextLine(stdin, qurey);
+  qurey_len = GetNextLine(stdin, qurey);  // Get the fist line of qurey
+
+  // Keep running until a eof is reached
   while (qurey_len != -1) {
+    // Skip for next line of query if the current qurey is empty
     if (qurey_len > 0) {
+      // Get the index for the query array
       ll = MemIndex_Search(mi, qurey, qurey_len);
+
+      // Skip for next line of query if no matching documents were found
       if (ll != NULL) {
         iter = LLIterator_Allocate(ll);
+        Verify333(iter != NULL);
+
+        // Iterate through the result list and print out the results
         while (LLIterator_IsValid(iter)) {
           LLIterator_Get(iter, (LLPayload_t*)&res);
           printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id),
                  res->rank);
           LLIterator_Next(iter);
         }
+
         LLIterator_Free(iter);
         LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
       }
     }
+
+    // Free the resources we allocated for each parsed words in the query
     for (i = 0; i < qurey_len; i++) {
       free(qurey[i]);
     }
 
+    // Get a new line of query
     qurey_len = GetNextLine(stdin, qurey);
   }
+
+  // EOF reached, clean the resources for query array
   free(qurey);
 }
 
 static int GetNextLine(FILE* f, char** ret_str) {
   char buffer[LINE_SIZE];
-  char* token;
-  char* last;
+  char* token;  // A parsed token
+  char* last;   // previously parsed string
   int i, ret_len, eof;
-
   ret_len = i = 0;
 
   printf("enter query:\n");
+
   if (fgets(buffer, sizeof(buffer), f) == NULL) {
+    // Got a eof character (ctrl+d)
     return -1;
   }
 
   if (strlen(buffer) == 1) {
+    // Got a empty line
     return 0;
   }
 
+  // Eliminating tailing whitespace
   eof = (int)strlen(buffer);
-
   while (eof > 0 && isspace(buffer[eof - 1])) {
     eof--;
   }
   buffer[eof] = '\0';
 
+  // Set all alphabets to lower case
   while (buffer[i] != '\0') {
     buffer[i] = (char)tolower((int)buffer[i]);
     i++;
   }
 
+  // Parse the buffer into words and store them into the query array
   token = strtok_r(buffer, " ", &last);
   while (token != NULL) {
     ret_str[ret_len] = (char*)malloc(sizeof(char) * strlen(token) + 1);
     strncpy(ret_str[ret_len], token, strlen(token) + 1);
-    ret_len++;
+    ret_len++;  // Update the length of the query array
     token = strtok_r(NULL, " ", &last);
   }
+
   return ret_len;
 }

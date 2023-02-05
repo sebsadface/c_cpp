@@ -106,8 +106,8 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
           LLIterator_Next(iter);
         }
         LLIterator_Free(iter);
+        LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
       }
-      LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
     }
 
     qurey_len = GetNextLine(stdin, qurey);

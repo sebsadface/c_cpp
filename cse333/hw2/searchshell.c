@@ -129,7 +129,7 @@ static int GetNextLine(FILE* f, char** ret_str) {
     buffer[i] = (char)tolower((int)buffer[i]);
     i++;
   }
-  printf("%d\n", strlen(buffer));
+  printf("%ld\n", strlen(buffer));
   token = strtok_r(buffer, " ", &last);
   while (token != NULL) {
     ret_str[ret_len] = token;

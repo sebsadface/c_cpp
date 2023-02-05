@@ -134,7 +134,7 @@ static int GetNextLine(FILE* f, char** ret_str) {
 
   eof = (int)strlen(buffer);
 
-  while (eof > 0 && issapce(buffer[eof - 1])) {
+  while (eof > 0 && isspace(buffer[eof - 1])) {
     eof--;
   }
   buffer[eof] = '\0';

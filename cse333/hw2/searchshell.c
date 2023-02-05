@@ -90,7 +90,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
   LLIterator* iter;
   SearchResult* res;
   int qurey_len;
-  char** qurey = (char**)malloc(sizeof(char*) * LINE_SIZE + 1);
+  char** qurey = (char**)malloc(sizeof(char*) * LINE_SIZE);
   Verify333(qurey != NULL);
 
   qurey_len = GetNextLine(stdin, qurey);
@@ -146,7 +146,7 @@ static int GetNextLine(FILE* f, char** ret_str) {
 
   token = strtok_r(buffer, " ", &last);
   while (token != NULL) {
-    ret_str[ret_len] = token;
+    strcpy(ret_str[ret_len], token);
     ret_len++;
     token = strtok_r(NULL, " ", &last);
   }

@@ -90,7 +90,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
   LLIterator* iter;
   SearchResult* res;
   int qurey_len;
-  char** qurey = (char**)malloc(sizeof(char*) * LINE_SIZE);
+  char** qurey = (char**)calloc(0, sizeof(char*) * LINE_SIZE);
   Verify333(qurey != NULL);
 
   qurey_len = GetNextLine(stdin, qurey);

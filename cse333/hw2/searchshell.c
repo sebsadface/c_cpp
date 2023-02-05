@@ -128,7 +128,7 @@ static int GetNextLine(FILE* f, char** ret_str) {
     return -1;
   }
 
-  if (strlen(buffer) <= 1) {
+  if (strlen(buffer) == 1) {
     return 0;
   }
 

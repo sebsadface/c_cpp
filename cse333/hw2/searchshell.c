@@ -141,5 +141,6 @@ static int GetNextLine(FILE* f, char** ret_str) {
   }
   *strchr(ret_str[ret_len - 1], '\n') = '\0';
 
+  printf("ret_len: %d\n", ret_len);
   return ret_len;  // you may want to change this
 }

@@ -109,11 +109,11 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
         LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
       }
     }
+    for (i = 0; i < qurey_len; i++) {
+      free(qurey[i]);
+    }
 
     qurey_len = GetNextLine(stdin, qurey);
-  }
-  for (i = 0; i < qurey_len; i++) {
-    free(qurey[i]);
   }
   free(qurey);
 }

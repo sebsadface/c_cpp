@@ -131,10 +131,8 @@ static int GetNextLine(FILE* f, char** ret_str) {
 
   token = strtok_r(buffer, " ", &last);
   while (token != NULL) {
-    if (strcmp(token, " ") != 0) {
-      ret_str[ret_len] = token;
-      ret_len++;
-    }
+    ret_str[ret_len] = token;
+    ret_len++;
     token = strtok_r(NULL, " ", &last);
   }
   *strchr(ret_str[ret_len - 1], '\n') = '\0';

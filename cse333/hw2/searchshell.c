@@ -95,7 +95,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 
   qurey_len = GetNextLine(stdin, qurey);
   while (qurey_len != -1) {
-    if (qurey_len > 1) {
+    if (qurey_len > 0) {
       ll = MemIndex_Search(mi, qurey, qurey_len);
       if (ll != NULL) {
         iter = LLIterator_Allocate(ll);
@@ -128,11 +128,15 @@ static int GetNextLine(FILE* f, char** ret_str) {
     return -1;
   }
 
+  if (strlen(buffer) <= 1) {
+    return 0;
+  }
+
   while (buffer[i] != '\n') {
     buffer[i] = (char)tolower((int)buffer[i]);
     i++;
   }
-  printf("%ld\n", strlen(buffer));
+
   token = strtok_r(buffer, " ", &last);
   while (token != NULL) {
     ret_str[ret_len] = token;

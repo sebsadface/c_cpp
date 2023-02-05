@@ -119,7 +119,7 @@ static int GetNextLine(FILE* f, char** ret_str) {
   char buffer[LINE_SIZE];
   char* token;
   char* last;
-  int i, ret_len;
+  int i, ret_len, eof;
 
   ret_len = i = 0;
 
@@ -132,20 +132,24 @@ static int GetNextLine(FILE* f, char** ret_str) {
     return 0;
   }
 
-  while (buffer[i] != '\n') {
+  eof = (int)strlen(buffer);
+
+  while (eof > 0 && issapce(buffer[eof - 1])) {
+    eof--;
+  }
+  buffer[eof] = '\0';
+
+  while (buffer[i] != '\0') {
     buffer[i] = (char)tolower((int)buffer[i]);
     i++;
   }
 
   token = strtok_r(buffer, " ", &last);
   while (token != NULL) {
-    if (!isspace(token)) {
-      ret_str[ret_len] = token;
-      ret_len++;
-    }
+    ret_str[ret_len] = token;
+    ret_len++;
     token = strtok_r(NULL, " ", &last);
   }
-  *strchr(ret_str[ret_len - 1], '\n') = '\0';
 
   printf("ret_len: %d\n", ret_len);
   return ret_len;  // you may want to change this

@@ -149,8 +149,7 @@ static int GetNextLine(FILE* f, char** ret_str) {
 
   token = strtok_r(buffer, " ", &last);
   while (token != NULL) {
-    char c[strlen(token) + 1];
-    ret_str[ret_len] = c;
+    ret_str[ret_len] = (char*)malloc(sizeof(char) * strlen(token) + 1);
     strcpy(ret_str[ret_len], token);
     ret_len++;
     token = strtok_r(NULL, " ", &last);

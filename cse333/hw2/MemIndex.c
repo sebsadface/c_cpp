@@ -172,7 +172,8 @@ LinkedList* MemIndex_Search(MemIndex* index, char* query[], int query_len) {
   // appears in that document).  Finally, append the SearchResult onto retline.
   ret_list = LinkedList_Allocate();
   Verify333(ret_list != NULL);
-  char* word = query[0];
+  char* word;
+  strcpy(word, query[0]);
   key = (HTKey_t)FNVHash64((unsigned char*)word, strlen(word));
 
   if (!HashTable_Find((HashTable*)index, key, &kv)) {

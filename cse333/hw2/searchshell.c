@@ -95,17 +95,20 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 
   qurey_len = GetNextLine(stdin, qurey);
   while (qurey_len != -1) {
-    ll = MemIndex_Search(mi, qurey, qurey_len);
-    if (ll != NULL) {
-      iter = LLIterator_Allocate(ll);
-      while (LLIterator_IsValid(iter)) {
-        LLIterator_Get(iter, (LLPayload_t*)&res);
-        printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id), res->rank);
-        LLIterator_Next(iter);
+    if (qurey_len != 0) {
+      ll = MemIndex_Search(mi, qurey, qurey_len);
+      if (ll != NULL) {
+        iter = LLIterator_Allocate(ll);
+        while (LLIterator_IsValid(iter)) {
+          LLIterator_Get(iter, (LLPayload_t*)&res);
+          printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id),
+                 res->rank);
+          LLIterator_Next(iter);
+        }
+        LLIterator_Free(iter);
       }
-      LLIterator_Free(iter);
+      LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
     }
-    LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
     qurey_len = GetNextLine(stdin, qurey);
   }
   free(qurey);

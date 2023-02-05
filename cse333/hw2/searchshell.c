@@ -89,7 +89,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
   LinkedList* ll;
   LLIterator* iter;
   SearchResult* res;
-  int qurey_len;
+  int qurey_len, i;
   char** qurey = (char**)malloc((sizeof(char*)) * (LINE_SIZE));
   Verify333(qurey != NULL);
 
@@ -111,6 +111,9 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
     }
 
     qurey_len = GetNextLine(stdin, qurey);
+  }
+  for (i = 0; i < qurey_len; i++) {
+    free(qurey[i]);
   }
   free(qurey);
 }
@@ -146,9 +149,8 @@ static int GetNextLine(FILE* f, char** ret_str) {
 
   token = strtok_r(buffer, " ", &last);
   while (token != NULL) {
-    // ret_str[ret_len] = (char*)malloc(sizeof(char) * strlen(token) + 1);
-    // strcpy(ret_str[ret_len], token);
-    memcpy(ret_str[ret_len], token, strlen(token) + 1);
+    ret_str[ret_len] = (char*)malloc(sizeof(char) * strlen(token) + 1);
+    strcpy(ret_str[ret_len], token);
     ret_len++;
     token = strtok_r(NULL, " ", &last);
   }

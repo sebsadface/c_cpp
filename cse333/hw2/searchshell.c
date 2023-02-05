@@ -95,20 +95,18 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
 
   qurey_len = GetNextLine(stdin, qurey);
   while (qurey_len != -1) {
-    if (qurey_len != 0) {
-      ll = MemIndex_Search(mi, qurey, qurey_len);
-      if (ll != NULL) {
-        iter = LLIterator_Allocate(ll);
-        while (LLIterator_IsValid(iter)) {
-          LLIterator_Get(iter, (LLPayload_t*)&res);
-          printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id),
-                 res->rank);
-          LLIterator_Next(iter);
-        }
-        LLIterator_Free(iter);
+    ll = MemIndex_Search(mi, qurey, qurey_len);
+    if (ll != NULL) {
+      iter = LLIterator_Allocate(ll);
+      while (LLIterator_IsValid(iter)) {
+        LLIterator_Get(iter, (LLPayload_t*)&res);
+        printf("  %s (%d)\n", DocTable_GetDocName(dt, res->doc_id), res->rank);
+        LLIterator_Next(iter);
       }
-      LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
+      LLIterator_Free(iter);
     }
+    LinkedList_Free(ll, (LLPayloadFreeFnPtr)free);
+
     qurey_len = GetNextLine(stdin, qurey);
   }
   free(qurey);
@@ -127,18 +125,18 @@ static int GetNextLine(FILE* f, char** ret_str) {
     return -1;
   }
 
-  while (buffer[i] != '\n') {
+  while (buffer[i] != '\0') {
     buffer[i] = (char)tolower((int)buffer[i]);
     i++;
   }
 
   token = strtok_r(buffer, " ", &last);
-  while (token != NULL && *token != '\n') {
+  while (token != NULL) {
     ret_str[ret_len] = token;
     ret_len++;
     token = strtok_r(NULL, " ", &last);
   }
   *strchr(ret_str[ret_len - 1], '\n') = '\0';
 
-  return ret_len - 1;  // you may want to change this
+  return ret_len;  // you may want to change this
 }

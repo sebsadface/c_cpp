@@ -266,7 +266,7 @@ static void AddWordPosition(HashTable* tab, char* word,
     wp = (WordPositions*)malloc(sizeof(WordPositions));
     Verify333(wp != NULL);
     wp->word = (char*)malloc(sizeof(char) * (strlen(word) + 1));
-    strcpy(wp->word, word);
+    strncpy(wp->word, word, strlen(word) + 1);
     wp->positions = LinkedList_Allocate();
     LinkedList_Append(wp->positions, (LLPayload_t)(int64_t)pos);
     kv.key = hash_key;

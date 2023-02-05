@@ -33,12 +33,13 @@
 # Bug 3
 
 ## A) How is your program acting differently than you expect it to?
-- searchshell does not display the results in the subdirectories, and gives a segfault when giveing ctrl+d as a entry.
+- searchshell giving a "Invalid read of size 1" memory error from strlen in MemIndex_Search line 175 when running with valgrind.
 
 ## B) Brainstorm a few possible causes of the bug
-- 
-- 
-- 
+- Maybe something went wrong when copying the parsed string from user to the query array at searchshell.c:152, maybe each words in the query did not end with a null terminator.
+- Maybe I didn't implement the MemIndex correctly at MemIndex.c:214 and 174, strlen was not called correctly.
+- Maybe I didn't allocate memory for the query array correctly, beacause we didn't know the exact length of each of the words from user's command line input, so when I try to used the memory at line 99, something when wrong.
 
 ## C) How you fixed the bug and why the fix was necessary
-- 
+
+- Based on the information on the internet, invalid read of size 1. usually happens when the program is trying to read one byte from somewhere that Valgrind doesn't like, e.g. Read to an address one byte past the end of a malloced buffer. Also, strtok_r does include a null terminator for each parse it does. So the problem should be when copying the parsed words to the query array, the null got lost or the length of the string didn't include the null terminator. I fixed it by mallocing space that is one byte longer than the strlen of the parsed word and then use strcpy to copy the string into the array. This way when strlen at MemIndex.c:214 and 174 trys to read the string, it won't read past the space allocated for the string.

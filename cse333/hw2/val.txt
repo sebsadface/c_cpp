@@ -1,0 +1,25 @@
+ulysses
+==460441== Invalid read of size 1
+==460441==    at 0x484A5F6: strlen (vg_replace_strmem.c:495)
+==460441==    by 0x402A67: MemIndex_Search (MemIndex.c:175)
+==460441==    by 0x40143D: ProcessQueries (searchshell.c:99)
+==460441==    by 0x40134D: main (searchshell.c:68)
+==460441==  Address 0x1ffeffdf90 is on thread 1's stack
+==460441==  8088 bytes below stack pointer
+==460441== 
+==460441== Invalid read of size 1
+==460441==    at 0x484A604: strlen (vg_replace_strmem.c:495)
+==460441==    by 0x402A67: MemIndex_Search (MemIndex.c:175)
+==460441==    by 0x40143D: ProcessQueries (searchshell.c:99)
+==460441==    by 0x40134D: main (searchshell.c:68)
+==460441==  Address 0x1ffeffdf91 is on thread 1's stack
+==460441==  8087 bytes below stack pointer
+==460441== 
+==460441== Invalid read of size 1
+==460441==    at 0x403936: FNVHash64 (HashTable.c:63)
+==460441==    by 0x402A7A: MemIndex_Search (MemIndex.c:175)
+==460441==    by 0x40143D: ProcessQueries (searchshell.c:99)
+==460441==    by 0x40134D: main (searchshell.c:68)
+==460441==  Address 0x1ffeffdf90 is on thread 1's stack
+==460441==  8080 bytes below stack pointer
+==460441== 

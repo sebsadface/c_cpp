@@ -11,7 +11,7 @@ HEADER = Vector.h
 
 # default target
 $(EXE): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -o $(EXE) $(OBJS)
 
 # individual source files
 # `%` is a makefile internal wildcard which will serve as a 

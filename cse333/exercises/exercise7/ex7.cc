@@ -68,5 +68,5 @@ void VerifyVector(const Vector& actual, const float& expectedX,
   cout << "Testing " << testName << "..." << endl;
   cout << "Expected: (" << expectedX << "," << expectedY << "," << expectedZ
        << ")" << endl;
-  cout << "Actual: " << actual << endl;
+  cout << "Actual  : " << actual << endl;
 }

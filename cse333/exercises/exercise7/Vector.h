@@ -8,8 +8,10 @@
 
 #include <iostream>
 
+using std::ostream;
+
 namespace vector333 {
-// A Vector represents a vector in 3-space.
+// A Vector represents a vector in 3d-space.
 class Vector {
  public:
   // Default Constructor: construct the vector (0,0,0)
@@ -36,17 +38,22 @@ class Vector {
   // Dot product
   friend float operator*(const Vector& v1, const Vector& v2);
 
-  // Vector scaling
+  // Vector scaling (v * k)
   friend Vector operator*(const Vector& v, const float k);
-  friend Vector operator*(const float k, const Vector& v);
 
-  friend std::ostream& operator<<(std::ostream& out, const Vector& v);
+  // Stream output as (a,b,c)
+  friend ostream& operator<<(ostream& out, const Vector& v);
 
  private:
+  // The representation of a Vector is a three-element floating-point array
+  // giving the x, y, and z magnitudes.
   float* coord_;
 };  // class Vector
 
-// Vector operations
+// Vector scaling (k * v)
+Vector operator*(const float k, const Vector& v);
+
+// Vector addition and subtraction operations
 Vector operator+(const Vector& v1, const Vector& v2);
 Vector operator-(const Vector& v1, const Vector& v2);
 

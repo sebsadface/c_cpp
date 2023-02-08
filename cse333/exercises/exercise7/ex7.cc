@@ -8,9 +8,9 @@
 
 #include "Vector.h"
 
-static const float X1 = 1;
-static const float Y1 = 3;
-static const float Z1 = 2;
+static const float X1 = 7;
+static const float Y1 = 9;
+static const float Z1 = 24;
 static const float X2 = -2.5;
 static const float Y2 = 3.1;
 static const float Z2 = 2.7;

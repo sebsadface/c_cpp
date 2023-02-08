@@ -37,7 +37,8 @@ class Vector {
   friend float operator*(const Vector& v1, const Vector& v2);
 
   // Vector scaling
-  friend Vector operator*(const Vector& v, const float f);
+  friend Vector operator*(const Vector& v, const float k);
+  friend Vector operator*(const float k, const Vector& v);
 
   friend std::ostream& operator<<(std::ostream& out, const Vector& v);
 

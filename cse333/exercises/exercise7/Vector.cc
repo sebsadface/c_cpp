@@ -40,14 +40,16 @@ float operator*(const Vector& v1, const Vector& v2) {
          v1.coord_[2] * v2.coord_[2];
 }
 
-Vector operator*(const Vector& v, const float f) {
+Vector operator*(const Vector& v, const float k) {
   Vector ret = Vector(v);
-  ret.coord_[0] *= f;
-  ret.coord_[1] *= f;
-  ret.coord_[2] *= f;
+  ret.coord_[0] *= k;
+  ret.coord_[1] *= k;
+  ret.coord_[2] *= k;
 
   return ret;
 }
+
+Vector operator*(const float k, const Vector& v) { return v * k; }
 
 std::ostream& operator<<(std::ostream& out, const Vector& v) {
   out << "(" << v.coord_[0] << "," << v.coord_[1] << "," << v.coord_[2] << ")";

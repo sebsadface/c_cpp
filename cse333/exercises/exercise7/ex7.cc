@@ -23,8 +23,8 @@ using vector333::Vector;
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper function declarations
-void VerifyVector(const float& expectedX, const float& expectedY,
-                  const float& expectedZ, const Vector& actual,
+void VerifyVector(const Vector& actual, const float& expectedX,
+                  const float& expectedY, const float& expectedZ,
                   const string& testName);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -36,26 +36,33 @@ int main() {
   Vector v1, v2, v3, v4;
 
   v1 = Vector();
-  VerifyVector(0.0, 0.0, 0.0, v1, "Default ctor");
+  VerifyVector(v1, 0.0, 0.0, 0.0, "Default ctor");
 
   v2 = Vector(X1, Y1, Z1);
-  VerifyVector(X1, Y1, Z1, v2, "3-arg ctor");
+  VerifyVector(v2, X1, Y1, Z1, "3-arg ctor");
 
   v3 = Vector(v2);
-  VerifyVector(X1, Y1, Z1, v3, "cctor");
+  VerifyVector(v3, X1, Y1, Z1, "cctor");
 
   v4 = Vector(X2, Y2, Z2);
   v1 = v3 = v4;
-  VerifyVector(X2, Y2, Z2, v3, "assignment'='");
-  VerifyVector(X2, Y2, Z2, v1, "assignment'=' chaining");
+  VerifyVector(v3, X2, Y2, Z2, "op=");
+  VerifyVector(v1, X2, Y2, Z2, "op= chaining");
+
+  v1 = v3 += v2;
+  VerifyVector(v3, X1 + X2, Y1 + Y2, Z1 + Z2, "op+=");
+  VerifyVector(v1, X1 + X2, Y1 + Y2, Z1 + Z2, "op+= chaining");
+  v1 = v3 -= v2;
+  VerifyVector(v3, X2, Y2, Z2, "op-=");
+  VerifyVector(v1, X2, Y2, Z2, "op-= chaining");
 
   return EXIT_SUCCESS;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // Helper function definitions
-void VerifyVector(const float& expectedX, const float& expectedY,
-                  const float& expectedZ, const Vector& actual,
+void VerifyVector(const Vector& actual, const float& expectedX,
+                  const float& expectedY, const float& expectedZ,
                   const string& testName) {
   cout << endl;
   cout << "Testing " << testName << "..." << endl;

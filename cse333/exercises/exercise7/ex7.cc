@@ -43,6 +43,12 @@ int main() {
 
   v3 = Vector(v2);
   VerifyVector(X1, Y1, Z1, v3, "cctor");
+
+  v4 = Vector(X2, Y2, Z2);
+  v1 = v3 = v4;
+  VerifyVector(X2, Y2, Z2, v3, "assignment'='");
+  VerifyVector(X2, Y2, Z2, v1, "assignment'=' chaining");
+
   return EXIT_SUCCESS;
 }
 
@@ -52,7 +58,7 @@ void VerifyVector(const float& expectedX, const float& expectedY,
                   const float& expectedZ, const Vector& actual,
                   const string& testName) {
   cout << endl;
-  cout << "Testing: " << testName << "..." << endl;
+  cout << "Testing " << testName << "..." << endl;
   cout << "Expected: (" << expectedX << "," << expectedY << "," << expectedZ
        << ")" << endl;
   cout << "Actual: " << actual << endl;

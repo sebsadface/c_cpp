@@ -37,7 +37,7 @@ class Vector {
   Vector& operator=(const Vector& rhs);
 
   // Updating assignment
-  // Vector& operator+=(const Vector& rhs);
+  Vector& operator+=(const Vector& rhs);
   Vector& operator-=(const Vector& rhs);
 
   // Additional functions that are not members of Vector but

@@ -60,12 +60,12 @@ Vector& Vector::operator=(const Vector& rhs) {
 
 // Updating assignments for vectors
 
-Vector& Vector::operator+=(const Vector& rhs) {
-  v_[0] += rhs.v_[0];
-  v_[1] += rhs.v_[1];
-  v_[2] += rhs.v_[2];
-  return *this;
-}
+// Vector& Vector::operator+=(const Vector& rhs) {
+//   v_[0] += rhs.v_[0];
+//   v_[1] += rhs.v_[1];
+//   v_[2] += rhs.v_[2];
+//   return *this;
+// }
 
 Vector& Vector::operator-=(const Vector& rhs) {
   v_[0] -= rhs.v_[0];

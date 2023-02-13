@@ -10,62 +10,38 @@
  */
 
 #include "Vector.h"
-
 #include <iostream>
-
 using std::ostream;
-
 namespace vector333 {
-
-//////////////////////////////////////////////////////////////////////////////
-// Vector member functions
-
-// default constructor
 Vector::Vector() { init(0.0, 0.0, 0.0); }
-
-// Vector(x,y,z) constructor
 Vector::Vector(const float x, const float y, const float z) { init(x, y, z); }
-
-// copy constructor
 Vector::Vector(const Vector& other) {
   init(other.v_[0], other.v_[1], other.v_[2]);
 }
-
-// private initialization function
-// allocate array for vector and initialize with given coordinates
 void Vector::init(const float x, const float y, const float z) {
   v_ = new float[3];
   v_[0] = x;
   v_[1] = y;
   v_[2] = z;
 }
-
-// destructor - free dynamic storage
 Vector::~Vector() { delete[] v_; }
-
-// Vector assignment
 Vector& Vector::operator=(const Vector& rhs) {
-  // replace state of this with values from rhs; do nothing if
-  // self-asignment. (Even though in this particular case there would
-  // be no harm, it's always best to check for self-assignment and do
-  // nothing if detected.)
   if (this != &rhs) {
     v_[0] = rhs.v_[0];
     v_[1] = rhs.v_[1];
     v_[2] = rhs.v_[2];
   }
-  // return reference to lhs of assignment
   return *this;
 }
 
 // Updating assignments for vectors
 
-// Vector& Vector::operator+=(const Vector& rhs) {
-//   v_[0] += rhs.v_[0];
-//   v_[1] += rhs.v_[1];
-//   v_[2] += rhs.v_[2];
-//   return *this;
-// }
+Vector& operator+=(const Vector& rhs) {
+  v_[0] += rhs.v_[0];
+  v_[1] += rhs.v_[1];
+  v_[2] += rhs.v_[2];
+  return *this;
+}
 
 Vector& Vector::operator-=(const Vector& rhs) {
   v_[0] -= rhs.v_[0];

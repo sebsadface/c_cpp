@@ -3,12 +3,14 @@
 #include <map>
 #include <fstream>
 
+using std::cout;
+using std::endl;
 using std::ifstream;
 using std::map;
 using std::string;
 
 template <typename T>
-bool ReadValue(ifStream& in, T* const output);
+bool ReadValue(ifstream& in, T* const output);
 
 int main(int argc, char** argv) {
   map<string, int> mp;
@@ -24,11 +26,17 @@ int main(int argc, char** argv) {
       mp[*str] = 1;
     }
   }
+
+  for (auto pair : mp) {
+    cout << pair.first << pair.second << endl;
+  }
+
+  delete str;
   return EXIT_SUCCESS;
 }
 
 template <typename T>
-bool ReadValue(ifStream& in, T* const output) {
+bool ReadValue(ifstream& in, T* const output) {
   in >> *output;
 
   if (in.good()) {

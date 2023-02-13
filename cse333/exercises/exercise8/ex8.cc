@@ -7,7 +7,6 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 using std::map;
-using std::pair;
 using std::string;
 
 template <typename T>
@@ -24,7 +23,7 @@ int main(int argc, char** argv) {
     if (it != mp.end()) {
       it->second++;
     } else {
-      mp.insert(pair<string, int>(*str, 1));
+      mp[*str] = 1;
     }
   }
 

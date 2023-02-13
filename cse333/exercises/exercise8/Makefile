@@ -13,7 +13,7 @@ $(EXE): $(OBJS)
 	$(CC) $(CFLAGS) -o $(EXE) $(OBJS)
 
 # Source file
-%.o: %.CC
+%.o: %.cc
 	$(CC) $(CFLAGS) -c $<
 
 # phony target - delete built files (including OS X debug files)

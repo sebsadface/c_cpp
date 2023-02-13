@@ -7,6 +7,7 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 using std::map;
+using std::pair;
 using std::string;
 
 template <typename T>
@@ -23,12 +24,12 @@ int main(int argc, char** argv) {
     if (it != mp.end()) {
       it->second++;
     } else {
-      mp[*str] = 1;
+      mp.insert(pair<string, int>(*str, 1));
     }
   }
 
   for (auto pair : mp) {
-    cout << pair.first << pair.second << endl;
+    cout << pair.first << " " << pair.second << endl;
   }
 
   delete str;

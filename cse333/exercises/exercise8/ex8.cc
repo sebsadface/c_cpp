@@ -1,19 +1,29 @@
 #include <iostream>
 #include <cstdlib>
 #include <map>
+#include <fstream>
 
+using std::ifstream;
 using std::map;
 using std::string;
 
 template <typename T>
 bool ReadValue(ifStream& in, T* const output);
 
-template <typename T>
-int compare(const T& a, const T& b);
-
 int main(int argc, char** argv) {
   map<string, int> mp;
-
+  map<string, int>::iterator it;
+  ifstream ifs;
+  string* const str = new string;
+  ifs.open(argv[1], ifstream::in);
+  while (ReadValue<string>(ifs, str)) {
+    it = mp.find(*str);
+    if (it != mp.end()) {
+      it->second++;
+    } else {
+      mp[*str] = 1;
+    }
+  }
   return EXIT_SUCCESS;
 }
 
@@ -26,15 +36,4 @@ bool ReadValue(ifStream& in, T* const output) {
   } else {
     return false;
   }
-}
-
-template <typename T>
-int compare(const T& a, const T& b) {
-  if (a < b) {
-    return -1;
-  }
-  if (a > b) {
-    return 1;
-  }
-  return 0;
 }

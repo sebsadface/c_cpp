@@ -18,4 +18,4 @@ $(EXE): $(OBJS)
 
 # phony target - delete built files (including OS X debug files)
 clean:
-    rm -f $(EXE) *.o *~ *.dSYM
+	rm -f $(EXE) *.o *~ *.dSYM

@@ -69,13 +69,14 @@ int main(int argc, char** argv) {
 
 template <typename T>
 bool ReadValue(ifstream& in, T* const output) {
+  bool result = in.good();
   // Read a value from the input stream in and parse it into type T, store it
   // into output.
   in >> *output;
 
   // Check if the input stream is in a good state (none of eofbit, failbit and
   // badbit is set).
-  return !in.eof();
+  return result;
 }
 
 void Usage(string message) {

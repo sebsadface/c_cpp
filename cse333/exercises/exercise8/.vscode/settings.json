@@ -3,6 +3,7 @@
         "string": "cpp",
         "iosfwd": "cpp",
         "cstdlib": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "ios": "cpp"
     }
 }

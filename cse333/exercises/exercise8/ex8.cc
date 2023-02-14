@@ -71,10 +71,7 @@ template <typename T>
 bool ReadValue(ifstream& in, T* const output) {
   // Read a value from the input stream in and parse it into type T, store it
   // into output.
-  char c;
-  while (in.get(c) && !isspace(c)) {
-    c >> *output;
-  }
+  in >> *output;
   // Check if the input stream is in a good state (none of eofbit, failbit and
   // badbit is set).
   return in.good();

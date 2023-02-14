@@ -74,7 +74,7 @@ bool ReadValue(ifstream& in, T* const output) {
   in >> *output;
   // Check if the input stream is in a good state (none of eofbit, failbit and
   // badbit is set).
-  return !in.eof() || !in.bad();
+  return !in.eof() || !in.fail();
 }
 
 void Usage(string message) {

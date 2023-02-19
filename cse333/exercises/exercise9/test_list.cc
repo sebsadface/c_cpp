@@ -9,8 +9,8 @@
  * author.
  */
 
-#include <iostream>   // for cout, cerr, endl
-#include <cstdlib>    // for EXIT_SUCCESS, EXIT_FAILURE
+#include <iostream>  // for cout, cerr, endl
+#include <cstdlib>   // for EXIT_SUCCESS, EXIT_FAILURE
 
 #include "IntList.h"
 #include "LinkedIntList.h"
@@ -71,10 +71,14 @@ int main() {
   CheckEquals(kFive, output);
   CheckEquals(4, list->num_elements());
 
+  CheckEquals(true, list->Slice(&output));
+  CheckEquals(kFive, output);
+  CheckEquals(3, list->num_elements());
+
   // remove the front
   CheckEquals(true, list->Pop(&output));
   CheckEquals(kOne, output);
-  CheckEquals(3, list->num_elements());
+  CheckEquals(2, list->num_elements());
 
   // delete the list
   delete list;

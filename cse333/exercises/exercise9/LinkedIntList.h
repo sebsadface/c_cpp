@@ -4,6 +4,9 @@
 #include <memory>
 #include "IntList.h"
 
+using std::shared_ptr;
+using std::weak_ptr;
+
 namespace intlist333 {
 
 // LinkedIntList is an implementation of
@@ -31,11 +34,11 @@ class LinkedIntList : public IntList {
   // to use smart pointers at some point
   struct Node {
     int payload;
-    Node* next;
-    Node* prev;
+    shared_ptr<Node> next;
+    weak_ptr<Node> prev;
   };
-  Node* head_;
-  Node* tail_;
+  shared_ptr<Node> head_;
+  shared_ptr<Node> tail_;
 };
 
 }  // namespace intlist333

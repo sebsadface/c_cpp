@@ -55,6 +55,23 @@ bool LinkedIntList::Pop(int* const payload_ptr) {
   return true;
 }
 
-bool LinkedIntList::Slice(int* const payload_ptr) {}
+bool LinkedIntList::Slice(int* const payload_ptr) {
+  if (this->num_elements_ == 0) {
+    return false;
+  }
+
+  *payload_ptr = this->tail_->payload;
+
+  if (this->num_elements_ == 1) {
+    this->head_ = this->tail_ = nullptr;
+  } else {
+    this->tail_ = this->tail_->prev;
+    this->tail_->next = nullptr;
+  }
+
+  this->num_elements_--;
+
+  return true;
+}
 
 }  // namespace intlist333

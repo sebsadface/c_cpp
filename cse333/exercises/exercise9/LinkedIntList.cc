@@ -13,6 +13,7 @@ void LinkedIntList::Push(const int payload) {
   if (this->num_elements_ == 0) {
     this->head_ = this->tail_ = new_node;
   } else {
+    this->head_->prev = new_node;
     new_node->next = this->head_;
     this->head_ = new_node;
   }
@@ -26,6 +27,7 @@ void LinkedIntList::Append(const int payload) {
   if (this->num_elements_ == 0) {
     this->head_ = this->tail_ = new_node;
   } else {
+    this->tail_->next = new_node;
     new_node->prev = this->tail_;
     this->tail_ = new_node;
   }

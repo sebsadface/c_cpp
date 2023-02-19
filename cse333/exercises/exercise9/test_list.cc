@@ -72,7 +72,7 @@ int main() {
   CheckEquals(4, list->num_elements());
 
   CheckEquals(true, list->Slice(&output));
-  CheckEquals(kFive, output);
+  CheckEquals(kFour, output);
   CheckEquals(3, list->num_elements());
 
   // remove the front

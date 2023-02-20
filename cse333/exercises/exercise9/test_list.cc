@@ -80,6 +80,8 @@ int main() {
   CheckEquals(kOne, output);
   CheckEquals(2, list->num_elements());
 
+  CheckEquals(false, list->Pop(nullptr));
+
   // delete the list
   delete list;
 

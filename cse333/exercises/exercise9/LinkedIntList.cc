@@ -56,8 +56,8 @@ void LinkedIntList::Append(const int payload) {
 
 // Removes the first element in the list
 bool LinkedIntList::Pop(int* const payload_ptr) {
-  // If the list is empty, return false
-  if (this->num_elements_ == 0) {
+  // If the list is empty or the output pointer is null, return false
+  if (this->num_elements_ == 0 || payload_ptr == nullptr) {
     return false;
   }
 
@@ -82,8 +82,8 @@ bool LinkedIntList::Pop(int* const payload_ptr) {
 
 // Removes the last element in the list
 bool LinkedIntList::Slice(int* const payload_ptr) {
-  // If the list is empty, return false
-  if (this->num_elements_ == 0) {
+  // If the list is empty or the output pointer is null, return false
+  if (this->num_elements_ == 0 || payload_ptr == nullptr) {
     return false;
   }
 

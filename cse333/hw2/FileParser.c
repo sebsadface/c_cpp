@@ -89,6 +89,7 @@ char* ReadFileToString(const char* file_name, int* size) {
   // Allocate space for the file, plus 1 extra byte to
   // '\0'-terminate the string.
   buf = (char*)malloc(file_stat.st_size + 1);
+  Verify333(buf != NULL);
 
   // STEP 5.
   // Read in the file contents using the read() system call (see also
@@ -110,7 +111,7 @@ char* ReadFileToString(const char* file_name, int* size) {
       if (errno == EINTR || errno == EAGAIN) {
         continue;
       }
-
+      close(fd);
       // Return NULL on POSIX error
       return NULL;
     }

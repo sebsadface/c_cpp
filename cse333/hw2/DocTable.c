@@ -65,11 +65,8 @@ DocID_t DocTable_Add(DocTable* table, char* doc_name) {
   // Check to see if the document already exists.  Then make a copy of the
   // doc_name and allocate space for the new ID.
 
-  if (HashTable_Find(table->name_to_id,
-                     FNVHash64((unsigned char*)doc_name, strlen(doc_name)),
-                     &old_kv)) {
-    // The document already exist
-    res = *(DocID_t*)(old_kv.value);
+  res = DocTable_GetDocID(table, doc_name);
+  if (res != INVALID_DOCID) {
     return res;
   }
 
@@ -99,7 +96,7 @@ DocID_t DocTable_Add(DocTable* table, char* doc_name) {
   // You want to be sure that how you do this is consistent with
   // the provided code.
   kv.key = FNVHash64((unsigned char*)doc_copy, strlen(doc_copy));
-  kv.value = doc_id;
+  kv.value = (HTValue_t)doc_id;
 
   Verify333(!HashTable_Insert(table->name_to_id, kv, &old_kv));
 

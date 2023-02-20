@@ -100,7 +100,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
   LLIterator* iter;   // Result list iterator
   SearchResult* res;  // A single search result
   int qurey_len, i;
-  char** qurey = (char**)malloc((sizeof(char*)) * (LINE_SIZE));  // Query array
+  char qurey[LINE_SIZE];  // Query array
   Verify333(qurey != NULL);
 
   qurey_len = GetNextLine(stdin, qurey);  // Get the fist line of qurey

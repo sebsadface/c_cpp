@@ -130,17 +130,9 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
       }
     }
 
-    // Free the resources we allocated for each parsed words in the query
-    for (i = 0; i < qurey_len; i++) {
-      free(qurey[i]);
-    }
-
     // Get a new line of query
     qurey_len = GetNextLine(stdin, qurey);
   }
-
-  // EOF reached, clean the resources for query array
-  free(qurey);
 }
 
 static int GetNextLine(FILE* f, char** ret_str) {

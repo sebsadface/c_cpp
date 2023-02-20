@@ -99,7 +99,7 @@ static void ProcessQueries(DocTable* dt, MemIndex* mi) {
   LinkedList* ll;     // Result list
   LLIterator* iter;   // Result list iterator
   SearchResult* res;  // A single search result
-  int qurey_len, i;
+  int qurey_len;
   char* qurey[LINE_SIZE];  // Query array
   Verify333(qurey != NULL);
 

@@ -363,11 +363,12 @@ static int WriteHTBucket(FILE* f, IndexFileOffset_t offset, LinkedList* li,
     // STEP 7.
     // fseek() to the where the ElementPositionRecord should be written,
     // then fwrite() it in network order.
+    ElementPositionRecord rec(element_pos);
+    rec.ToDiskFormat();
+
     if (fseek(f, record_pos, SEEK_SET) != 0) {
       return kFailedWrite;
     }
-    ElementPositionRecord rec(element_pos);
-    rec.ToDiskFormat();
 
     if (fwrite(&rec, sizeof(ElementPositionRecord), 1, f) != 1) {
       return kFailedWrite;
@@ -422,7 +423,7 @@ static int WriteDocidToDocnameFn(FILE* f, IndexFileOffset_t offset,
   // fwrite() the file name.  We don't write the null-terminator from the
   // string, just the characters, since we've already written a length
   // field for the string.
-  if (fseek(f, offset + sizeof(DocIDElementHeader), SEEK_SET) != 0) {
+  if (fseek(f, offset + sizeof(DoctableElementHeader), SEEK_SET) != 0) {
     return kFailedWrite;
   }
 
@@ -432,7 +433,7 @@ static int WriteDocidToDocnameFn(FILE* f, IndexFileOffset_t offset,
 
   // STEP 11.
   // calculate and return the total amount written.
-  return sizeof(DocIDElementHeader) + file_name_bytes;  // change this
+  return sizeof(DoctableElementHeader) + file_name_bytes;  // change this
 }
 
 // This write_element_fn is used to write a DocID + position list

@@ -186,7 +186,7 @@ int WriteIndex(MemIndex* mi, DocTable* dt, const char* file_name) {
 
   // STEP 2.
   // Finally, backtrack to write the index header and write it.
-  if (WriteHeader(f, dt_bytes, idx_bytes) != sizeof(IndexFileHeader)) {
+  if (WriteHeader(f, dt_bytes, idx_bytes) == kFailedWrite) {
     fclose(f);
     unlink(file_name);
     return kFailedWrite;
@@ -317,7 +317,7 @@ static int WriteHTBucketRecord(FILE* f, IndexFileOffset_t offset,
                                IndexFileOffset_t bucket_offset) {
   // STEP 5.
   // Initialize a BucketRecord in network byte order.
-  BucketRecord rec(num_elts, offset);
+  BucketRecord rec(num_elts, bucket_offset);
   rec.ToDiskFormat();
   // fseek() to where we want to write this record.
   if (fseek(f, offset, SEEK_SET) != 0) {

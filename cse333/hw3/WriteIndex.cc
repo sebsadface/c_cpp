@@ -427,13 +427,14 @@ static int WriteDocidToDocnameFn(FILE* f, IndexFileOffset_t offset,
     return kFailedWrite;
   }
 
-  if (fwrite(&file_name, sizeof(char), file_name_bytes, f) != file_name_bytes) {
+  if (fwrite(file_name, sizeof(char), file_name_bytes, f) != file_name_bytes) {
     return kFailedWrite;
   }
 
   // STEP 11.
   // calculate and return the total amount written.
-  return sizeof(DoctableElementHeader) + file_name_bytes;  // change this
+  return sizeof(DoctableElementHeader) +
+         sizeof(char) * file_name_bytes;  // change this
 }
 
 // This write_element_fn is used to write a DocID + position list

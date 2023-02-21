@@ -27,7 +27,6 @@ namespace hw3 {
 // plays the role of a commit record.
 extern const uint32_t kMagicNumber;
 
-
 // Macros to convert 64-bit integers between "host order" and "network order".
 //
 // The on-disk format is big-endian, sometimes called "network order" since
@@ -41,11 +40,10 @@ extern const uint32_t kMagicNumber;
 // Long" -- means converting from host order to big endian.  On a big-endian
 // architecture, this is a no-op, but on a little-endian machine it swaps the
 // byte order.
-#define ntohll(x) \
-  ( ((uint64_t) (ntohl((uint32_t)((x << 32) >> 32))) << 32) |   \
-    ntohl(((uint32_t)(x >> 32))) )
+#define ntohll(x)                                           \
+  (((uint64_t)(ntohl((uint32_t)((x << 32) >> 32))) << 32) | \
+   ntohl(((uint32_t)(x >> 32))))
 #define htonll(x) (ntohll(x))
-
 
 // A CRC32 object, useful for calculating a checksum.
 //
@@ -96,7 +94,6 @@ class CRC32 {
   static bool table_is_initialized_;
 };
 
-
 // Macro for disabling copy constructors and assignment operators.
 //
 // The idea and name are lifted from Google's C++ style guide but the
@@ -106,7 +103,6 @@ class CRC32 {
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
   TypeName(const TypeName&) = delete;      \
   void operator=(const TypeName&) = delete
-
 
 // Copies an existing FILE*, so that it can be shared by threads.
 //

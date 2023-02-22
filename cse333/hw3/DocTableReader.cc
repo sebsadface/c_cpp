@@ -48,7 +48,7 @@ bool DocTableReader::LookupDocID(const DocID_t& doc_id,
     Verify333(fseek(file_, curr_el_offset, SEEK_SET) == 0);
     Verify333(fread(&curr_header, sizeof(DoctableElementHeader), 1, file_) ==
               1);
-    curr_header.ToHostFormat;
+    curr_header.ToHostFormat();
     // Is it a match?
     if (curr_header.doc_id == doc_id) {
       // Yes!  Extract the filename, using a stringstream and its "<<"

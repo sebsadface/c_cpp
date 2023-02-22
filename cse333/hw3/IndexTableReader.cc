@@ -11,15 +11,15 @@
 
 #include "./IndexTableReader.h"
 
-#include <stdint.h>     // for uint32_t, etc.
-#include <string>       // for std::string.
-#include <sstream>      // for std::stringstream.
+#include <stdint.h>  // for uint32_t, etc.
+#include <string>    // for std::string.
+#include <sstream>   // for std::stringstream.
 
 extern "C" {
-  #include "libhw1/HashTable.h"  // for libhw1/hashtable.h's FNVHash64().
-  #include "libhw1/CSE333.h"
+#include "libhw1/HashTable.h"  // for libhw1/hashtable.h's FNVHash64().
+#include "libhw1/CSE333.h"
 }
-#include "./Utils.h"   // for FileDup().
+#include "./Utils.h"  // for FileDup().
 
 using std::string;
 using std::stringstream;
@@ -31,15 +31,15 @@ namespace hw3 {
 // taking ownership of f and using it to extract and cache the number
 // of buckets within the table.
 IndexTableReader::IndexTableReader(FILE* f, IndexFileOffset_t offset)
-  : HashTableReader(f, offset) { }
+    : HashTableReader(f, offset) {}
 
 DocIDTableReader* IndexTableReader::LookupWord(const string& word) const {
   // Calculate the FNVHash64 of the word.  Use word.c_str() to get a
   // C-style (char*) to pass to FNVHash64, and word.lengt() to figure
   // out how many characters are in the string.
   char* word_c_str = const_cast<char*>(word.c_str());
-  HTKey_t word_hash = FNVHash64(reinterpret_cast<unsigned char*>(word_c_str),
-                                word.length());
+  HTKey_t word_hash =
+      FNVHash64(reinterpret_cast<unsigned char*>(word_c_str), word.length());
 
   // Get back the list of "element" offsets for this word hash.
   auto elements = LookupElementPositions(word_hash);
@@ -56,7 +56,9 @@ DocIDTableReader* IndexTableReader::LookupWord(const string& word) const {
     // specifically, extract the "word length" field and the "docID
     // table length" fields, converting from network to host order.
     WordPostingsHeader header;
-
+    Verify333(fseek(file_, offset, SEEK_SET) == 0);
+    Verify333(fread(&header, sizeof(WordPostingsHeader), 1, file_) == 1);
+    header.ToHostFormat();
 
     // If the "word length" field doesn't match the length of the word
     // we're looking up, use continue to skip to the next element.
@@ -70,8 +72,10 @@ DocIDTableReader* IndexTableReader::LookupWord(const string& word) const {
     stringstream ss;
     for (int i = 0; i < header.word_bytes; i++) {
       // STEP 2.
+      uint8_t next_char;
 
-
+      Verify333(fread(&next_char, sizeof(uint8_t), 1, file_) == 1);
+      ss << next_char;
     }
 
     // Use ss.str() to extract a std::string from the stringstream,
@@ -85,7 +89,7 @@ DocIDTableReader* IndexTableReader::LookupWord(const string& word) const {
       // DocIDTableReader to have its own (FILE*) handle
       //
       // return the new'd (DocIDTableReader*) to the caller.
-      IndexFileOffset_t docIDTableOffset = 
+      IndexFileOffset_t docIDTableOffset =
           offset + sizeof(WordPostingsHeader) + header.word_bytes;
       DocIDTableReader* ditr =
           new DocIDTableReader(FileDup(file_), docIDTableOffset);

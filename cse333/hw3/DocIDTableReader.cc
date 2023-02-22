@@ -119,7 +119,7 @@ list<DocIDElementHeader> DocIDTableReader::GetDocIDList() const {
       // Read in the docid and number of positions from the element.
       DocIDElementHeader element;
       Verify333(fread(&element, sizeof(DocIDElementHeader), 1, file_) == 1);
-
+      element.ToHostFormat();
       // Append it to our result list.
       doc_id_list.push_back(element);
     }

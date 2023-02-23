@@ -138,7 +138,7 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
   list<DocIDElementHeader> idlist;
   list<DocPositionOffset_t> poslist;
   DocIDTableReader* didtr;
-  int i, j;
+  uint32_t i, j;
   for (i = 1; i < query.size(); i++) {
     didtr = itr_array[idxfilenum]->LookupWord(query[i]);
     if (didtr == nullptr) {
@@ -160,11 +160,14 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
   if (reslist.size() == 0) {
     return false;
   }
+
+  return true;
 }
 
 static int FindFileName(const vector<QueryProcessor::QueryResult> final_result,
                         const string& filename) {
-  for (int i = 0; i < final_result.size(); i++) {
+  uint32_t i;
+  for (i = 0; i < final_result.size(); i++) {
     if (final_result[i].document_name == filename) {
       return i;
     }

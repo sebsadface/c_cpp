@@ -147,14 +147,14 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
       return false;
     }
 
-    list<IdxQueryResult>::iterator reslist_itr = reslist.begin();
-    for (j = 0; j < reslist.size(); j++) {
-      if (didtr->LookupDocID(reslist_itr->doc_id, &poslist)) {
+    list<IdxQueryResult>::iterator reslist_itr;
+    for (reslist_itr = reslist.begin(); reslist_itr != reslist.end();
+         reslist_itr++) {
+            if (didtr->LookupDocID(reslist_itr->doc_id, &poslist)) {
         reslist_itr->rank += poslist.size();
       } else {
         reslist.erase(reslist_itr);
       }
-      reslist_itr++;
     }
   }
 

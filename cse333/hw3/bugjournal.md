@@ -15,7 +15,7 @@
 # Bug 2
 
 ## A) How is your program acting differently than you expect it to?
-- 
+- Test_Suite failed for query processor on line 57 and 83. The rank for a single-index multi-word query is incorrect, and the result vector size for a multi-index single-word query is incorrect.
 
 ## B) Brainstorm a few possible causes of the bug
 - 

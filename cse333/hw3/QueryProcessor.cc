@@ -28,6 +28,13 @@ using std::vector;
 
 namespace hw3 {
 
+static bool ProcessAdditionalWords(const IndexTableReader** const itr_array,
+                                   list<IdxQueryResult>& reslist,
+                                   const vector<string>& query, int idxfilenum);
+
+static int FindFileName(const vector<QueryProcessor::QueryResult> final_result,
+                        const string& filename);
+
 QueryProcessor::QueryProcessor(const list<string>& index_list, bool validate) {
   // Stash away a copy of the index list.
   index_list_ = index_list;

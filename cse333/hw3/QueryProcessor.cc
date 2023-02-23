@@ -38,8 +38,8 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
                                    list<IdxQueryResult>& reslist,
                                    const vector<string>& query, int idxfilenum);
 
-static int FindFileName(const vector<QueryProcessor::QueryResult> final_result,
-                        const string& filename);
+static bool FindFileName(const vector<QueryProcessor::QueryResult> final_result,
+                         const string& filename);
 
 QueryProcessor::QueryProcessor(const list<string>& index_list, bool validate) {
   // Stash away a copy of the index list.
@@ -115,14 +115,11 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
       string filename;
       Verify333(dtr_array_[i]->LookupDocID(res.doc_id, &filename));
 
-      int res_idx = FindFileName(final_result, filename);
-      if (res_idx == -1) {
+      if (!FindFileName(final_result, filename)) {
         QueryProcessor::QueryResult qres;
         qres.document_name = filename;
         qres.rank = res.rank;
         final_result.push_back(qres);
-      } else {
-        final_result[res_idx].rank += res.rank;
       }
     }
   }
@@ -139,7 +136,7 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
   list<DocIDElementHeader> idlist;
   list<DocPositionOffset_t> poslist;
   DocIDTableReader* didtr;
-  uint32_t i;
+  uint32_t i, j;
   for (i = 1; i < query.size(); i++) {
     didtr = itr_array[idxfilenum]->LookupWord(query[i]);
     if (didtr == nullptr) {
@@ -147,14 +144,14 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
       return false;
     }
 
-    list<IdxQueryResult>::iterator reslist_itr;
-    for (reslist_itr = reslist.begin(); reslist_itr != reslist.end();
-         reslist_itr++) {
+    list<IdxQueryResult>::iterator reslist_itr = reslist.begin();
+    for (j = 0; j < reslist.size(); j++) {
       if (didtr->LookupDocID(reslist_itr->doc_id, &poslist)) {
         reslist_itr->rank += poslist.size();
       } else {
         reslist.erase(reslist_itr);
       }
+      reslist_itr++;
     }
   }
 
@@ -165,15 +162,15 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
   return true;
 }
 
-static int FindFileName(const vector<QueryProcessor::QueryResult> final_result,
-                        const string& filename) {
+static bool FindFileName(const vector<QueryProcessor::QueryResult> final_result,
+                         const string& filename) {
   uint32_t i;
   for (i = 0; i < final_result.size(); i++) {
     if (final_result[i].document_name == filename) {
-      return i;
+      return true;
     }
   }
-  return -1;
+  return false;
 }
 
 }  // namespace hw3

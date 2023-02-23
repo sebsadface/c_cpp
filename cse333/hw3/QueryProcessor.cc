@@ -27,9 +27,14 @@ using std::string;
 using std::vector;
 
 namespace hw3 {
+// This structure is used to store a index-file-specific query result.
+typedef struct {
+  DocID_t doc_id;  // The document ID within the index file.
+  int rank;        // The rank of the result so far.
+} IdxQueryResult;
 
 static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
-                                   list<hw3::IdxQueryResult>& reslist,
+                                   list<IdxQueryResult>& reslist,
                                    const vector<string>& query, int idxfilenum);
 
 static int FindFileName(const vector<QueryProcessor::QueryResult> final_result,
@@ -72,12 +77,6 @@ QueryProcessor::~QueryProcessor() {
   dtr_array_ = nullptr;
   itr_array_ = nullptr;
 }
-
-// This structure is used to store a index-file-specific query result.
-typedef struct {
-  DocID_t doc_id;  // The document ID within the index file.
-  int rank;        // The rank of the result so far.
-} IdxQueryResult;
 
 vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
     const vector<string>& query) const {

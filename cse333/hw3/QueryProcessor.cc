@@ -29,7 +29,7 @@ using std::vector;
 namespace hw3 {
 
 static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
-                                   list<IdxQueryResult>& reslist,
+                                   list<hw3::IdxQueryResult>& reslist,
                                    const vector<string>& query, int idxfilenum);
 
 static int FindFileName(const vector<QueryProcessor::QueryResult> final_result,

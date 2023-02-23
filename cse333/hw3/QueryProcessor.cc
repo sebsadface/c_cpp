@@ -28,7 +28,7 @@ using std::vector;
 
 namespace hw3 {
 
-static bool ProcessAdditionalWords(const IndexTableReader** const itr_array,
+static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
                                    list<IdxQueryResult>& reslist,
                                    const vector<string>& query, int idxfilenum);
 

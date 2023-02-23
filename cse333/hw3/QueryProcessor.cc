@@ -89,10 +89,10 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
   list<DocIDElementHeader> idlist;
   DocIDTableReader* didtr;
   list<IdxQueryResult> reslist;
+  IdxQueryResult res;
   int i;
 
   for (i = 0; i < array_len_; i++) {
-    IdxQueryResult res;
     didtr = itr_array_[i]->LookupWord(query[0]);
     if (didtr == nullptr) {
       continue;

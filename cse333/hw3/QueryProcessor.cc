@@ -93,6 +93,7 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
   int i;
 
   for (i = 0; i < array_len_; i++) {
+    reslist.clear();
     didtr = itr_array_[i]->LookupWord(query[0]);
     if (didtr == nullptr) {
       continue;

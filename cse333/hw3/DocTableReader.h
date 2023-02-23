@@ -58,5 +58,4 @@ class DocTableReader : protected HashTableReader {
 };
 
 }  // namespace hw3
-
 #endif  // HW3_DOCTABLEREADER_H_

@@ -1,3 +1,7 @@
 {
-    "hexeditor.showOpenFileButton": false
+    "hexeditor.showOpenFileButton": false,
+    "files.associations": {
+        "list": "cpp",
+        "vector": "cpp"
+    }
 }

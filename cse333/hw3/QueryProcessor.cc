@@ -18,7 +18,7 @@
 #include <vector>
 
 extern "C" {
-  #include "./libhw1/CSE333.h"
+#include "./libhw1/CSE333.h"
 }
 
 using std::list;
@@ -35,8 +35,8 @@ QueryProcessor::QueryProcessor(const list<string>& index_list, bool validate) {
   Verify333(array_len_ > 0);
 
   // Create the arrays of DocTableReader*'s. and IndexTableReader*'s.
-  dtr_array_ = new DocTableReader* [array_len_];
-  itr_array_ = new IndexTableReader* [array_len_];
+  dtr_array_ = new DocTableReader*[array_len_];
+  itr_array_ = new IndexTableReader*[array_len_];
 
   // Populate the arrays with heap-allocated DocTableReader and
   // IndexTableReader object instances.
@@ -69,17 +69,75 @@ QueryProcessor::~QueryProcessor() {
 // This structure is used to store a index-file-specific query result.
 typedef struct {
   DocID_t doc_id;  // The document ID within the index file.
-  int     rank;    // The rank of the result so far.
+  int rank;        // The rank of the result so far.
 } IdxQueryResult;
 
-vector<QueryProcessor::QueryResult>
-QueryProcessor::ProcessQuery(const vector<string>& query) const {
+vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
+    const vector<string>& query) const {
   Verify333(query.size() > 0);
 
   // STEP 1.
   // (the only step in this file)
   vector<QueryProcessor::QueryResult> final_result;
+  vector<list<IdxQueryResult>> idx_results;
+  vector<list<DocIDElementHeader>> didlist_vec;
+  DocIDTableReader* didtr;
+  int i, j;
 
+  for (i = 0; i < array_len_; i++) {
+    didtr = itr_array_[i]->LookupWord(query.front());
+    if (didtr != nullptr) {
+      didlist_vec[i] = didtr->GetDocIDList();
+    }
+  }
+
+  if (didlist_vec.size() == 0) {
+    return final_result;
+  }
+
+  for (i = 0; i < array_len_; i++) {
+    if (!didlist_vec[i].empty()) {
+      for (DocIDElementHeader ele_header : didlist_vec[i]) {
+        IdxQueryResult res;
+        res.doc_id = ele_header.doc_id;
+        res.rank = ele_header.num_positions;
+        idx_results[i].push_back(res);
+      }
+    }
+  }
+
+  if (query.size() != 1 && idx_results.size() != 0) {
+    for (i = 1; i < query.size(); i++) {
+      didlist_vec.clear();
+      for (j = 0; j < array_len_; j++) {
+        didtr = itr_array_[j]->LookupWord(query[i]);
+        if (didtr != nullptr) {
+          didlist_vec[j] = didtr->GetDocIDList();
+        }
+      }
+
+      if (didlist_vec.size() == 0) {
+        return final_result;
+      }
+
+      for (j = 0; j < array_len_; j++) {
+        if (!didlist_vec[j].empty()) {
+          for (DocIDElementHeader ele_header : didlist_vec[j]) {
+            for (IdxQueryResult res : idx_results[j]) {
+              if (res.doc_id == ele_header.doc_id) {
+                res.rank += ele_header.num_positions;
+              } else {
+                idx_results[j].remove(res);
+                if (idx_results[j].empty()) {
+                  idx_results.erase();
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   // Sort the final results.
   sort(final_result.begin(), final_result.end());

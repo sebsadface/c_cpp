@@ -27,6 +27,7 @@ using std::string;
 using std::vector;
 
 namespace hw3 {
+
 // This structure is used to store a index-file-specific query result.
 typedef struct {
   DocID_t doc_id;  // The document ID within the index file.
@@ -130,7 +131,7 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
   return final_result;
 }
 
-static bool ProcessAdditionalWords(const IndexTableReader** const itr_array,
+static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
                                    list<IdxQueryResult>& reslist,
                                    const vector<string>& query,
                                    int idxfilenum) {

@@ -129,7 +129,7 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
               } else {
                 idx_results[j].remove(res);
                 if (idx_results[j].empty()) {
-                  idx_results.erase();
+                  idx_results.erase(idx_results.begin() + j);
                 }
               }
             }
@@ -137,11 +137,37 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
         }
       }
     }
+
+    if (idx_results.empty()) {
+      return final_result;
+    }
   }
+
+  AssembleQueryResults(idx_results, final_result, dtr_array_, array_len_);
 
   // Sort the final results.
   sort(final_result.begin(), final_result.end());
   return final_result;
+}
+
+static void AssembleQueryResults(
+    vector<list<IdxQueryResult>> idx_results,
+    vector<QueryProcessor::QueryResult>& final_result,
+    DocTableReader** dtr_array, int array_len) {
+  int i;
+
+  for (i = 0; i < array_len; i++) {
+    if (!idx_results[i].empty()) {
+      for (IdxQueryResult res : idx_results[i]) {
+        string filename;
+        QueryProcessor::QueryResult qres;
+        Verify333(dtr_array[i]->LookupDocID(res.doc_id, &filename));
+        qres.document_name = filename;
+        qres.rank = res.rank;
+        final_result.push_back(qres);
+      }
+    }
+  }
 }
 
 }  // namespace hw3

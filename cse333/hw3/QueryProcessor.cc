@@ -79,95 +79,90 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
   // STEP 1.
   // (the only step in this file)
   vector<QueryProcessor::QueryResult> final_result;
-  vector<list<IdxQueryResult>> idx_results;
-  vector<list<DocIDElementHeader>> didlist_vec;
+  list<DocIDElementHeader> idlist;
   DocIDTableReader* didtr;
-  int i, j;
+  list<IdxQueryResult> reslist;
+  IdxQueryResult res;
+  int i;
 
   for (i = 0; i < array_len_; i++) {
-    didtr = itr_array_[i]->LookupWord(query.front());
-    if (didtr != nullptr) {
-      didlist_vec[i] = didtr->GetDocIDList();
+    didtr = itr_array_[i]->LookupWord(query[0]);
+    if (didtr == nullptr) {
+      continue;
     }
-  }
 
-  if (didlist_vec.size() == 0) {
-    return final_result;
-  }
-
-  for (i = 0; i < array_len_; i++) {
-    if (!didlist_vec[i].empty()) {
-      for (DocIDElementHeader ele_header : didlist_vec[i]) {
-        IdxQueryResult res;
-        res.doc_id = ele_header.doc_id;
-        res.rank = ele_header.num_positions;
-        idx_results[i].push_back(res);
-      }
+    idlist = didtr->GetDocIDList();
+    for (DocIDElementHeader docid_header : idlist) {
+      res.doc_id = docid_header.doc_id;
+      res.rank = docid_header.num_positions;
+      reslist.push_back(res);
     }
-  }
 
-  if (query.size() != 1 && idx_results.size() != 0) {
-    for (i = 1; i < query.size(); i++) {
-      didlist_vec.clear();
-      for (j = 0; j < array_len_; j++) {
-        didtr = itr_array_[j]->LookupWord(query[i]);
-        if (didtr != nullptr) {
-          didlist_vec[j] = didtr->GetDocIDList();
-        }
-      }
-
-      if (didlist_vec.size() == 0) {
-        return final_result;
-      }
-
-      for (j = 0; j < array_len_; j++) {
-        if (!didlist_vec[j].empty()) {
-          for (DocIDElementHeader ele_header : didlist_vec[j]) {
-            for (IdxQueryResult res : idx_results[j]) {
-              if (res.doc_id == ele_header.doc_id) {
-                res.rank += ele_header.num_positions;
-              } else {
-                idx_results[j].remove(res);
-                if (idx_results[j].empty()) {
-                  idx_results.erase(idx_results.begin() + j);
-                }
-              }
-            }
-          }
-        }
+    if (query.size() > 1) {
+      if (!ProcessAdditionalWords(itr_array_, reslist, query, i)) {
+        continue;
       }
     }
 
-    if (idx_results.empty()) {
-      return final_result;
+    for (IdxQueryResult res : reslist) {
+      string filename;
+      Verify333(dtr_array_[i]->LookupDocID(res.doc_id, &filename));
+
+      int res_idx = FindFileName(final_result, filename);
+      if (res_idx == -1) {
+        QueryProcessor::QueryResult qres;
+        final_result.push_back(qres);
+        res_idx = final_result.size() - 1;
+      }
+      final_result[res_idx].document_name = filename;
+      final_result[res_idx].rank += res.rank;
     }
   }
-
-  AssembleQueryResults(idx_results, final_result, dtr_array_, array_len_);
 
   // Sort the final results.
   sort(final_result.begin(), final_result.end());
   return final_result;
 }
 
-static void AssembleQueryResults(
-    vector<list<IdxQueryResult>> idx_results,
-    vector<QueryProcessor::QueryResult>& final_result,
-    DocTableReader** dtr_array, int array_len) {
-  int i;
+static bool ProcessAdditionalWords(const IndexTableReader** const itr_array,
+                                   list<IdxQueryResult>& reslist,
+                                   const vector<string>& query,
+                                   int idxfilenum) {
+  list<DocIDElementHeader> idlist;
+  list<DocPositionOffset_t> poslist;
+  DocIDTableReader* didtr;
+  int i, j;
+  for (i = 1; i < query.size(); i++) {
+    didtr = itr_array[idxfilenum]->LookupWord(query[i]);
+    if (didtr == nullptr) {
+      reslist.clear();
+      return false;
+    }
 
-  for (i = 0; i < array_len; i++) {
-    if (!idx_results[i].empty()) {
-      for (IdxQueryResult res : idx_results[i]) {
-        string filename;
-        QueryProcessor::QueryResult qres;
-        Verify333(dtr_array[i]->LookupDocID(res.doc_id, &filename));
-        qres.document_name = filename;
-        qres.rank = res.rank;
-        final_result.push_back(qres);
+    list<IdxQueryResult>::iterator reslist_itr = reslist.begin();
+    for (j = 0; j < reslist.size(); j++) {
+      if (didtr->LookupDocID(reslist_itr->doc_id, &poslist)) {
+        reslist_itr->rank += poslist.size();
+      } else {
+        reslist.erase(reslist_itr);
       }
+      reslist_itr++;
     }
   }
+
+  if (reslist.size() == 0) {
+    return false;
+  }
+}
+
+static int FindFileName(const vector<QueryProcessor::QueryResult> final_result,
+                        const string& filename) {
+  for (int i = 0; i < final_result.size(); i++) {
+    if (final_result[i].document_name == filename) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 }  // namespace hw3

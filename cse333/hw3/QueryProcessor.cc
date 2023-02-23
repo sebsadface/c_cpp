@@ -93,7 +93,6 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
   int i;
 
   for (i = 0; i < array_len_; i++) {
-    reslist.clear();
     didtr = itr_array_[i]->LookupWord(query[0]);
     if (didtr == nullptr) {
       continue;
@@ -126,6 +125,7 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
         final_result[res_idx].rank += res.rank;
       }
     }
+    reslist.clear();
   }
 
   // Sort the final results.

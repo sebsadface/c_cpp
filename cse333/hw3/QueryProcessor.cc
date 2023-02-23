@@ -118,11 +118,12 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
       int res_idx = FindFileName(final_result, filename);
       if (res_idx == -1) {
         QueryProcessor::QueryResult qres;
+        qres.document_name = filename;
+        qres.rank = res.rank;
         final_result.push_back(qres);
-        res_idx = final_result.size() - 1;
+      } else {
+        final_result[res_idx].rank += res.rank;
       }
-      final_result[res_idx].document_name = filename;
-      final_result[res_idx].rank += res.rank;
     }
   }
 

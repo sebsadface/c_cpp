@@ -150,7 +150,7 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
         reslist_itr->rank += poslist.size();
       } else {
         reslist.erase(reslist_itr);
-        j--;
+        reslist_itr--;
       }
       reslist_itr++;
     }

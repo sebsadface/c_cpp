@@ -56,7 +56,7 @@ TEST(Test_QueryProcessor, TestQueryProcessorSingleIndex) {
             res[0].document_name);
   ASSERT_EQ(1, res[0].rank);
   //////////////////////////////////////////////////////////////////////////
-  vector<QueryProcessor::QueryResult> res = qp.ProcessQuery(query);
+  // vector<QueryProcessor::QueryResult> res = qp.ProcessQuery(query);
   ASSERT_EQ(3U, res.size());
   ASSERT_EQ(string("test_tree/books/leavesofgrass.txt"), res[0].document_name);
   ASSERT_EQ(3, res[0].rank);

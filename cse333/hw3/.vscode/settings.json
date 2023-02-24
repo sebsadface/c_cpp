@@ -4,6 +4,7 @@
         "list": "cpp",
         "vector": "cpp",
         "string": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "iosfwd": "cpp"
     }
 }

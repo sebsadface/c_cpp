@@ -9,18 +9,28 @@
  * author.
  */
 
-#include <cstdlib>    // for EXIT_SUCCESS, EXIT_FAILURE
-#include <iostream>   // for std::cout, std::cerr, etc.
+#include <cstdlib>   // for EXIT_SUCCESS, EXIT_FAILURE
+#include <iostream>  // for std::cout, std::cerr, etc.
+#include <sstream>
 
 #include "./QueryProcessor.h"
 
+using hw3::QueryProcessor;
 using std::cerr;
+using std::cin;
+using std::cout;
 using std::endl;
+using std::string;
+using std::stringstream;
 
 // Error usage message for the client to see
 // Arguments:
 // - prog_name: Name of the program
 static void Usage(char* prog_name);
+
+static bool GetQuery(vector<string>* const query);
+
+static void PrintResults(const vector<QueryProcessor::QueryResult>& res);
 
 // Your job is to implement the entire filesearchshell.cc
 // functionality. We're essentially giving you a blank screen to work
@@ -86,9 +96,58 @@ int main(int argc, char** argv) {
   // STEP 1:
   // Implement filesearchshell!
   // Probably want to write some helper methods ...
-  while (1) { }
+  int i;
+  list<string> idx_list;
+  vector<string> query;
+  vector<QueryProcessor::QueryResult> res;
+
+  for (i = 0; i < argc; i++) {
+    idx_list.push_back(argv[i]);
+  }
+  QueryProcessor qp(idx_list);
+
+  while (1) {
+    if (!GetQuery(&query)) {
+      break;
+    }
+    res = qp.ProcessQuery(query);
+
+    PrintResults(res);
+    res.clear();
+    query.clear();
+  }
 
   return EXIT_SUCCESS;
+}
+
+static void PrintResults(const vector<QueryProcessor::QueryResult>& res) {
+  if (res.empty()) {
+    cout << endl;
+  } else {
+    for (auto qres : res) {
+      cout << " " << qres.document_name << " (" << qres.rank << ")" << endl;
+    }
+  }
+}
+
+static bool GetQuery(vector<string>* const query) {
+  string nextline;
+  string nextword;
+  stringstream ss;
+
+  getline(cin, nextline);
+  if (cin.eof()) {
+    return false;
+  }
+
+  for (char c : nextline) {
+    ss << static_cast<char>(tolower(c));
+  }
+  while (ss.good()) {
+    ss >> nextword;
+    query->push_back(nextword);
+  }
+  return true;
 }
 
 static void Usage(char* prog_name) {

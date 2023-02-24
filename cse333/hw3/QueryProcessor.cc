@@ -122,6 +122,7 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
         final_result.push_back(qres);
       }
     }
+    reslist.clear();
   }
 
   // Sort the final results.

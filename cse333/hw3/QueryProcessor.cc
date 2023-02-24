@@ -151,7 +151,7 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
         reslist_itr->rank += poslist.size();
         reslist_itr++;
       } else {
-        reslist.erase(reslist_itr);
+        reslist_itr = reslist.erase(reslist_itr);
       }
     }
   }

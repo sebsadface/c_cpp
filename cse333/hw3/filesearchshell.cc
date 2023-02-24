@@ -135,6 +135,8 @@ static bool GetQuery(vector<string>* const query) {
   string nextword;
   stringstream ss;
 
+  cout << "enter query:" << endl;
+
   getline(cin, nextline);
   if (cin.eof()) {
     return false;

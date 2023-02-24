@@ -140,7 +140,6 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
   for (i = 1; i < query.size(); i++) {
     didtr = itr_array[idxfilenum]->LookupWord(query[i]);
     if (didtr == nullptr) {
-      reslist.clear();
       return false;
     }
 

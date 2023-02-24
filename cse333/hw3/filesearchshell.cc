@@ -121,12 +121,8 @@ int main(int argc, char** argv) {
 }
 
 static void PrintResults(const vector<QueryProcessor::QueryResult>& res) {
-  if (res.empty()) {
-    cout << endl;
-  } else {
-    for (auto qres : res) {
-      cout << " " << qres.document_name << " (" << qres.rank << ")" << endl;
-    }
+  for (auto qres : res) {
+    cout << " " << qres.document_name << " (" << qres.rank << ")" << endl;
   }
 }
 

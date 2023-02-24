@@ -156,9 +156,9 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
         reslist_itr = reslist.erase(reslist_itr);
       }
     }
+    delete (didtr);
   }
 
-  delete (didtr);
   if (reslist.size() == 0) {
     return false;
   }

@@ -3,6 +3,7 @@
     "files.associations": {
         "list": "cpp",
         "vector": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "new": "cpp"
     }
 }

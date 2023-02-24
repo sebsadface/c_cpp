@@ -110,19 +110,27 @@ int main(int argc, char** argv) {
     if (!GetQuery(&query)) {
       break;
     }
-    res = qp.ProcessQuery(query);
 
-    PrintResults(res);
-    res.clear();
-    query.clear();
+    if (!query.empty()) {
+      res = qp.ProcessQuery(query);
+
+      PrintResults(res);
+      res.clear();
+      query.clear();
+    }
   }
 
   return EXIT_SUCCESS;
 }
 
 static void PrintResults(const vector<QueryProcessor::QueryResult>& res) {
-  for (auto qres : res) {
-    cout << " " << qres.document_name << " (" << qres.rank << ")" << endl;
+  if (res.empty()) {
+    cout << " "
+         << "[no results]" << endl;
+  } else {
+    for (auto qres : res) {
+      cout << " " << qres.document_name << " (" << qres.rank << ")" << endl;
+    }
   }
 }
 

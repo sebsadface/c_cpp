@@ -146,7 +146,7 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
 
     list<IdxQueryResult>::iterator reslist_itr = reslist.begin();
     num_docs = reslist.size();
-    for (j = 0; j < reslist.size(); j++) {
+    for (j = 0; j < num_docs; j++) {
       if (didtr->LookupDocID(reslist_itr->doc_id, &poslist)) {
         reslist_itr->rank += poslist.size();
       } else {

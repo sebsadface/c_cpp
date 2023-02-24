@@ -125,11 +125,10 @@ int main(int argc, char** argv) {
 
 static void PrintResults(const vector<QueryProcessor::QueryResult>& res) {
   if (res.empty()) {
-    cout << " "
-         << "[no results]" << endl;
+    cout << "  [no results]" << endl;
   } else {
     for (auto qres : res) {
-      cout << " " << qres.document_name << " (" << qres.rank << ")" << endl;
+      cout << "  " << qres.document_name << " (" << qres.rank << ")" << endl;
     }
   }
 }

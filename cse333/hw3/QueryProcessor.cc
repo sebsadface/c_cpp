@@ -104,6 +104,7 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
       res.rank = docid_header.num_positions;
       reslist.push_back(res);
     }
+    delete (didtr);
 
     if (query.size() > 1) {
       if (!ProcessAdditionalWords(itr_array_, reslist, query, i)) {
@@ -157,6 +158,7 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
     }
   }
 
+  delete (didtr);
   if (reslist.size() == 0) {
     return false;
   }

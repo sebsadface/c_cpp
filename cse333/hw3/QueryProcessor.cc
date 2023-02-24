@@ -136,7 +136,7 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
   list<DocIDElementHeader> idlist;
   list<DocPositionOffset_t> poslist;
   DocIDTableReader* didtr;
-  uint32_t i, j, num_docs;
+  uint32_t i, j;
   for (i = 1; i < query.size(); i++) {
     didtr = itr_array[idxfilenum]->LookupWord(query[i]);
     if (didtr == nullptr) {
@@ -145,12 +145,12 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
     }
 
     list<IdxQueryResult>::iterator reslist_itr = reslist.begin();
-    num_docs = reslist.size();
-    for (j = 0; j < num_docs; j++) {
+    for (j = 0; j < reslist.size(); j++) {
       if (didtr->LookupDocID(reslist_itr->doc_id, &poslist)) {
         reslist_itr->rank += poslist.size();
       } else {
         reslist.erase(reslist_itr);
+        j--;
       }
       reslist_itr++;
     }

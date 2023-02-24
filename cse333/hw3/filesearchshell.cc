@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
   vector<string> query;
   vector<QueryProcessor::QueryResult> res;
 
-  for (i = 0; i < argc; i++) {
+  for (i = 1; i < argc; i++) {
     idx_list.push_back(argv[i]);
   }
   QueryProcessor qp(idx_list);
@@ -135,7 +135,7 @@ static bool GetQuery(vector<string>* const query) {
   string nextword;
   stringstream ss;
 
-  cout << "enter query:" << endl;
+  cout << "Enter query:" << endl;
 
   getline(cin, nextline);
   if (cin.eof()) {

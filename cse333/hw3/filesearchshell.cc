@@ -138,6 +138,7 @@ static bool GetQuery(vector<string>* const query) {
   string nextline;
   string nextword;
   stringstream ss;
+  int i = 0;
 
   cout << "Enter query:" << endl;
 
@@ -147,11 +148,20 @@ static bool GetQuery(vector<string>* const query) {
   }
 
   for (char c : nextline) {
+    if (isspace(c) && i == nextline.size() - 1) {
+      return true;
+    }
+    i++;
+  }
+
+  for (char c : nextline) {
     ss << static_cast<char>(tolower(c));
   }
   while (ss.good()) {
     ss >> nextword;
-    query->push_back(nextword);
+    if (!nextword.empty()) {
+      query->push_back(nextword);
+    }
   }
   return true;
 }

@@ -29,34 +29,16 @@ TEST(Test_QueryProcessor, TestQueryProcessorSingleIndex) {
 
   // Set up the list of index files
   list<string> idx_list;
-  // idx_list.push_back("./unit_test_indices/books.idx");
-  idx_list.push_back("./unit_test_indices/tiny.idx");
+  idx_list.push_back("./unit_test_indices/books.idx");
 
   // Construct the QueryProcessor.
   QueryProcessor qp(idx_list);
 
   // Try the a single word query.
   vector<string> query;
-  // query.push_back("reborn");
-  query.push_back("buffalo");
-  //////////////////////////////////////////////////////////////////////////
-  vector<QueryProcessor::QueryResult> res = qp.ProcessQuery(query);
-  ASSERT_EQ(2U, res.size());
-  ASSERT_EQ(string("test_tree/tiny/buffalo.txt"), res[0].document_name);
-  ASSERT_EQ(8, res[0].rank);
-  ASSERT_EQ(string("test_tree/books/home-on-the-range.txt"),
-            res[1].document_name);
-  ASSERT_EQ(1, res[1].rank);
+  query.push_back("reborn");
 
-  // Test the Single index multi word QueryProcessor
-  query.push_back("roam");
-  res = qp.ProcessQuery(query);
-  ASSERT_EQ(1U, res.size());
-  ASSERT_EQ(string("test_tree/books/home-on-the-range.txt"),
-            res[0].document_name);
-  ASSERT_EQ(1, res[0].rank);
-  //////////////////////////////////////////////////////////////////////////
-  // vector<QueryProcessor::QueryResult> res = qp.ProcessQuery(query);
+  vector<QueryProcessor::QueryResult> res = qp.ProcessQuery(query);
   ASSERT_EQ(3U, res.size());
   ASSERT_EQ(string("test_tree/books/leavesofgrass.txt"), res[0].document_name);
   ASSERT_EQ(3, res[0].rank);

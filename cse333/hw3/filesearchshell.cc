@@ -177,7 +177,9 @@ static bool GetQuery(vector<string>* const query) {
   // Parse each word and push it to the query vector
   while (ss.good()) {
     ss >> nextword;
-    query->push_back(nextword);
+    if (!nextword.empty()) {
+      query->push_back(nextword);
+    }
   }
   return true;
 }

@@ -165,6 +165,8 @@ static bool GetQuery(vector<string>* const query) {
   for (char c : nextline) {
     if (isspace(c) && i == nextline.size() - 1) {
       return true;
+    } else if (!isspace(c)) {
+      break;
     }
     i++;
   }

@@ -427,7 +427,8 @@ static int WriteDocidToDocnameFn(FILE* f, IndexFileOffset_t offset,
     return kFailedWrite;
   }
 
-  if (fwrite(file_name, sizeof(char), file_name_bytes, f) != file_name_bytes) {
+  if (fwrite(file_name, sizeof(char), file_name_bytes, f) !=
+      static_cast<size_t>(file_name_bytes)) {
     return kFailedWrite;
   }
 
@@ -540,7 +541,8 @@ static int WriteWordToPostingsFn(FILE* f, IndexFileOffset_t offset,
     return kFailedWrite;
   }
 
-  if (fwrite(wp->word, sizeof(char), word_bytes, f) != word_bytes) {
+  if (fwrite(wp->word, sizeof(char), word_bytes, f) !=
+      static_cast<size_t>(word_bytes)) {
     return kFailedWrite;
   }
 

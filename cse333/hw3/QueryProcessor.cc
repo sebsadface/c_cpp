@@ -34,10 +34,30 @@ typedef struct {
   int rank;        // The rank of the result so far.
 } IdxQueryResult;
 
+// Process additional words in the query (for multiword queries)
+//
+// Arguments:
+// - itr_array: pointer to the array of IndexTableReaders
+// - reslist: (output parameter) a list of IdxQueryResults, empty vector if no
+// result is found
+// - query: a vector of query words
+// - idxfilenum: the current index file number (correspond to the index in the
+// itr_array)
+//
+// Returns:
+// - true if query results are found, false otherwise
 static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
-                                   list<IdxQueryResult>& reslist,
+                                   list<IdxQueryResult>* reslist,
                                    const vector<string>& query, int idxfilenum);
 
+// Find the given filename in the final results vector
+//
+// Arguments:
+// - final_results: a vector of QueryResults
+// - filename: the filename the user is looking for
+//
+// Returns:
+// - true if filename is found in final_result, false otherwise
 static bool FindFileName(const vector<QueryProcessor::QueryResult> final_result,
                          const string& filename);
 
@@ -92,37 +112,64 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
   IdxQueryResult res;
   int i;
 
+  // Loop through and lookup the query in all the given index files
   for (i = 0; i < array_len_; i++) {
+    // Look up the first word in the query
     didtr = itr_array_[i]->LookupWord(query[0]);
     if (didtr == nullptr) {
+      // Continue to the next index file because the word is not found
       continue;
     }
 
+    // We found the word, get a list of doc id element headers from the doc id
+    // table reader
     idlist = didtr->GetDocIDList();
+
+    // Push all the doc ids and their ranks from the doc id element headers to
+    // the IdxQueryResult list
     for (DocIDElementHeader docid_header : idlist) {
       res.doc_id = docid_header.doc_id;
       res.rank = docid_header.num_positions;
       reslist.push_back(res);
     }
+
+    // We are done using the doc id table reader, clean up its resources
     delete (didtr);
 
+    // Check if we have more than one word in the query
     if (query.size() > 1) {
-      if (!ProcessAdditionalWords(itr_array_, reslist, query, i)) {
+      // Process the additional words
+      if (!ProcessAdditionalWords(itr_array_, &reslist, query, i)) {
+        // No valid results found from the addtional words, which means there
+        // are not matches in the current index file, continue to the next index
+        // file.
         continue;
       }
     }
 
+    // We are done processing the querys, now traslate the IdxQueryResults to
+    // final QueryResults (using the doc table reader to find the filenames from
+    // the doc ids)
     for (IdxQueryResult res : reslist) {
       string filename;
+
+      // Find the filename using the doc table reader
       Verify333(dtr_array_[i]->LookupDocID(res.doc_id, &filename));
 
+      // Check if the file name already exist in the final reasult (if the user
+      // input the same index file twice this can prevent duplicates in the
+      // final results)
       if (!FindFileName(final_result, filename)) {
+        // If the filename is not in the final result, we add it to the final
+        // result list
         QueryProcessor::QueryResult qres;
         qres.document_name = filename;
         qres.rank = res.rank;
         final_result.push_back(qres);
       }
     }
+
+    // clear the IdxQueryResult list for reuse
     reslist.clear();
   }
 
@@ -132,34 +179,50 @@ vector<QueryProcessor::QueryResult> QueryProcessor::ProcessQuery(
 }
 
 static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
-                                   list<IdxQueryResult>& reslist,
+                                   list<IdxQueryResult>* reslist,
                                    const vector<string>& query,
                                    int idxfilenum) {
   list<DocIDElementHeader> idlist;
   list<DocPositionOffset_t> poslist;
   DocIDTableReader* didtr;
   uint32_t i, j, num_docs;
+
+  // Loop through and process all the words left in the query
   for (i = 1; i < query.size(); i++) {
+    // Look up the current word in the query
     didtr = itr_array[idxfilenum]->LookupWord(query[i]);
     if (didtr == nullptr) {
-      reslist.clear();
+      // Clear the result list and return false because the word is not found
+      reslist->clear();
       return false;
     }
 
-    num_docs = reslist.size();
-    list<IdxQueryResult>::iterator reslist_itr = reslist.begin();
+    // We found the word, iterate through the docIDs in our current result list,
+    // testing each to see whether it is also in the set of matches for the
+    // query[i].
+    //
+    // If it is, we leave it in the result list and we update its rank by adding
+    // in the number of matches for the current word.
+    //
+    // If it isn't, we delete that docID from the search result list.
+    num_docs = reslist->size();
+    list<IdxQueryResult>::iterator reslist_itr = reslist->begin();
     for (j = 0; j < num_docs; j++) {
       if (didtr->LookupDocID(reslist_itr->doc_id, &poslist)) {
         reslist_itr->rank += poslist.size();
         reslist_itr++;
       } else {
-        reslist_itr = reslist.erase(reslist_itr);
+        reslist_itr = reslist->erase(reslist_itr);
       }
     }
+
+    // We are done using the doc id table reader, clean up its resources
     delete (didtr);
   }
 
-  if (reslist.size() == 0) {
+  // We've finished processing this current query word.  If there are no
+  // documents left in our result list, return false.
+  if (reslist->size() == 0) {
     return false;
   }
 
@@ -169,6 +232,9 @@ static bool ProcessAdditionalWords(IndexTableReader** const itr_array,
 static bool FindFileName(const vector<QueryProcessor::QueryResult> final_result,
                          const string& filename) {
   uint32_t i;
+
+  // check the give filename agains each filenames in the final result and see
+  // if there is a match
   for (i = 0; i < final_result.size(); i++) {
     if (final_result[i].document_name == filename) {
       return true;

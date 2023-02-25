@@ -163,10 +163,10 @@ static bool GetQuery(vector<string>* const query) {
 
   // Check if the line of query only contains whitespaces
   for (char c : nextline) {
-    if (isspace(c) && i == nextline.size() - 1) {
-      return true;
-    } else if (!isspace(c)) {
+    if (!isspace(c)) {
       break;
+    } else if (isspace(c) && i == nextline.size() - 1) {
+      return true;
     }
     i++;
   }

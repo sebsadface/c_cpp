@@ -24,8 +24,7 @@ int main(int argc, char **argv) {
   // TODO: fill in this main method.
   struct sockaddr_storage addr;
   size_t addrlen;
-  int socket_fd;
-  int file_fd;
+  int socket_fd, file_fd, read_res, write_res;
   unsigned short port = 0;
   unsigned char readbuf[BUFFER_SIZE];
 
@@ -57,15 +56,15 @@ int main(int argc, char **argv) {
 
   while (1) {
     // Read from the file.
-    int res = WrappedRead(file_fd, readbuf, BUFFER_SIZE);
-    if (res <= 0) {
+    read_res = WrappedRead(file_fd, readbuf, BUFFER_SIZE);
+    if (read_res <= 0) {
       // EOF or error.
       break;
     }
 
     // Write to the socket.
-    int res2 = WrappedWrite(socket_fd, readbuf, res);
-    if (res2 != res) {
+    write_res = WrappedWrite(socket_fd, readbuf, read_res);
+    if (write_res != read_res) {
       // Error.
       break;
     }

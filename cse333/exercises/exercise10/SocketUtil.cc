@@ -15,8 +15,6 @@ using std::endl;
 
 bool LookupName(char* name, unsigned short port,
                 struct sockaddr_storage* ret_addr, size_t* ret_addrlen) {
-  // TODO: fill in this function
-
   // Step1: Create struct addrinfo hints.
   struct addrinfo hints, *results;
   int retval;
@@ -60,8 +58,6 @@ bool LookupName(char* name, unsigned short port,
 
 bool Connect(const struct sockaddr_storage& addr, const size_t& addrlen,
              int* ret_fd) {
-  // TODO: fill in this function
-
   // Step1: We've figureed out the IP address and port to connect to.
 
   // Step2: Create a socket using socket().
@@ -84,8 +80,6 @@ bool Connect(const struct sockaddr_storage& addr, const size_t& addrlen,
 }
 
 int WrappedRead(int fd, unsigned char* buf, int readlen) {
-  // TODO: fill in this function
-
   int result;
   while (1) {
     result = read(fd, buf, readlen);
@@ -102,7 +96,6 @@ int WrappedRead(int fd, unsigned char* buf, int readlen) {
 }
 
 int WrappedWrite(int fd, unsigned char* buf, int writelen) {
-  // TODO: fill in this function
   int result;
   int totalwritten = 0;
 

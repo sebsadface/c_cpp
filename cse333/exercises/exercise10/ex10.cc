@@ -3,69 +3,76 @@
 // Name: Sebastian Liu
 // CSE Email Address: ll57@cs.washington.edu
 
-#include <fcntl.h>   // for open(), O_RDONLY
-#include <stdio.h>   // for printf()
-#include <stdlib.h>  // for exit()
-#include <iostream>  // for cerr, endl
-#include <unistd.h>  // for close(), read(), write()
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-#include "./SocketUtil.h"
+#include <iostream>
 
-#define BUFFER_SIZE 256
+#include "SocketUtil.h"
 
 using std::cerr;
 using std::endl;
 
-void Usage();
+#define BUFSIZE 256
+
+// Prints usage information about this program and exits with EXIT_FAILURE.
+void Usage(char* progname);
 
 // Open a local file, open a socket to a remote process,
 // and send the file to other process.
-int main(int argc, char **argv) {
+
+int main(int argc, char** argv) {
+  if (argc != 4) {
+    Usage(argv[0]);
+  }
+
+  // Attempt to open up the file
+  int file_fd = open(argv[3], O_RDONLY);
+  if (file_fd == -1) {
+    Usage(argv[0]);
+  }
+
+  unsigned short port = 0;
+  if (sscanf(argv[2], "%hu", &port) != 1) {
+    close(file_fd);
+    Usage(argv[0]);
+  }
+
+  // Get an appropriate sockaddr structure.
   struct sockaddr_storage addr;
   size_t addrlen;
-  int socket_fd, file_fd, read_res, write_res;
-  unsigned short port = 0;
-  unsigned char readbuf[BUFFER_SIZE];
-
-  // check the number of arguments
-  if (argc != 4) {
-    Usage();
-  }
-
-  // Open the file
-  file_fd = open(argv[3], O_RDONLY);
-  if (file_fd == -1) {
-    Usage();
-  }
-
-  // Get port number.
-  if (sscanf(argv[2], "%hu", &port) != 1) {
-    Usage();
-  }
-
-  // Get sockaddr structure.
   if (!LookupName(argv[1], port, &addr, &addrlen)) {
-    Usage();
+    close(file_fd);
+    Usage(argv[0]);
   }
 
-  // Connect to the server.
+  // Connect to the remote host.
+  int socket_fd;
   if (!Connect(addr, addrlen, &socket_fd)) {
-    Usage();
+    close(file_fd);
+    Usage(argv[0]);
   }
 
+  // Read from the input file, writing to the network socket.
+  unsigned char readbuf[BUFSIZE];
   while (1) {
-    // Read from the file.
-    read_res = WrappedRead(file_fd, readbuf, BUFFER_SIZE);
-    if (read_res <= 0) {
-      // EOF or error.
+    int res = WrappedRead(file_fd, readbuf, BUFSIZE);
+    if (res == 0)  // eof
       break;
+    if (res < 0) {  // error
+      close(socket_fd);
+      close(file_fd);
+      return EXIT_FAILURE;
     }
 
-    // Write to the socket.
-    write_res = WrappedWrite(socket_fd, readbuf, read_res);
-    if (write_res != read_res) {
-      // Error.
-      break;
+    int res2 = WrappedWrite(socket_fd, readbuf, res);
+    if (res2 != res) {  // error
+      close(socket_fd);
+      close(file_fd);
+      return EXIT_FAILURE;
     }
   }
 
@@ -75,8 +82,7 @@ int main(int argc, char **argv) {
   return EXIT_SUCCESS;
 }
 
-void Usage() {
-  cerr << "usage: "
-       << " <HOSTNAME> <PORT NUMBER> <FILENAME>" << endl;
+void Usage(char* progname) {
+  cerr << "usage: " << progname << " hostname port filename" << endl;
   exit(EXIT_FAILURE);
 }

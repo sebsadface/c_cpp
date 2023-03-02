@@ -1,15 +1,23 @@
-#include <assert.h>
+// Copyright © 2023 Sebatian Liu.
+//
+// Name: Sebastian Liu
+// CSE Email Address: ll57@cs.washington.edu
+
 #include <fcntl.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
 #include <iostream>
 
 #include "./SocketUtil.h"
 
 #define BUF_SIZE 1024
 #define STDOUT_FD 1
+
+using std::cerr;
+using std::endl;
 
 void Usage();
 
@@ -26,7 +34,7 @@ int main(int argc, char **argv) {
   // Create the listening socket.
   listen_fd = Listen(argv[1], &sock_family);
   if (listen_fd == -1) {
-    std::cerr << "Failed listening to socket " << std::endl;
+    cerr << "Failed listening to socket " << endl;
     Usage();
   }
 
@@ -40,7 +48,7 @@ int main(int argc, char **argv) {
       if ((errno == EAGAIN) || (errno == EINTR) || (errno == EWOULDBLOCK)) {
         continue;
       }
-      std::cerr << "Failure on accept: " << strerror(errno) << std::endl;
+      cerr << "Failure on accept: " << strerror(errno) << endl;
       Usage();
     }
     break;
@@ -63,12 +71,13 @@ int main(int argc, char **argv) {
     }
   }
 
+  // clean up
   close(client_fd);
   close(listen_fd);
   return EXIT_SUCCESS;
 }
 
 void Usage() {
-  std::cerr << "usage: ./ex11 <PORT>" << std::endl;
+  cerr << "usage: ./ex11 <PORT>" << endl;
   exit(EXIT_FAILURE);
 }

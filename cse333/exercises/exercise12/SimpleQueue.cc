@@ -9,6 +9,9 @@
  * author.
  */
 
+// Name: Sebastian Liu
+// CSE Email Address: ll57@cs.washington.edu
+
 #include "SimpleQueue.h"
 
 #include <memory>
@@ -22,16 +25,19 @@ SimpleQueue::SimpleQueue() {
   this->size_ = 0;
   this->front_.reset();
   this->end_.reset();
-  pthread_mutex_init(&queue_lock, nullptr);
+  pthread_mutex_init(&queue_lock, nullptr);  // initialize mutex to default
 }
 
-SimpleQueue::~SimpleQueue() { pthread_mutex_destroy(&queue_lock); }
+SimpleQueue::~SimpleQueue() {
+  pthread_mutex_destroy(&queue_lock);  // destroy the mutex to clean up
+}
 
 void SimpleQueue::Enqueue(const string& item) {
   shared_ptr<Node> new_node(new Node());
   new_node->next.reset();
   new_node->item = item;
 
+  // Critical section: modifying the queue
   pthread_mutex_lock(&queue_lock);
   if (this->end_) {
     this->end_->next = new_node;
@@ -44,6 +50,7 @@ void SimpleQueue::Enqueue(const string& item) {
 }
 
 bool SimpleQueue::Dequeue(string* const result) {
+  // Critical section: modifying the queue
   pthread_mutex_lock(&queue_lock);
   if (this->size_ == 0) {
     return false;

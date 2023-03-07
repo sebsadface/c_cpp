@@ -9,6 +9,9 @@
  * author.
  */
 
+// Name: Sebastian Liu
+// CSE Email Address: ll57@cs.washington.edu
+
 #ifndef SIMPLEQUEUE_H_
 #define SIMPLEQUEUE_H_
 

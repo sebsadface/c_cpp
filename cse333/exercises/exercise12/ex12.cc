@@ -92,11 +92,11 @@ int main(int argc, char** argv) {
   string* arg1 = new string("piroshki");
   string* arg2 = new string("nalysnyky");
 
-  if (pthread_create(&thds[0], nullptr, &thread_producer, &arg1) != 0) {
+  if (pthread_create(&thds[0], nullptr, &thread_producer, arg1) != 0) {
     cerr << "pthread_create failed" << endl;
   }
 
-  if (pthread_create(&thds[1], nullptr, &thread_producer, &arg2) != 0) {
+  if (pthread_create(&thds[1], nullptr, &thread_producer, arg2) != 0) {
     cerr << "pthread_create failed" << endl;
   }
 

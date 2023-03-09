@@ -56,8 +56,8 @@ bool IsPathSafe(const string& root_dir, const string& test_file) {
   char dir_root_path[PATH_MAX];
   char file_root_path[PATH_MAX];
 
-  if (realpath(root_dir.c_str(), dir_root_path) == NULL ||
-      realpath(test_file.c_str(), file_root_path) == NULL) {
+  if (!realpath(root_dir.c_str(), dir_root_path) ||
+      !realpath(test_file.c_str(), file_root_path)) {
     return false;
   }
 

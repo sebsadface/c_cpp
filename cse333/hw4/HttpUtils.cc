@@ -53,7 +53,18 @@ bool IsPathSafe(const string& root_dir, const string& test_file) {
   // path of a file.)
 
   // STEP 1
+  char* dir_root_path;
+  char* file_root_path;
 
+  if (realpath(root_dir.c_str(), dir_root_path) == nullptr ||
+      realpath(test_file.c_str(), file_root_path) == nullptr) {
+    return false;
+  }
+
+  if (strlen(dir_root_path) >= strlen(file_root_path) ||
+      strncmp(dir_root_path, file_root_path, strlen(dir_root_path)) != 0) {
+    return false;
+  }
 
   return true;  // You may want to change this.
 }
@@ -69,7 +80,12 @@ string EscapeHtml(const string& from) {
   // looked up online.
 
   // STEP 2
-
+  replace_all(ret, "&", "&amp;");
+  replace_all(ret, " ", "&nbsp;");
+  replace_all(ret, "\'", "&apos;");
+  replace_all(ret, "\"", "&quot;");
+  replace_all(ret, "<", "&lt;");
+  replace_all(ret, ">", "&gt;");
 
   return ret;
 }
@@ -85,8 +101,8 @@ string URIDecode(const string& from) {
     // note: use pos+n<from.length() instead of pos<from.length-n
     // to avoid overflow problems with unsigned int values
     char c1 = from[pos];
-    char c2 = (pos+1 < from.length()) ? toupper(from[pos+1]) : ' ';
-    char c3 = (pos+2 < from.length()) ? toupper(from[pos+2]) : ' ';
+    char c2 = (pos + 1 < from.length()) ? toupper(from[pos + 1]) : ' ';
+    char c3 = (pos + 2 < from.length()) ? toupper(from[pos + 2]) : ' ';
 
     // Special case the '+' for old encoders.
     if (c1 == '+') {
@@ -101,13 +117,11 @@ string URIDecode(const string& from) {
     }
 
     // Yes.  Are the next two characters hex digits?
-    if (!((('0' <= c2) && (c2 <= '9')) ||
-          (('A' <= c2) && (c2 <= 'F')))) {
+    if (!((('0' <= c2) && (c2 <= '9')) || (('A' <= c2) && (c2 <= 'F')))) {
       retstr.append(1, c1);
       continue;
     }
-    if (!((('0' <= c3) && (c3 <= '9')) ||
-           (('A' <= c3) && (c3 <= 'F')))) {
+    if (!((('0' <= c3) && (c3 <= '9')) || (('A' <= c3) && (c3 <= 'F')))) {
       retstr.append(1, c1);
       continue;
     }
@@ -144,14 +158,12 @@ void URLParser::Parse(const string& url) {
   // Split the URL into the path and the args components.
   vector<string> ps;
   boost::split(ps, url, boost::is_any_of("?"));
-  if (ps.size() < 1)
-    return;
+  if (ps.size() < 1) return;
 
   // Store the URI-decoded path.
   path_ = URIDecode(ps[0]);
 
-  if (ps.size() < 2)
-    return;
+  if (ps.size() < 2) return;
 
   // Split the args into each field=val; chunk.
   vector<string> vals;
@@ -172,8 +184,8 @@ void URLParser::Parse(const string& url) {
 
 uint16_t GetRandPort() {
   uint16_t portnum = 10000;
-  portnum += ((uint16_t) getpid()) % 25000;
-  portnum += ((uint16_t) rand()) % 5000;  // NOLINT(runtime/threadsafe_fn)
+  portnum += ((uint16_t)getpid()) % 25000;
+  portnum += ((uint16_t)rand()) % 5000;  // NOLINT(runtime/threadsafe_fn)
   return portnum;
 }
 
@@ -182,8 +194,7 @@ int WrappedRead(int fd, unsigned char* buf, int read_len) {
   while (1) {
     res = read(fd, buf, read_len);
     if (res == -1) {
-      if ((errno == EAGAIN) || (errno == EINTR))
-        continue;
+      if ((errno == EAGAIN) || (errno == EINTR)) continue;
     }
     break;
   }
@@ -196,12 +207,10 @@ int WrappedWrite(int fd, const unsigned char* buf, int write_len) {
   while (written_so_far < write_len) {
     res = write(fd, buf + written_so_far, write_len - written_so_far);
     if (res == -1) {
-      if ((errno == EAGAIN) || (errno == EINTR))
-        continue;
+      if ((errno == EAGAIN) || (errno == EINTR)) continue;
       break;
     }
-    if (res == 0)
-      break;
+    if (res == 0) break;
     written_so_far += res;
   }
   return written_so_far;
@@ -228,10 +237,8 @@ bool ConnectToServer(const string& host_name, uint16_t port_num,
   hints.ai_socktype = SOCK_STREAM;
 
   // Do the lookup.
-  if ((ret_val = getaddrinfo(host_name.c_str(),
-                            port_str,
-                            &hints,
-                            &results)) != 0) {
+  if ((ret_val = getaddrinfo(host_name.c_str(), port_str, &hints, &results)) !=
+      0) {
     cerr << "getaddrinfo failed: ";
     cerr << gai_strerror(ret_val) << endl;
     return false;

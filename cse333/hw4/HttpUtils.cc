@@ -81,7 +81,6 @@ string EscapeHtml(const string& from) {
 
   // STEP 2
   replace_all(ret, "&", "&amp;");
-  replace_all(ret, " ", "&nbsp;");
   replace_all(ret, "\'", "&apos;");
   replace_all(ret, "\"", "&quot;");
   replace_all(ret, "<", "&lt;");

@@ -157,30 +157,36 @@ bool ServerSocket::Accept(int* const accepted_fd,
     *client_port = htons(sa6->sin6_port);
   }
 
-  char hname[1024];
-  hname[0] = '\0';
+  char chname[1024];
+  chname[0] = '\0';
+  getnameinfo(reinterpret_cast<struct sockaddr*>(&caddr), caddr_len, chname,
+              1024, NULL, 0, 0);
+  *client_dns_name = string(chname);
+
+  char shname[1024];
+  shname[0] = '\0';
   if (sock_family_ == AF_INET) {
     struct sockaddr_in srvr;
     socklen_t srvrlen = sizeof(srvr);
     char addrbuf[INET_ADDRSTRLEN];
     getsockname(client_fd, reinterpret_cast<struct sockaddr*>(&srvr), &srvrlen);
     inet_ntop(AF_INET, &srvr.sin_addr, addrbuf, INET_ADDRSTRLEN);
-    getnameinfo(reinterpret_cast<struct sockaddr*>(&srvr), srvrlen, hname, 1024,
-                nullptr, 0, 0);
+    getnameinfo(reinterpret_cast<struct sockaddr*>(&srvr), srvrlen, shname,
+                1024, nullptr, 0, 0);
 
     *server_addr = string(addrbuf);
-    *server_dns_name = string(hname);
+    *server_dns_name = string(shname);
   } else {
     struct sockaddr_in6 srvr;
     socklen_t srvrlen = sizeof(srvr);
     char addrbuf[INET6_ADDRSTRLEN];
     getsockname(client_fd, reinterpret_cast<struct sockaddr*>(&srvr), &srvrlen);
     inet_ntop(AF_INET6, &srvr.sin6_addr, addrbuf, INET6_ADDRSTRLEN);
-    getnameinfo(reinterpret_cast<struct sockaddr*>(&srvr), srvrlen, hname, 1024,
-                nullptr, 0, 0);
+    getnameinfo(reinterpret_cast<struct sockaddr*>(&srvr), srvrlen, shname,
+                1024, nullptr, 0, 0);
 
     *server_addr = string(addrbuf);
-    *server_dns_name = string(hname);
+    *server_dns_name = string(shname);
   }
 
   return true;

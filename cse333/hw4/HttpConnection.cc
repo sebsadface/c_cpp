@@ -29,6 +29,7 @@ namespace hw4 {
 
 static const char* kHeaderEnd = "\r\n\r\n";
 static const int kHeaderEndLen = 4;
+static const int buf_len = 1024;
 
 bool HttpConnection::GetNextRequest(HttpRequest* const request) {
   // Use WrappedRead from HttpUtils.cc to read bytes from the files into
@@ -67,7 +68,7 @@ bool HttpConnection::GetNextRequest(HttpRequest* const request) {
 
   buffer_ = buffer_.substr(end + kHeaderEndLen);
 
-  if (request->uri == "/") {
+  if (request->uri() == "/") {
     return false;
   }
 
@@ -115,10 +116,10 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
     req.set_uri(first_line[1]);
   }
 
-  for (int i = 1; i < lines.size(); i++) {
+  for (size_t i = 1; i < lines.size(); i++) {
     size_t delim = lines[i].find(": ");
     if (delim != string::npos) {
-      req.AddHeader(to_lower(lines[i].substr(0, delim)),
+      req.AddHeader(to_lower(string(lines[i].substr(0, delim))),
                     lines[i].substr(delim + sizeof(": ")));
     }
   }

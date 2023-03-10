@@ -120,7 +120,7 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
   split(first_line, lines.front(), is_any_of(" "), token_compress_on);
 
   if (first_line.size() != 3 || first_line.front() != "GET" ||
-      first_line.back() == "HTTP/1.1") {
+      first_line.back() != "HTTP/1.1") {
     return req;
   }
 

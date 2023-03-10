@@ -74,6 +74,8 @@ bool HttpConnection::GetNextRequest(HttpRequest* const request) {
 
   buffer_ = buffer_.substr(end + kHeaderEndLen);
 
+  std::cout << request->uri() << std::endl;
+
   if (request->uri() == "/") {
     return false;
   }

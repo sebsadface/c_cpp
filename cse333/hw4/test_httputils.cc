@@ -90,9 +90,7 @@ TEST(Test_HttpUtils, TestHttpUtilsIsPathSafe) {
   string file6_bad = "//etc/passwd";
   string file7_bad = "test_files/ok_not_really/private.txt";
 
-  std::cout << "BEGINING" << std::endl;
   ASSERT_TRUE(IsPathSafe(basedir, file1_ok));
-  std::cout << "END" << std::endl;
   ASSERT_TRUE(IsPathSafe(basedir, file2_ok));
   ASSERT_TRUE(IsPathSafe(basedir, file3_ok));
   ASSERT_FALSE(IsPathSafe(basedir, file4_bad));

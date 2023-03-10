@@ -119,8 +119,9 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
   for (size_t i = 1; i < lines.size(); i++) {
     size_t delim = lines[i].find(": ");
     if (delim != string::npos) {
-      req.AddHeader(to_lower(string(lines[i].substr(0, delim))),
-                    lines[i].substr(delim + sizeof(": ")));
+      string header_name = lines[i].substr(0, delim);
+      to_lower(header_name);
+      req.AddHeader(header_name, lines[i].substr(delim + sizeof(": ")));
     }
   }
 

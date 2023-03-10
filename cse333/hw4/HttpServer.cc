@@ -196,13 +196,53 @@ static HttpResponse ProcessFileRequest(const string& uri,
   string file_name = "";
 
   // STEP 2:
+  URLParser parser;
+  parser.Parse(uri);
+  file_name = parser.path().substr(9);
 
-  // If you couldn't find the file, return an HTTP 404 error.
+  FileReader fr(base_dir, file_name);
+  string response_body;
+
   ret.set_protocol("HTTP/1.1");
-  ret.set_response_code(404);
-  ret.set_message("Not Found");
-  ret.AppendToBody("<html><body>Couldn't find file \"" + EscapeHtml(file_name) +
-                   "\"</body></html>\n");
+  if (fr.ReadFile(&response_body)) {
+    string suffix = file_name.substr(file_name.find("."));
+
+    if (suffix == ".html" || suffix == ".htm") {
+      ret.set_content_type("text/html");
+    } else if (suffix == ".jpeg" || suffix == ".jpg") {
+      ret.set_content_type("image/jpeg");
+    } else if (suffix == ".png") {
+      ret.set_content_type("image/png");
+    } else if (suffix == ".txt" || suffix == ".") {
+      ret.set_content_type("text/plain");
+    } else if (suffix == ".js") {
+      ret.set_content_type("text/javascript");
+    } else if (suffix == ".css") {
+      ret.set_content_type("text/css");
+    } else if (suffix == ".xml") {
+      ret.set_content_type("text/xml");
+    } else if (suffix == ".gif") {
+      ret.set_content_type("image/gif");
+    } else if (suffix == ".csv") {
+      ret.set_content_type("text/csv");
+    } else if (suffix == ".tiff") {
+      ret.set_content_type("image/tiff");
+    } else if (suffix == ".pdf") {
+      ret.set_content_type("application/pdf");
+    } else {
+      ret.set_content_type("application/octet-stream");
+    }
+
+    ret.set_response_code(200);
+    ret.set_message("OK");
+    ret.AppendToBody(response_body);
+  } else {
+    // If you couldn't find the file, return an HTTP 404 error.
+    ret.set_response_code(404);
+    ret.set_message("Not Found");
+    ret.AppendToBody("<html><body>Couldn't find file \"" +
+                     EscapeHtml(file_name) + "\"</body></html>\n");
+  }
   return ret;
 }
 
@@ -232,8 +272,24 @@ static HttpResponse ProcessQueryRequest(const string& uri,
   //    tags!)
 
   // STEP 3:
+  string response_body;
+  response_body =
+      "<html><head><title>333gle</title></head>\n" + "<body>\n" +
+      "<center style = \"font-size:500%;\">\n" +
+      "<span style = "
+      "\"position:relative;bottom:-0.33em;color:orange;\">3</span>" +
+      "<span style = \"color:red;\">3</span>" +
+      "<span style = \"color:gold;\">3</span>" +
+      "<span style = \"color:blue;\">g</span>" +
+      "<span style = \"color:green;\">l</span>" +
+      "<span style = \"color:red;\">e</span>\n" + "</center>\n" + "<p>\n" +
+      "<div style = \"height:20px;\"></div>\n" + "<center>\n" +
+      "<form action = \"/query\" method = \"get\">\n" +
+      "<input type = \"text\" size = 30 name = \"terms\"/>\n" +
+      "<input type = \"submit\" value = \"Search\"/>\n" + "</form>\n" +
+      "</center><p>\n"
 
-  return ret;
+      return ret;
 }
 
 }  // namespace hw4

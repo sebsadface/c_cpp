@@ -120,11 +120,11 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
   split(first_line, lines.front(), is_any_of(" "), token_compress_on);
 
   if (first_line.size() != 3 || first_line.front() != "GET" ||
-      first_line.back().compare(0, sizeof("HTTP/"), "HTTP/") != 0) {
+      first_line.back() == "HTTP/1.1") {
     return req;
-  } else {
-    req.set_uri(first_line[1]);
   }
+
+  req.set_uri(first_line[1]);
 
   for (size_t i = 1; i < lines.size(); i++) {
     size_t delim = lines[i].find(": ");

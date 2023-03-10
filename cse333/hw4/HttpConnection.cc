@@ -68,6 +68,7 @@ bool HttpConnection::GetNextRequest(HttpRequest* const request) {
     return false;
   }
 
+  std::cout << buffer_ << std::endl;
   *request = ParseRequest(buffer_.substr(0, end + kHeaderEndLen));
 
   buffer_ = buffer_.substr(end + kHeaderEndLen);

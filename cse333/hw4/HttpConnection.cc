@@ -133,7 +133,7 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
       string header_name = lines[i].substr(0, delim);
       to_lower(header_name);
 
-      string header_val = lines[i].substr(delim + sizeof(": "));
+      string header_val = lines[i].substr(delim + sizeof(": ") - 1);
 
       req.AddHeader(header_name, header_val);
     }

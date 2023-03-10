@@ -124,7 +124,8 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
     return req;
   }
 
-  req.URI = first_line[1];
+  std::cout << first_line[1] << std::endl;
+  req.set_uri(first_line[1]);
 
   for (size_t i = 1; i < lines.size(); i++) {
     size_t delim = lines[i].find(": ");

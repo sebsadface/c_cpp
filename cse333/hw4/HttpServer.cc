@@ -38,24 +38,24 @@ namespace hw4 {
 // Constants, internal helper functions
 ///////////////////////////////////////////////////////////////////////////////
 static const char* kThreegleStr =
-  "<html><head><title>333gle</title></head>\n"
-  "<body>\n"
-  "<center style=\"font-size:500%;\">\n"
-  "<span style=\"position:relative;bottom:-0.33em;color:orange;\">3</span>"
+    "<html><head><title>333gle</title></head>\n"
+    "<body>\n"
+    "<center style=\"font-size:500%;\">\n"
+    "<span style=\"position:relative;bottom:-0.33em;color:orange;\">3</span>"
     "<span style=\"color:red;\">3</span>"
     "<span style=\"color:gold;\">3</span>"
     "<span style=\"color:blue;\">g</span>"
     "<span style=\"color:green;\">l</span>"
     "<span style=\"color:red;\">e</span>\n"
-  "</center>\n"
-  "<p>\n"
-  "<div style=\"height:20px;\"></div>\n"
-  "<center>\n"
-  "<form action=\"/query\" method=\"get\">\n"
-  "<input type=\"text\" size=30 name=\"terms\" />\n"
-  "<input type=\"submit\" value=\"Search\" />\n"
-  "</form>\n"
-  "</center><p>\n";
+    "</center>\n"
+    "<p>\n"
+    "<div style=\"height:20px;\"></div>\n"
+    "<center>\n"
+    "<form action=\"/query\" method=\"get\">\n"
+    "<input type=\"text\" size=30 name=\"terms\" />\n"
+    "<input type=\"submit\" value=\"Search\" />\n"
+    "</form>\n"
+    "</center><p>\n";
 
 // static
 const int HttpServer::kNumThreads = 100;
@@ -66,17 +66,16 @@ static void HttpServer_ThrFn(ThreadPool::Task* t);
 
 // Given a request, produce a response.
 static HttpResponse ProcessRequest(const HttpRequest& req,
-                            const string& base_dir,
-                            const list<string>& indices);
+                                   const string& base_dir,
+                                   const list<string>& indices);
 
 // Process a file request.
 static HttpResponse ProcessFileRequest(const string& uri,
-                                const string& base_dir);
+                                       const string& base_dir);
 
 // Process a query request.
 static HttpResponse ProcessQueryRequest(const string& uri,
-                                 const list<string>& indices);
-
+                                        const list<string>& indices);
 
 ///////////////////////////////////////////////////////////////////////////////
 // HttpServer
@@ -98,12 +97,8 @@ bool HttpServer::Run(void) {
     HttpServerTask* hst = new HttpServerTask(HttpServer_ThrFn);
     hst->base_dir = static_file_dir_path_;
     hst->indices = &indices_;
-    if (!socket_.Accept(&hst->client_fd,
-                    &hst->c_addr,
-                    &hst->c_port,
-                    &hst->c_dns,
-                    &hst->s_addr,
-                    &hst->s_dns)) {
+    if (!socket_.Accept(&hst->client_fd, &hst->c_addr, &hst->c_port,
+                        &hst->c_dns, &hst->s_addr, &hst->s_dns)) {
       // The accept failed for some reason, so quit out of the server.
       // (Will happen when kill command is used to shut down the server.)
       break;
@@ -119,7 +114,8 @@ static void HttpServer_ThrFn(ThreadPool::Task* t) {
   // client's information in it.
   unique_ptr<HttpServerTask> hst(static_cast<HttpServerTask*>(t));
   cout << "  client " << hst->c_dns << ":" << hst->c_port << " "
-       << "(IP address " << hst->c_addr << ")" << " connected." << endl;
+       << "(IP address " << hst->c_addr << ")"
+       << " connected." << endl;
 
   // Read in the next request, process it, and write the response.
 
@@ -134,14 +130,33 @@ static void HttpServer_ThrFn(ThreadPool::Task* t) {
 
   // STEP 1:
   bool done = false;
+  HttpConnection hc(hst->client_fd);
   while (!done) {
-    done = true;  // you may want to change this value
+    HttpRequest request;
+    HttpResponse response;
+
+    if (!hc.GetNextRequest(request)) {
+      close(hst->client_fd);
+      done = true;
+    }
+
+    response = ProcessRequest(request, hst->base_dir, hst->indices);
+
+    if (!hc.WriteResponse(response)) {
+      close(hst->client_fd);
+      done = true;
+    }
+
+    if (request.GetHeaderValue("connection") == "close") {
+      close(hst->client_fd);
+      done = true;  // you may want to change this value
+    }
   }
 }
 
 static HttpResponse ProcessRequest(const HttpRequest& req,
-                            const string& base_dir,
-                            const list<string>& indices) {
+                                   const string& base_dir,
+                                   const list<string>& indices) {
   // Is the user asking for a static file?
   if (req.uri().substr(0, 8) == "/static/") {
     return ProcessFileRequest(req.uri(), base_dir);
@@ -152,7 +167,7 @@ static HttpResponse ProcessRequest(const HttpRequest& req,
 }
 
 static HttpResponse ProcessFileRequest(const string& uri,
-                                const string& base_dir) {
+                                       const string& base_dir) {
   // The response we'll build up.
   HttpResponse ret;
 
@@ -182,19 +197,17 @@ static HttpResponse ProcessFileRequest(const string& uri,
 
   // STEP 2:
 
-
   // If you couldn't find the file, return an HTTP 404 error.
   ret.set_protocol("HTTP/1.1");
   ret.set_response_code(404);
   ret.set_message("Not Found");
-  ret.AppendToBody("<html><body>Couldn't find file \""
-                   + EscapeHtml(file_name)
-                   + "\"</body></html>\n");
+  ret.AppendToBody("<html><body>Couldn't find file \"" + EscapeHtml(file_name) +
+                   "\"</body></html>\n");
   return ret;
 }
 
 static HttpResponse ProcessQueryRequest(const string& uri,
-                                 const list<string>& indices) {
+                                        const list<string>& indices) {
   // The response we're building up.
   HttpResponse ret;
 

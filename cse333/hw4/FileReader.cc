@@ -16,7 +16,7 @@
 #include <sstream>
 
 extern "C" {
-  #include "libhw2/FileParser.h"
+#include "libhw2/FileParser.h"
 }
 
 #include "./HttpUtils.h"
@@ -45,8 +45,20 @@ bool FileReader::ReadFile(string* const contents) {
   // HttpUtils.h above the MallocDeleter class for details.
 
   // STEP 1:
+  if (!IsPathSafe(this->basedir_, this->fname_)) {
+    return false;
+  }
 
+  int size;
+  char* str = ::ReadFileToString(full_file.c_str(), &size);
 
+  if (str == nullptr) {
+    return false;
+  }
+
+  *contents = string(str);
+
+  free(str);
   return true;
 }
 

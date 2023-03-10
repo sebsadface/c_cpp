@@ -50,7 +50,7 @@ bool HttpConnection::GetNextRequest(HttpRequest* const request) {
 
   // STEP 1:
   int res;
-  char buf[buf_len];
+  unsigned char buf[buf_len];
 
   while (buffer_.find(kHeaderEnd) == string::npos) {
     res = WrappedRead(fd_, buf, buf_len);

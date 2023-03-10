@@ -56,7 +56,7 @@ bool HttpConnection::GetNextRequest(HttpRequest* const request) {
     res = WrappedRead(fd_, buf, buf_len);
     if (res == -1) return false;
     if (res == 0) break;
-    buffer_ += string(reinterpret_cast<char*> buf, res);
+    buffer_ += string(reinterpret_cast<char*>(buf), res);
   }
 
   size_t end = buffer_.find(kHeaderEnd);

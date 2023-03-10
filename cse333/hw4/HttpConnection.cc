@@ -20,6 +20,7 @@
 #include "./HttpUtils.h"
 #include "./HttpConnection.h"
 
+using namespace boost::algorithm;
 using std::map;
 using std::string;
 using std::vector;
@@ -47,18 +48,37 @@ bool HttpConnection::GetNextRequest(HttpRequest* const request) {
   // next time the caller invokes GetNextRequest()!
 
   // STEP 1:
+  int res;
+  char buf[buf_len];
 
+  while (buffer_.find(kHeaderEnd) == string::npos) {
+    res = WrappedRead(fd_, buf, buf_len);
+    if (res == -1) return false;
+    if (res == 0) break;
+    buffer_ += string(buf, res);
+  }
 
-  return false;  // You may want to change this.
+  size_t end = buffer_.find(kHeaderEnd);
+  if (end == string::npos) {
+    return false;
+  }
+
+  *request = ParseRequest(buffer_.substr(0, end + kHeaderEndLen));
+
+  buffer_ = buffer_.substr(end + kHeaderEndLen);
+
+  if (request->uri == "/") {
+    return false;
+  }
+
+  return true;  // You may want to change this.
 }
 
 bool HttpConnection::WriteResponse(const HttpResponse& response) const {
   string str = response.GenerateResponseString();
-  int res = WrappedWrite(fd_,
-                         reinterpret_cast<const unsigned char*>(str.c_str()),
-                         str.length());
-  if (res != static_cast<int>(str.length()))
-    return false;
+  int res = WrappedWrite(
+      fd_, reinterpret_cast<const unsigned char*>(str.c_str()), str.length());
+  if (res != static_cast<int>(str.length())) return false;
   return true;
 }
 
@@ -82,7 +102,26 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
   // Note: If a header is malformed, skip that line.
 
   // STEP 2:
+  vector<string> lines;
+  vector<string> first_line;
 
+  split(lines, request, is_any_of("\r\n"), token_compress_on);
+  split(first_line, lines.front(), is_any_of(" "), token_compress_on);
+
+  if (first_line.size() != 3 || first_line.front() != "GET" ||
+      first_line.back().compare(0, sizeof("HTTP/"), "HTTP/") != 0) {
+    return req;
+  } else {
+    req.set_uri(first_line[1]);
+  }
+
+  for (int i = 1; i < lines.size(); i++) {
+    size_t delim = lines[i].find(": ");
+    if (delim != string::npos) {
+      req.AddHeader(to_lower(lines[i].substr(0, delim)),
+                    lines[i].substr(delim + sizeof(": ")));
+    }
+  }
 
   return req;
 }

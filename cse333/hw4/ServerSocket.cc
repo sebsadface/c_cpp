@@ -29,6 +29,7 @@ using std::string;
 using std::to_string;
 
 namespace hw4 {
+static const int buf_len = 1024;
 
 ServerSocket::ServerSocket(uint16_t port) {
   port_ = port;
@@ -157,13 +158,13 @@ bool ServerSocket::Accept(int* const accepted_fd,
     *client_port = htons(sa6->sin6_port);
   }
 
-  char chname[1024];
+  char chname[buf_len];
   chname[0] = '\0';
   getnameinfo(reinterpret_cast<struct sockaddr*>(&caddr), caddr_len, chname,
-              1024, NULL, 0, 0);
+              buf_len, NULL, 0, 0);
   *client_dns_name = string(chname);
 
-  char shname[1024];
+  char shname[buf_len];
   shname[0] = '\0';
   if (sock_family_ == AF_INET) {
     struct sockaddr_in srvr;
@@ -172,7 +173,7 @@ bool ServerSocket::Accept(int* const accepted_fd,
     getsockname(client_fd, reinterpret_cast<struct sockaddr*>(&srvr), &srvrlen);
     inet_ntop(AF_INET, &srvr.sin_addr, addrbuf, INET_ADDRSTRLEN);
     getnameinfo(reinterpret_cast<struct sockaddr*>(&srvr), srvrlen, shname,
-                1024, nullptr, 0, 0);
+                buf_len, nullptr, 0, 0);
 
     *server_addr = string(addrbuf);
     *server_dns_name = string(shname);
@@ -183,7 +184,7 @@ bool ServerSocket::Accept(int* const accepted_fd,
     getsockname(client_fd, reinterpret_cast<struct sockaddr*>(&srvr), &srvrlen);
     inet_ntop(AF_INET6, &srvr.sin6_addr, addrbuf, INET6_ADDRSTRLEN);
     getnameinfo(reinterpret_cast<struct sockaddr*>(&srvr), srvrlen, shname,
-                1024, nullptr, 0, 0);
+                buf_len, nullptr, 0, 0);
 
     *server_addr = string(addrbuf);
     *server_dns_name = string(shname);

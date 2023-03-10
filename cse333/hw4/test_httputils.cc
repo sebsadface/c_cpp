@@ -54,26 +54,26 @@ TEST(Test_HttpUtils, TestHttpUtilsURLParser) {
   URLParser p;
   p.Parse(easy);
   ASSERT_EQ("/foo/bar", p.path());
-  ASSERT_EQ((unsigned) 0, p.args().size());
+  ASSERT_EQ((unsigned)0, p.args().size());
 
   p.Parse(tricky);
   ASSERT_EQ("/foo/bar", p.path());
-  ASSERT_EQ((unsigned) 0, p.args().size());
+  ASSERT_EQ((unsigned)0, p.args().size());
 
   p.Parse(query);
   ASSERT_EQ("/foo/bar", p.path());
-  ASSERT_EQ((unsigned) 1, p.args().size());
+  ASSERT_EQ((unsigned)1, p.args().size());
   ASSERT_EQ("blah blah", p.args()["foo"]);
 
   p.Parse(many);
   ASSERT_EQ("/foo/bar", p.path());
-  ASSERT_EQ((unsigned) 2, p.args().size());
+  ASSERT_EQ((unsigned)2, p.args().size());
   ASSERT_EQ("bar", p.args()["foo"]);
   ASSERT_EQ("baz", p.args()["bam"]);
 
   p.Parse(manyshort);
   ASSERT_EQ("/foo/bar", p.path());
-  ASSERT_EQ((unsigned) 2, p.args().size());
+  ASSERT_EQ((unsigned)2, p.args().size());
   ASSERT_EQ("\"bar\"", p.args()["foo"]);
   ASSERT_EQ("baz", p.args()["bam"]);
 }
@@ -90,7 +90,9 @@ TEST(Test_HttpUtils, TestHttpUtilsIsPathSafe) {
   string file6_bad = "//etc/passwd";
   string file7_bad = "test_files/ok_not_really/private.txt";
 
+  std::cout << "BEGINING" << std::endl;
   ASSERT_TRUE(IsPathSafe(basedir, file1_ok));
+  std::cout << "END" << std::endl;
   ASSERT_TRUE(IsPathSafe(basedir, file2_ok));
   ASSERT_TRUE(IsPathSafe(basedir, file3_ok));
   ASSERT_FALSE(IsPathSafe(basedir, file4_bad));
@@ -152,24 +154,22 @@ TEST(Test_HttpUtils, TestHttpUtilsWrappedReadWrite) {
   unlink("test_files/test.txt");
 
   // Open the file and write to it.
-  int file_fd = open("test_files/test.txt",
-                     O_RDWR | O_CREAT,
-                     S_IRUSR | S_IWUSR);
+  int file_fd =
+      open("test_files/test.txt", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
   ASSERT_NE(-1, file_fd);
-  ASSERT_EQ(static_cast<int>(filedata.size()),
-            WrappedWrite(file_fd,
-                         (unsigned char*) filedata.c_str(),
-                         filedata.size()));
+  ASSERT_EQ(
+      static_cast<int>(filedata.size()),
+      WrappedWrite(file_fd, (unsigned char*)filedata.c_str(), filedata.size()));
   close(file_fd);
 
   // Reopen the file and read it in.
-  unsigned char readdata[64] = { 0 };
+  unsigned char readdata[64] = {0};
   file_fd = open("test_files/test.txt", O_RDONLY);
   ASSERT_NE(-1, file_fd);
   ASSERT_EQ(static_cast<int>(filedata.size()),
             WrappedRead(file_fd, readdata, filedata.size()));
   close(file_fd);
-  string readstr((const char*) readdata);
+  string readstr((const char*)readdata);
   ASSERT_TRUE(readstr == filedata);
 
   // Delete the file.

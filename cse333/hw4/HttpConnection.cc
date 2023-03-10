@@ -8,9 +8,6 @@
  * interested in reusing these course materials should contact the
  * author.
  */
-
-#include <iostream>
-
 #include <stdint.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -74,13 +71,9 @@ bool HttpConnection::GetNextRequest(HttpRequest* const request) {
 
   buffer_ = buffer_.substr(end + kHeaderEndLen);
 
-  std::cout << request->uri() << std::endl;
-
   if (request->uri() == "/") {
     return false;
   }
-
-  std::cout << buffer_ << std::endl;
 
   return true;  // You may want to change this.
 }
@@ -124,7 +117,6 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
     return req;
   }
 
-  std::cout << first_line[1] << std::endl;
   req.set_uri(first_line[1]);
 
   for (size_t i = 1; i < lines.size(); i++) {

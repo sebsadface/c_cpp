@@ -68,7 +68,7 @@ bool HttpConnection::GetNextRequest(HttpRequest* const request) {
 
   buffer_ = buffer_.substr(end + kHeaderEndLen);
 
-  if (request->uri().empty()) {
+  if (request->uri().compare("!OK") == 0) {
     return false;
   }
 
@@ -111,7 +111,7 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
 
   if (first_line.size() != 3 || first_line.front() != "GET" ||
       first_line.back().compare(0, sizeof("HTTP/"), "HTTP/") != 0) {
-    req.set_uri();
+    req.set_uri("!OK");
     return req;
   } else {
     req.set_uri(first_line[1]);

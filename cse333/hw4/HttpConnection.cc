@@ -121,7 +121,10 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
     if (delim != string::npos) {
       string header_name = lines[i].substr(0, delim);
       to_lower(header_name);
-      req.AddHeader(header_name, lines[i].substr(delim + sizeof(": ")));
+
+      string header_val = lines[i].substr(delim + sizeof(": "));
+
+      req.AddHeader(header_name, header_val);
     }
   }
 

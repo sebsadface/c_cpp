@@ -45,11 +45,8 @@ static void Usage(char* prog_name);
 // Calls Usage() on failure. Possible errors include:
 // - path is not a readable directory
 // - index file names are readable
-static void GetPortAndPath(int argc,
-                    char** argv,
-                    uint16_t* const port,
-                    string* const path,
-                    list<string>* const indices);
+static void GetPortAndPath(int argc, char** argv, uint16_t* const port,
+                           string* const path, list<string>* const indices);
 
 int main(int argc, char** argv) {
   // Print out welcome message.
@@ -82,18 +79,14 @@ int main(int argc, char** argv) {
   return EXIT_SUCCESS;
 }
 
-
 static void Usage(char* prog_name) {
   cerr << "Usage: " << prog_name << " port staticfiles_directory indices+";
   cerr << endl;
   exit(EXIT_FAILURE);
 }
 
-static void GetPortAndPath(int argc,
-                    char** argv,
-                    uint16_t* const port,
-                    string* const path,
-                    list<string>* const indices) {
+static void GetPortAndPath(int argc, char** argv, uint16_t* const port,
+                           string* const path, list<string>* const indices) {
   // Here are some considerations when implementing this function:
   // - There is a reasonable number of command line arguments
   // - The port number is reasonable
@@ -101,5 +94,41 @@ static void GetPortAndPath(int argc,
   // - You have at least 1 index, and all indices are readable files
 
   // STEP 1:
-}
+  if (argc < 4) {
+    Usage(argv[0]);
+  }
 
+  *port = atoi(argv[1]);
+  if (*port < 1024 || *port > 65535) {
+    cerr << "Unreasonable port number, reasonable range: 1024 <= port_number "
+            "<= 65535"
+         << endl;
+    Usage(argv[0]);
+  }
+
+  *path = string(argv[2]);
+  struct stat dir_stat;
+  if (stat(argv[2], &dir_stat) == -1 || !S_ISDIR(dir_stat.st_mode)) {
+    cerr << *path << "is not a readable directory" << endl;
+    Usage(argv[0]);
+  }
+
+  for (int i = 3; i < argc; i++) {
+    string file_name = string(argv[i]);
+
+    if (file_name.length() >= 4 &&
+        file_name.substr(file_name.length() - 4) == ".idx") {
+      struct stat file_stat;
+      if (stat(argv[i], &file_stat) == -1 || !S_ISREG(file_stat.st_mode)) {
+        cerr << file_name << "is not a readable file" << endl;
+        Usage(argv[0]);
+      }
+      indices->push_back(file_name);
+    }
+  }
+
+  if (indices->size() == 0) {
+    cerr << "Need at least one index file!" << endl;
+    Usage(argv[0]);
+  }
+}

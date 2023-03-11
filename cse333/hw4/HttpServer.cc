@@ -24,6 +24,7 @@
 #include "./HttpServer.h"
 #include "./libhw3/QueryProcessor.h"
 
+using hw3::QueryProcessor;
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -32,6 +33,7 @@ using std::map;
 using std::string;
 using std::stringstream;
 using std::unique_ptr;
+using namespace boost::algorithm;
 
 namespace hw4 {
 ///////////////////////////////////////////////////////////////////////////////
@@ -272,8 +274,7 @@ static HttpResponse ProcessQueryRequest(const string& uri,
   //    tags!)
 
   // STEP 3:
-  string response_body;
-  response_body =
+  ret.AppendToBody(
       "<html><head><title>333gle</title></head>\n" + "<body>\n" +
       "<center style = \"font-size:500%;\">\n" +
       "<span style = "
@@ -287,9 +288,45 @@ static HttpResponse ProcessQueryRequest(const string& uri,
       "<form action = \"/query\" method = \"get\">\n" +
       "<input type = \"text\" size = 30 name = \"terms\"/>\n" +
       "<input type = \"submit\" value = \"Search\"/>\n" + "</form>\n" +
-      "</center><p>\n"
+      "</center><p>\n");
 
-      return ret;
+  URLParser parser;
+  parser.Parse(uri);
+  string query = to_lower(trim(parser.args()["terms"]));
+
+  if (!query.empty()) {
+    vector<string> query_vector;
+    QueryProcessor qp(indices);
+    vector<QueryProcessor::QueryResult> res;
+
+    split(query_vector, query, is_any_of(" "), token_compress_on);
+    res = qp.ProcessQuery(query_vector);
+
+    if (res.size() == 0) {
+      ret.AppendToBody("<p><br>\n" + "No results found for <b>" +
+                       EscapeHtml(query) + "</b>\n" + "<p>\n\n");
+    } else {
+      ret.AppendToBody("<p><br>\n" + to_string(res.size()));
+      ret.AppendToBody((qr.size() == 1) ? " result" : " results");
+      ret.AppendToBody(" found for <b>" + EscapeHtml(query) + "</b>\n" +
+                       "<p>\n\n" + "<ul>\n");
+      for (auto qr : res) {
+        ret.AppendToBody(" <li><a href=\"");
+        if (qr.document_name.substr(0, 7) != "http://") {
+          ret.AppendToBody("/static/");
+        }
+        ret.AppendToBody("\">" + EscapeHtml(qr.document_name) + "</a> [" +
+                         to_string(qr.rank) + "]<br>\n");
+      }
+      ret.AppendToBody("</ul>\n");
+    }
+  }
+  ret.AppendToBody("</body></html>\n");
+
+  ret.set_protocol("HTTP/1.1");
+  ret.set_response_code(200);
+  ret.set_message("OK");
+  return ret;
 }
 
 }  // namespace hw4

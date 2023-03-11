@@ -63,7 +63,7 @@ bool IsPathSafe(const string& root_dir, const string& test_file) {
     return false;
   }
 
-  string file_path = root_dir + test_file;
+  string file_path = root_dir + "/" + test_file;
   if (realpath(file_path.c_str(), file_root_path) == nullptr) {
     perror("get real file path failed");
     return false;

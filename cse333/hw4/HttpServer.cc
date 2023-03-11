@@ -141,13 +141,15 @@ static void HttpServer_ThrFn(ThreadPool::Task* t) {
     HttpResponse response;
 
     if (!hc.GetNextRequest(&request)) {
-      continue;
+      close(hst->client_fd);
+      done = true;
     }
 
     response = ProcessRequest(request, hst->base_dir, *hst->indices);
 
     if (!hc.WriteResponse(response)) {
-      continue;
+      close(hst->client_fd);
+      done = true;
     }
 
     if (request.GetHeaderValue("connection") == "close") {

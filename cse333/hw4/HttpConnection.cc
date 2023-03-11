@@ -72,7 +72,6 @@ bool HttpConnection::GetNextRequest(HttpRequest* const request) {
   buffer_ = buffer_.substr(end + kHeaderEndLen);
 
   if (request->uri() == "") {
-    request = nullptr;
     return false;
   }
 

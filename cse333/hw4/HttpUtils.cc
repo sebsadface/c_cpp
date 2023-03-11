@@ -55,25 +55,15 @@ bool IsPathSafe(const string& root_dir, const string& test_file) {
   // STEP 1
   char dir_root_path[PATH_MAX] = "";
   char file_root_path[PATH_MAX] = "";
-
-  std::cout << "file_name:" << test_file << endl;
-  std::cout << "base_dir:" << root_dir << endl;
-  if (realpath(root_dir.c_str(), dir_root_path) == nullptr) {
-    perror("get real dir path failed");
-    return false;
-  }
-
   string file_path = root_dir + "/" + test_file;
-  if (realpath(file_path.c_str(), file_root_path) == nullptr) {
-    perror("get real file path failed");
+
+  if (realpath(root_dir.c_str(), dir_root_path) == nullptr ||
+      realpath(file_path.c_str(), file_root_path) == nullptr) {
     return false;
   }
 
   dir_root_path[strlen(dir_root_path)] = '/';
   dir_root_path[strlen(dir_root_path)] = '\0';
-
-  std::cout << "real root dir: " << dir_root_path << endl;
-  std::cout << "real file path: " << file_root_path << endl;
 
   if (strlen(dir_root_path) >= strlen(file_root_path) ||
       strncmp(dir_root_path, file_root_path, strlen(dir_root_path)) != 0) {

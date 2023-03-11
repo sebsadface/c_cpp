@@ -305,7 +305,8 @@ static HttpResponse ProcessQueryRequest(const string& uri,
     vector<QueryProcessor::QueryResult> res;  // a vector of query results
 
     // Parse the query into individual words, and store them into query_vector
-    boost::split(query_vector, query, boost::is_any_of(" "), token_compress_on);
+    boost::split(query_vector, query, boost::is_any_of(" "),
+                 boost::token_compress_on);
 
     // Process the query
     res = qp.ProcessQuery(query_vector);

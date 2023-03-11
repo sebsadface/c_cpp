@@ -122,11 +122,12 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
   vector<string> first_line;
 
   // Split the request into different lines(split on "\r\n")
-  boost::split(lines, request, boost::is_any_of("\r\n"), token_compress_on);
+  boost::split(lines, request, boost::is_any_of("\r\n"),
+               boost::token_compress_on);
 
   // Split the first line into different elements (split on " ")
   boost::split(first_line, lines.front(), boost::is_any_of(" "),
-               token_compress_on);
+               boost::token_compress_on);
 
   // Check if the first line is valid
   if (first_line.size() != 3 || first_line.front() != "GET" ||

@@ -144,6 +144,7 @@ static void HttpServer_ThrFn(ThreadPool::Task* t) {
     }
 
     response = ProcessRequest(request, hst->base_dir, *hst->indices);
+    std::cout << response << std::endl;
 
     if (!hc.WriteResponse(response)) {
       close(hst->client_fd);
@@ -283,7 +284,7 @@ static HttpResponse ProcessQueryRequest(const string& uri,
   trim(query);
   to_lower(query);
 
-  if (uri.find("query?terms=") == string::npos) {
+  if (!query.empty()) {
     vector<string> query_vector;
     QueryProcessor qp(indices);
     vector<QueryProcessor::QueryResult> res;

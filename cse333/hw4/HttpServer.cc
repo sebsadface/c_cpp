@@ -200,7 +200,7 @@ static HttpResponse ProcessFileRequest(const string& uri,
   URLParser parser;
   parser.Parse(uri);
   file_name = parser.path().substr(8);
-
+  cout << file_name << endl;
   FileReader fr(base_dir, file_name);
   string response_body;
 

@@ -64,8 +64,8 @@ bool IsPathSafe(const string& root_dir, const string& test_file) {
   dir_root_path[strlen(dir_root_path)] = '/';
   dir_root_path[strlen(dir_root_path)] = '\0';
 
-  cout << "real root dir: " << dir_root_path << endl;
-  cout << "real file path: " << file_root_path << endl;
+  std::cout << "real root dir: " << dir_root_path << endl;
+  std::cout << "real file path: " << file_root_path << endl;
 
   if (strlen(dir_root_path) >= strlen(file_root_path) ||
       strncmp(dir_root_path, file_root_path, strlen(dir_root_path)) != 0) {

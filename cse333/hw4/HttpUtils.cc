@@ -56,12 +56,9 @@ bool IsPathSafe(const string& root_dir, const string& test_file) {
   char dir_root_path[PATH_MAX] = "";
   char file_root_path[PATH_MAX] = "";
 
-  // Get the file path
-  string file_path = root_dir + "/" + test_file;
-
   // Get the absolute path for root_dir and test_file
   if (realpath(root_dir.c_str(), dir_root_path) == nullptr ||
-      realpath(file_path.c_str(), file_root_path) == nullptr) {
+      realpath(test_file.c_str(), file_root_path) == nullptr) {
     // Getting the absolute path failed, return false.
     return false;
   }

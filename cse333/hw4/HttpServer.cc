@@ -207,7 +207,7 @@ static HttpResponse ProcessFileRequest(const string& uri,
   parser.Parse(uri);
   file_name = parser.path().substr(8);
 
-  FileReader fr(base_dir, file_name);
+  FileReader fr(base_dir, base_dir + "/" + file_name);
   string response_body;
 
   ret.set_protocol("HTTP/1.1");

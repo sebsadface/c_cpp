@@ -143,7 +143,6 @@ static void HttpServer_ThrFn(ThreadPool::Task* t) {
     }
 
     response = ProcessRequest(request, hst->base_dir, *hst->indices);
-    cout << response.GenerateResponseString() << endl;
 
     if (!hc.WriteResponse(response)) {
       continue;

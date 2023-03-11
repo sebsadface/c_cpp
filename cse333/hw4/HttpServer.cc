@@ -292,7 +292,7 @@ static HttpResponse ProcessQueryRequest(const string& uri,
     res = qp.ProcessQuery(query_vector);
 
     if (res.size() == 0) {
-      ret.AppendToBody("<p><br>\n" + "No results found for <b>" +
+      ret.AppendToBody("<p><br>\n No results found for <b>" +
                        EscapeHtml(query) + "</b>\n" + "<p>\n\n");
     } else {
       ret.AppendToBody("<p><br>\n" + to_string(res.size()));

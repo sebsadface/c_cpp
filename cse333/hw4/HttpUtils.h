@@ -70,8 +70,8 @@ std::string URIDecode(const std::string& from);
 // through convenient methods.
 class URLParser {
  public:
-  URLParser() { }
-  virtual ~URLParser() { }
+  URLParser() {}
+  virtual ~URLParser() {}
 
   void Parse(const std::string& url);
 
@@ -121,7 +121,7 @@ int WrappedWrite(int fd, const unsigned char* buf, int write_len);
 // On failure, returns false.  Caller is responsible for close()'ing
 // the file descriptor.
 bool ConnectToServer(const std::string& host_name, uint16_t port_num,
-                    int *client_fd);
+                     int* client_fd);
 
 // As we learned in class, std::unique_ptr is useful for wrapping memory
 // that is dynamically allocated from the heap using "new".  If, however, you
@@ -137,14 +137,11 @@ bool ConnectToServer(const std::string& host_name, uint16_t port_num,
 //  std::unique_ptr<char,MallocDeleter<char>> str(malloc(sizeof(char) * len));
 //
 // Then, when str falls out of scope, its memory will automatically free()'d.
-template<typename T>
+template <typename T>
 class MallocDeleter {
  public:
-  void operator()(T* ptr) {
-    free(ptr);
-  }
+  void operator()(T* ptr) { free(ptr); }
 };
-
 
 }  // namespace hw4
 

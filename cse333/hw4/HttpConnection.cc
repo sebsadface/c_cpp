@@ -19,13 +19,11 @@
 #include "./HttpUtils.h"
 #include "./HttpConnection.h"
 
-using namespace boost::algorithm;
 using std::map;
 using std::string;
 using std::vector;
 
 namespace hw4 {
-
 static const char* kHeaderEnd = "\r\n\r\n";
 static const int kHeaderEndLen = 4;
 static const int buf_len = 1024;
@@ -51,31 +49,42 @@ bool HttpConnection::GetNextRequest(HttpRequest* const request) {
   int res;
   unsigned char buf[buf_len];
 
+  // Keep reading to buffer_ until we found "\r\n\r\n"
   while (buffer_.find(kHeaderEnd) == string::npos) {
     res = WrappedRead(fd_, buf, buf_len);
     if (res == -1) {
+      // Read failed, return false
       return false;
     }
     if (res == 0) {
+      // We reached EOF, stop reading
       break;
     }
+
+    // Append reading results to buffer_
     buffer_ += string(reinterpret_cast<char*>(buf), res);
   }
 
+  // Check if we read to the end of the request
+  // header. (Checking if we can find "\r\n\r\n" in buffer_)
   size_t end = buffer_.find(kHeaderEnd);
   if (end == string::npos) {
+    // Invalid read, return false.
     return false;
   }
 
+  // We sucessfully read the reaquest, now parse the request header
   *request = ParseRequest(buffer_.substr(0, end + kHeaderEndLen));
 
+  // Preserve the request body (contents after "\r\n\r\n")
   buffer_ = buffer_.substr(end + kHeaderEndLen);
 
   if (request->uri() == "") {
+    // Request header is malformed, return false
     return false;
   }
 
-  return true;  // You may want to change this.
+  return true;
 }
 
 bool HttpConnection::WriteResponse(const HttpResponse& response) const {
@@ -106,33 +115,42 @@ HttpRequest HttpConnection::ParseRequest(const string& request) const {
   // Note: If a header is malformed, skip that line.
 
   // STEP 2:
+
+  // vector for all the lines in request header
   vector<string> lines;
+  // vector for all the elements in the first line of request
   vector<string> first_line;
 
-  split(lines, request, is_any_of("\r\n"), token_compress_on);
-  split(first_line, lines.front(), is_any_of(" "), token_compress_on);
+  // Split the request into different lines(split on "\r\n")
+  boost::split(lines, request, boost::is_any_of("\r\n"), token_compress_on);
 
+  // Split the first line into different elements (split on " ")
+  boost::split(first_line, lines.front(), boost::is_any_of(" "),
+               token_compress_on);
+
+  // Check if the first line is valid
   if (first_line.size() != 3 || first_line.front() != "GET" ||
       first_line.back() != "HTTP/1.1") {
+    // The first line is malformed, return an empty uri.
     req.set_uri("");
     return req;
   }
 
   req.set_uri(first_line[1]);
 
+  // For the rest of the lines in the request, track the header name and value
+  // and store them in req.headers_
   for (size_t i = 1; i < lines.size(); i++) {
     size_t delim = lines[i].find(": ");
     if (delim != string::npos) {
       string header_name = lines[i].substr(0, delim);
-      to_lower(header_name);
+      boost::to_lower(header_name);
 
       string header_val = lines[i].substr(delim + sizeof(": ") - 1);
 
       req.AddHeader(header_name, header_val);
     }
   }
-
   return req;
 }
-
 }  // namespace hw4

@@ -45,7 +45,9 @@ bool FileReader::ReadFile(string* const contents) {
   // HttpUtils.h above the MallocDeleter class for details.
 
   // STEP 1:
+
   if (!IsPathSafe(this->basedir_, this->fname_)) {
+    // The given path is unsafe, return false
     return false;
   }
 
@@ -53,11 +55,14 @@ bool FileReader::ReadFile(string* const contents) {
   char* str = ::ReadFileToString(full_file.c_str(), &size);
 
   if (str == nullptr) {
+    // Read file to string failed, return false.
     return false;
   }
 
+  // Read file sucseeded! Copy the content into the output parameter
   *contents = string(str, size);
 
+  // clean up
   free(str);
   return true;
 }

@@ -55,22 +55,31 @@ bool IsPathSafe(const string& root_dir, const string& test_file) {
   // STEP 1
   char dir_root_path[PATH_MAX] = "";
   char file_root_path[PATH_MAX] = "";
+
+  // Get the file path
   string file_path = root_dir + "/" + test_file;
 
+  // Get the absolute path for root_dir and test_file
   if (realpath(root_dir.c_str(), dir_root_path) == nullptr ||
       realpath(file_path.c_str(), file_root_path) == nullptr) {
+    // Getting the absolute path failed, return false.
     return false;
   }
 
+  // Append a '/' character after the absolute path of root_dir before comparing
+  // it with the file_path
   dir_root_path[strlen(dir_root_path)] = '/';
   dir_root_path[strlen(dir_root_path)] = '\0';
 
+  // Check if the file_path is euqual to or longer than the dir_path, and if the
+  // file_path contains the dir_path
   if (strlen(dir_root_path) >= strlen(file_root_path) ||
       strncmp(dir_root_path, file_root_path, strlen(dir_root_path)) != 0) {
+    // The paths does not match, return false
     return false;
   }
 
-  return true;  // You may want to change this.
+  return true;
 }
 
 string EscapeHtml(const string& from) {
@@ -84,11 +93,11 @@ string EscapeHtml(const string& from) {
   // looked up online.
 
   // STEP 2
-  replace_all(ret, "&", "&amp;");
-  replace_all(ret, "\'", "&apos;");
-  replace_all(ret, "\"", "&quot;");
-  replace_all(ret, "<", "&lt;");
-  replace_all(ret, ">", "&gt;");
+  boost::replace_all(ret, "&", "&amp;");
+  boost::replace_all(ret, "\'", "&apos;");
+  boost::replace_all(ret, "\"", "&quot;");
+  boost::replace_all(ret, "<", "&lt;");
+  boost::replace_all(ret, ">", "&gt;");
 
   return ret;
 }

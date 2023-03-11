@@ -94,10 +94,13 @@ static void GetPortAndPath(int argc, char** argv, uint16_t* const port,
   // - You have at least 1 index, and all indices are readable files
 
   // STEP 1:
+
+  // Check for reasonable number of command line arguments
   if (argc < 4) {
     Usage(argv[0]);
   }
 
+  // Check to see if the port number is reasonable
   *port = atoi(argv[1]);
   if (*port < 1024 || *port > 65535) {
     cerr << "Unreasonable port number, reasonable range: 1024 <= port_number "
@@ -106,6 +109,7 @@ static void GetPortAndPath(int argc, char** argv, uint16_t* const port,
     Usage(argv[0]);
   }
 
+  // Check if the path is a readable directory
   *path = string(argv[2]);
   struct stat dir_stat;
   if (stat(argv[2], &dir_stat) == -1 || !S_ISDIR(dir_stat.st_mode)) {
@@ -113,6 +117,7 @@ static void GetPortAndPath(int argc, char** argv, uint16_t* const port,
     Usage(argv[0]);
   }
 
+  // Check all indices are readable, add them to indices list if they are
   for (int i = 3; i < argc; i++) {
     string file_name = string(argv[i]);
 
@@ -127,6 +132,7 @@ static void GetPortAndPath(int argc, char** argv, uint16_t* const port,
     }
   }
 
+  // Check if we have at least one readable indice file
   if (indices->size() == 0) {
     cerr << "Need at least one index file!" << endl;
     Usage(argv[0]);

@@ -34,7 +34,6 @@ using std::string;
 using std::stringstream;
 using std::to_string;
 using std::unique_ptr;
-using namespace boost::algorithm;
 
 namespace hw4 {
 ///////////////////////////////////////////////////////////////////////////////
@@ -134,6 +133,9 @@ static void HttpServer_ThrFn(ThreadPool::Task* t) {
   // STEP 1:
   bool done = false;
   HttpConnection hc(hst->client_fd);
+
+  // Use the HttpConnection class to read and process the next request from our
+  // current client, then write out our response.
   while (!done) {
     HttpRequest request;
     HttpResponse response;
@@ -149,6 +151,8 @@ static void HttpServer_ThrFn(ThreadPool::Task* t) {
     }
 
     if (request.GetHeaderValue("connection") == "close") {
+      // the client sends a "Connection: close\r\n" header, shut down the
+      // connection -- we're done.
       close(hst->client_fd);
       done = true;  // you may want to change this value
     }
@@ -198,6 +202,8 @@ static HttpResponse ProcessFileRequest(const string& uri,
 
   // STEP 2:
   URLParser parser;
+
+  // Parse the file_path from the uri
   parser.Parse(uri);
   file_name = parser.path().substr(8);
 
@@ -205,9 +211,13 @@ static HttpResponse ProcessFileRequest(const string& uri,
   string response_body;
 
   ret.set_protocol("HTTP/1.1");
+
+  // Read the file to response body and check if the read is successful
   if (fr.ReadFile(&response_body)) {
+    // Get the file suffix
     string suffix = file_name.substr(file_name.find("."));
 
+    // Modify the content type base on the suffix
     if (suffix == ".html" || suffix == ".htm") {
       ret.set_content_type("text/html");
     } else if (suffix == ".jpeg" || suffix == ".jpg") {
@@ -234,6 +244,8 @@ static HttpResponse ProcessFileRequest(const string& uri,
       ret.set_content_type("application/octet-stream");
     }
 
+    // We successfully read the file, return HTTP 200 indicating successful
+    // response
     ret.set_response_code(200);
     ret.set_message("OK");
     ret.AppendToBody(response_body);
@@ -273,26 +285,38 @@ static HttpResponse ProcessQueryRequest(const string& uri,
   //    tags!)
 
   // STEP 3:
+
+  // Append the 333gle logo and search box/button to response body
   ret.AppendToBody(kThreegleStr);
 
+  // Parse the uri and search for query terms
   URLParser parser;
   parser.Parse(uri);
   string query = parser.args()["terms"];
-  trim(query);
-  to_lower(query);
+  boost::trim(query);
+  boost::to_lower(query);
 
+  // Check if the user had previously typed in a search query
   if (!query.empty()) {
-    vector<string> query_vector;
-    QueryProcessor qp(indices);
-    vector<QueryProcessor::QueryResult> res;
+    // User had typed query we need to display the search results.
 
-    split(query_vector, query, is_any_of(" "), token_compress_on);
+    vector<string> query_vector;              // a vector of query words
+    QueryProcessor qp(indices);               // query processor
+    vector<QueryProcessor::QueryResult> res;  // a vector of query results
+
+    // Parse the query into individual words, and store them into query_vector
+    boost::split(query_vector, query, boost::is_any_of(" "), token_compress_on);
+
+    // Process the query
     res = qp.ProcessQuery(query_vector);
 
+    // Check if the results is empty
     if (res.size() == 0) {
+      // We did not find any matching results
       ret.AppendToBody("<p><br>\n No results found for <b>" +
                        EscapeHtml(query) + "</b>\n" + "<p>\n\n");
     } else {
+      // We found some results, print a hyperlink and rank for each of them
       ret.AppendToBody("<p><br>\n" + to_string(res.size()));
       ret.AppendToBody((res.size() == 1) ? " result" : " results");
       ret.AppendToBody(" found for <b>" + EscapeHtml(query) + "</b>\n" +
@@ -311,6 +335,8 @@ static HttpResponse ProcessQueryRequest(const string& uri,
   }
   ret.AppendToBody("</body>\n</html>\n");
 
+  // We successfully proccesed the query, return HTTP 200 indicating successful
+  // response
   ret.set_protocol("HTTP/1.1");
   ret.set_response_code(200);
   ret.set_message("OK");

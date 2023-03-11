@@ -58,6 +58,7 @@ bool IsPathSafe(const string& root_dir, const string& test_file) {
 
   if (realpath(root_dir.c_str(), dir_root_path) == nullptr ||
       realpath(test_file.c_str(), file_root_path) == nullptr) {
+    std::cout << "get real path failed" << endl;
     return false;
   }
 

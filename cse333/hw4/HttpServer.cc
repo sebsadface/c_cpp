@@ -203,7 +203,8 @@ static HttpResponse ProcessFileRequest(const string& uri,
   cout << "file_name:" << file_name << endl;
   FileReader fr(base_dir, file_name);
   string response_body;
-
+  fr.ReadFile(&response_body);
+  cout << "body: " << response_body << endl;
   ret.set_protocol("HTTP/1.1");
   if (fr.ReadFile(&response_body)) {
     string suffix = file_name.substr(file_name.find("."));

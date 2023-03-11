@@ -144,7 +144,7 @@ static void HttpServer_ThrFn(ThreadPool::Task* t) {
     }
 
     response = ProcessRequest(request, hst->base_dir, *hst->indices);
-    std::cout << response << std::endl;
+    cout << response.GenerateResponseString() << endl;
 
     if (!hc.WriteResponse(response)) {
       close(hst->client_fd);

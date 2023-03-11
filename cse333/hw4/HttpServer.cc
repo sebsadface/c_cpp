@@ -283,7 +283,7 @@ static HttpResponse ProcessQueryRequest(const string& uri,
   trim(query);
   to_lower(query);
 
-  if (!query.empty()) {
+  if (uri.find("query?terms=") == string::npos) {
     vector<string> query_vector;
     QueryProcessor qp(indices);
     vector<QueryProcessor::QueryResult> res;

@@ -1,9 +1,9 @@
 *************************
 * Homework 4 Reflection *
 *************************
-Name: 
-UW NETID:   
-STUDENT ID:
+Name: Sebastian Liu
+UW NETID: ll57
+STUDENT ID: 2033037
 
 -----------------------------------------------------------
 Questions:
@@ -12,7 +12,15 @@ Describe one convenient feature (i.e., good design decision)
 of this protocol in sending and receiving requests.
 Describe one difficulty or annoyance you encountered with this protocol. 
 
-Answer:
+Answer: 
+    One convenient feature is that we don't have to worry about the previous 
+    requests or responses. Each request made to the server is independent from other request. 
+    This made it easy to for us to process requests from multiple clients, since we can get all
+    the information we need from the current request.
+
+    One annoyance is that since HTTP is sent in plaintext, append each line to a string while composing
+    the responses, which is really error prone and can lead to sercurity issues. (We had to eacape all
+    the special characters)
 
 2. In HW4, we implemented a HTTP Server with the use of a thread pool
 to concurrently handle each client connection. As discussed in lecture,
@@ -21,4 +29,9 @@ on shared resources, which we have done with locks. Despite threads sharing
 the index and static files, we didn't have locks on these for HW4. Briefly
 explain what behavior in our server made it so locks were not needed.
 
-Answer:
+Answer: 
+    Because we are only allowing the users to read (query results, or static files) from the shared
+    resources so it is fine for multiple threads to read from the same resources. Also, each query 
+    requests and static file requests are processed independently and the responses are composed
+    independently within each process, so nothing gets written into the shared resources. Therefore, 
+    locks were not needed

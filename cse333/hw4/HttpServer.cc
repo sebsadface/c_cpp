@@ -199,7 +199,7 @@ static HttpResponse ProcessFileRequest(const string& uri,
   // STEP 2:
   URLParser parser;
   parser.Parse(uri);
-  file_name = parser.path().substr(9);
+  file_name = parser.path().substr(8);
 
   FileReader fr(base_dir, file_name);
   string response_body;

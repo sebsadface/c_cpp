@@ -298,11 +298,12 @@ static HttpResponse ProcessQueryRequest(const string& uri,
       ret.AppendToBody(" found for <b>" + EscapeHtml(query) + "</b>\n" +
                        "<p>\n\n" + "<ul>\n");
       for (auto qr : res) {
-        ret.AppendToBody(" <li><a href=\"");
+        ret.AppendToBody(" <li> <a href=\"");
         if (qr.document_name.substr(0, 7) != "http://") {
           ret.AppendToBody("/static/");
         }
-        ret.AppendToBody("\">" + EscapeHtml(qr.document_name) + "</a> [" +
+        ret.AppendToBody(EscapeHtml(qr.document_name) + "\">" +
+                         EscapeHtml(qr.document_name) + "</a> [" +
                          to_string(qr.rank) + "]<br>\n");
       }
       ret.AppendToBody("</ul>\n");

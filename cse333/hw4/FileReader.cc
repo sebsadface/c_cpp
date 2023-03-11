@@ -46,6 +46,7 @@ bool FileReader::ReadFile(string* const contents) {
 
   // STEP 1:
   if (!IsPathSafe(this->basedir_, this->fname_)) {
+    std::cout << "Path is not safe" << std::endl;
     return false;
   }
 
@@ -54,6 +55,7 @@ bool FileReader::ReadFile(string* const contents) {
 
   if (str == nullptr) {
     return false;
+    std::cout << "ReadFileToString Failed" << std::endl;
   }
 
   *contents = string(str, size);

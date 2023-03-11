@@ -32,6 +32,7 @@ using std::list;
 using std::map;
 using std::string;
 using std::stringstream;
+using std::to_string;
 using std::unique_ptr;
 using namespace boost::algorithm;
 
@@ -137,12 +138,12 @@ static void HttpServer_ThrFn(ThreadPool::Task* t) {
     HttpRequest request;
     HttpResponse response;
 
-    if (!hc.GetNextRequest(request)) {
+    if (!hc.GetNextRequest(&request)) {
       close(hst->client_fd);
       done = true;
     }
 
-    response = ProcessRequest(request, hst->base_dir, hst->indices);
+    response = ProcessRequest(request, hst->base_dir, *hst->indices);
 
     if (!hc.WriteResponse(response)) {
       close(hst->client_fd);
@@ -274,25 +275,13 @@ static HttpResponse ProcessQueryRequest(const string& uri,
   //    tags!)
 
   // STEP 3:
-  ret.AppendToBody(
-      "<html><head><title>333gle</title></head>\n" + "<body>\n" +
-      "<center style = \"font-size:500%;\">\n" +
-      "<span style = "
-      "\"position:relative;bottom:-0.33em;color:orange;\">3</span>" +
-      "<span style = \"color:red;\">3</span>" +
-      "<span style = \"color:gold;\">3</span>" +
-      "<span style = \"color:blue;\">g</span>" +
-      "<span style = \"color:green;\">l</span>" +
-      "<span style = \"color:red;\">e</span>\n" + "</center>\n" + "<p>\n" +
-      "<div style = \"height:20px;\"></div>\n" + "<center>\n" +
-      "<form action = \"/query\" method = \"get\">\n" +
-      "<input type = \"text\" size = 30 name = \"terms\"/>\n" +
-      "<input type = \"submit\" value = \"Search\"/>\n" + "</form>\n" +
-      "</center><p>\n");
+  ret.AppendToBody(kThreegleStr);
 
   URLParser parser;
   parser.Parse(uri);
-  string query = to_lower(trim(parser.args()["terms"]));
+  string query = parser.args()["terms"];
+  trim(query);
+  to_lower(query);
 
   if (!query.empty()) {
     vector<string> query_vector;
@@ -307,7 +296,7 @@ static HttpResponse ProcessQueryRequest(const string& uri,
                        EscapeHtml(query) + "</b>\n" + "<p>\n\n");
     } else {
       ret.AppendToBody("<p><br>\n" + to_string(res.size()));
-      ret.AppendToBody((qr.size() == 1) ? " result" : " results");
+      ret.AppendToBody((res.size() == 1) ? " result" : " results");
       ret.AppendToBody(" found for <b>" + EscapeHtml(query) + "</b>\n" +
                        "<p>\n\n" + "<ul>\n");
       for (auto qr : res) {

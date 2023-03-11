@@ -139,16 +139,14 @@ static void HttpServer_ThrFn(ThreadPool::Task* t) {
     HttpResponse response;
 
     if (!hc.GetNextRequest(&request)) {
-      close(hst->client_fd);
-      done = true;
+      continue;
     }
 
     response = ProcessRequest(request, hst->base_dir, *hst->indices);
     cout << response.GenerateResponseString() << endl;
 
     if (!hc.WriteResponse(response)) {
-      close(hst->client_fd);
-      done = true;
+      continue;
     }
 
     if (request.GetHeaderValue("connection") == "close") {
@@ -311,7 +309,7 @@ static HttpResponse ProcessQueryRequest(const string& uri,
       ret.AppendToBody("</ul>\n");
     }
   }
-  ret.AppendToBody("</body></html>\n");
+  ret.AppendToBody("</body>\n</html>\n");
 
   ret.set_protocol("HTTP/1.1");
   ret.set_response_code(200);

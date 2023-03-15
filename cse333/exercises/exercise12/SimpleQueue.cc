@@ -3,42 +3,33 @@
  * hereby granted to students registered for University of Washington
  * CSE 333 for use solely during Winter Quarter 2023 for purposes of
  * the course.  No other use, copying, distribution, or modification
- * is permitted without prior written consent. Copyrights for
+ * is permitted without prior written consent.  Copyrights for
  * third-party components of this work must be honored.  Instructors
  * interested in reusing these course materials should contact the
  * author.
  */
 
-// Name: Sebastian Liu
-// CSE Email Address: ll57@cs.washington.edu
-
+#include <pthread.h>
+#include <string>
 #include "SimpleQueue.h"
-
-#include <memory>
 
 using std::shared_ptr;
 using std::string;
-
-static pthread_mutex_t queue_lock;
 
 SimpleQueue::SimpleQueue() {
   this->size_ = 0;
   this->front_.reset();
   this->end_.reset();
-  pthread_mutex_init(&queue_lock, nullptr);  // initialize mutex to default
+  pthread_mutex_init(&this->mtx_, nullptr);
 }
 
-SimpleQueue::~SimpleQueue() {
-  pthread_mutex_destroy(&queue_lock);  // destroy the mutex to clean up
-}
+SimpleQueue::~SimpleQueue() { pthread_mutex_destroy(&this->mtx_); }
 
 void SimpleQueue::Enqueue(const string& item) {
   shared_ptr<Node> new_node(new Node());
   new_node->next.reset();
   new_node->item = item;
-
-  // Critical section: modifying the queue
-  pthread_mutex_lock(&queue_lock);
+  pthread_mutex_lock(&this->mtx_);
   if (this->end_) {
     this->end_->next = new_node;
   } else {
@@ -46,13 +37,13 @@ void SimpleQueue::Enqueue(const string& item) {
   }
   this->end_ = new_node;
   this->size_++;
-  pthread_mutex_unlock(&queue_lock);
+  pthread_mutex_unlock(&this->mtx_);
 }
 
 bool SimpleQueue::Dequeue(string* const result) {
-  // Critical section: modifying the queue
-  pthread_mutex_lock(&queue_lock);
+  pthread_mutex_lock(&this->mtx_);
   if (this->size_ == 0) {
+    pthread_mutex_unlock(&this->mtx_);
     return false;
   }
   *result = this->front_->item;
@@ -62,10 +53,20 @@ bool SimpleQueue::Dequeue(string* const result) {
     this->front_ = this->front_->next;
   }
   this->size_--;
-  pthread_mutex_unlock(&queue_lock);
+  pthread_mutex_unlock(&this->mtx_);
   return true;
 }
 
-int SimpleQueue::Size() const { return this->size_; }
+int SimpleQueue::Size() const {
+  pthread_mutex_lock(&this->mtx_);
+  int result = this->size_;
+  pthread_mutex_unlock(&this->mtx_);
+  return result;
+}
 
-bool SimpleQueue::IsEmpty() const { return this->size_ == 0; }
+bool SimpleQueue::IsEmpty() const {
+  pthread_mutex_lock(&this->mtx_);
+  bool result = this->size_ == 0;
+  pthread_mutex_unlock(&this->mtx_);
+  return result;
+}

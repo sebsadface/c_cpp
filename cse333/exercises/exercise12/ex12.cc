@@ -3,21 +3,20 @@
  * hereby granted to students registered for University of Washington
  * CSE 333 for use solely during Winter Quarter 2023 for purposes of
  * the course.  No other use, copying, distribution, or modification
- * is permitted without prior written consent. Copyrights for
+ * is permitted without prior written consent.  Copyrights for
  * third-party components of this work must be honored.  Instructors
  * interested in reusing these course materials should contact the
  * author.
  */
 
-// Name: Sebastian Liu
-// CSE Email Address: ll57@cs.washington.edu
+#include <pthread.h>
 
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <thread>
-#include <chrono>
-#include <cstdlib>
 #include <string>
-#include <ctime>
+#include <chrono>
 
 #include "SimpleQueue.h"
 
@@ -25,63 +24,66 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::string;
-using std::thread;
 
 static constexpr int kNumSnacks = 6;
-static SimpleQueue queue;
-static unsigned int seed = time(nullptr);
-static pthread_mutex_t write_lock;
+static SimpleQueue queue;                  // queue of snacks
+static unsigned int seed = time(nullptr);  // initialize random sleep time
+static pthread_mutex_t write_lock;         // mutex for cout
 
-// Thread safe print that prints the given str on a line
+// Use cout in a thread-safe manner
 void thread_safe_print(const string& str);
 
-// Produces kNumSnacks snacks of the given type
-// You should NOT modify this method at all
+// Produces 6 snacks of the given type
 void producer(const string& snack_type);
 
-// Eats 2 * kNumSnacks snacks
-// You should NOT modify this method at all
+// Start a producer thread by calling producer(*arg_ptr)
+// Terminate the thread when the producer function finishes.
+void* producer_start(void* arg_ptr);
+
+// Eats 2*kNumSnacks snacks
 void consumer();
 
-// Wrapper function for calling producer
-void* thread_producer(void* arg);
+// Start the consumer thread by calling consumer() and terminate
+// the thread when the consumer finishes.
+void* consumer_start(void* arg_ptr);
 
-// Wrapper function for calling consumer
-void* thread_consumer(void*);
-
+// Start two producer threads and a consumer thread.
+// Wait for them to terminate and then exit.
 int main(int argc, char** argv) {
+  srand(time(nullptr));
   pthread_mutex_init(&write_lock, nullptr);
-  // Your task: Make the two producers and the single consumer
-  // all run concurrently (hint: use pthreads)
 
-  // Array for three threads: two for producers, one for consumer
-  pthread_t thds[3];
-
-  string* arg1 = new string("piroshki");
-  string* arg2 = new string("nalysnyky");
-
-  // create threads to run thread_producer("piroshki")
-  if (pthread_create(&thds[0], nullptr, &thread_producer, arg1) != 0) {
-    cerr << "pthread_create failed" << endl;
+  // Make the two producers and the single consumer all run concurrently
+  // by using pthreads
+  string snack_type_1 = "piroshki";
+  string snack_type_2 = "nalysnyky";
+  pthread_t producer_thd1, producer_thd2, consumer_thd;
+  if (pthread_create(&producer_thd1, nullptr, producer_start, &snack_type_1) !=
+      0) {
+    cerr << "pthread_create failed for ";
+    cerr << snack_type_1 << " producer" << endl;
+  }
+  if (pthread_create(&producer_thd2, nullptr, producer_start, &snack_type_2) !=
+      0) {
+    cerr << "pthread_create failed for ";
+    cerr << snack_type_2 << " producer" << endl;
+  }
+  if (pthread_create(&consumer_thd, nullptr, consumer_start, nullptr) != 0) {
+    cerr << "pthread_create failed for consumer" << endl;
   }
 
-  // create threads to run thread_producer("nalysnyky")
-  if (pthread_create(&thds[1], nullptr, &thread_producer, arg2) != 0) {
-    cerr << "pthread_create failed" << endl;
+  if (pthread_join(producer_thd1, nullptr) != 0) {
+    cerr << "pthread_join failed for ";
+    cerr << snack_type_1 << " producer" << endl;
+  }
+  if (pthread_join(producer_thd2, nullptr) != 0) {
+    cerr << "pthread_join failed for ";
+    cerr << snack_type_2 << " producer" << endl;
+  }
+  if (pthread_join(consumer_thd, nullptr) != 0) {
+    cerr << "pthread_join failed for consumer" << endl;
   }
 
-  // create threads to run thread_consumer()
-  if (pthread_create(&thds[2], nullptr, &thread_consumer, nullptr) != 0) {
-    cerr << "pthread_create failed" << endl;
-  }
-
-  // wait for all child threads to finish
-  for (int i = 0; i < 3; i++) {
-    if (pthread_join(thds[i], nullptr) != 0) {
-      cerr << "pthread_join failed" << endl;
-    }
-  }
-  // destroy the mutex to clean up
   pthread_mutex_destroy(&write_lock);
   return EXIT_SUCCESS;
 }
@@ -95,6 +97,7 @@ void thread_safe_print(const string& str) {
   pthread_mutex_unlock(&write_lock);
 }
 
+// You should NOT modify this method
 void producer(const string& snack_type) {
   for (int i = 0; i < kNumSnacks; i++) {
     queue.Enqueue(snack_type);
@@ -104,8 +107,15 @@ void producer(const string& snack_type) {
   }
 }
 
+void* producer_start(void* arg_ptr) {
+  string* snack_type = reinterpret_cast<string*>(arg_ptr);
+  producer(*snack_type);
+  return nullptr;  // implicitly terminates thread
+}
+
+// You should NOT modify this method
 void consumer() {
-  for (int i = 0; i < kNumSnacks * 2; i++) {
+  for (int i = 0; i < 2 * kNumSnacks; i++) {
     bool successful = false;
     string snack_type;
     while (!successful) {
@@ -120,17 +130,7 @@ void consumer() {
   }
 }
 
-void* thread_producer(void* arg) {
-  string* snack = reinterpret_cast<string*>(arg);
-
-  producer(*snack);
-
-  // NEW: delete dynamically-allocated snack
-  delete snack;
-  return nullptr;  // return type is a pointer
-}
-
-void* thread_consumer(void*) {
+void* consumer_start(void* arg_ptr) {
   consumer();
-  return nullptr;  // return type is a pointer
+  return nullptr;  // implicitly terminates thread
 }

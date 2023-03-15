@@ -26,6 +26,7 @@ using std::endl;
 using std::string;
 
 static constexpr int kNumSnacks = 6;
+int sour_cream = 4;
 static SimpleQueue queue;                  // queue of snacks
 static unsigned int seed = time(nullptr);  // initialize random sleep time
 static pthread_mutex_t write_lock;         // mutex for cout
@@ -57,7 +58,7 @@ int main(int argc, char** argv) {
   // by using pthreads
   string snack_type_1 = "piroshki";
   string snack_type_2 = "nalysnyky";
-  pthread_t producer_thd1, producer_thd2, consumer_thd;
+  pthread_t producer_thd1, producer_thd2, consumer_thd1, consumer_thd2;
   if (pthread_create(&producer_thd1, nullptr, producer_start, &snack_type_1) !=
       0) {
     cerr << "pthread_create failed for ";
@@ -68,8 +69,11 @@ int main(int argc, char** argv) {
     cerr << "pthread_create failed for ";
     cerr << snack_type_2 << " producer" << endl;
   }
-  if (pthread_create(&consumer_thd, nullptr, consumer_start, nullptr) != 0) {
-    cerr << "pthread_create failed for consumer" << endl;
+  if (pthread_create(&consumer_thd1, nullptr, consumer_start, nullptr) != 0) {
+    cerr << "pthread_create failed for consumer1" << endl;
+  }
+  if (pthread_create(&consumer_thd2, nullptr, consumer_start, nullptr) != 0) {
+    cerr << "pthread_create failed for consumer2" << endl;
   }
 
   if (pthread_join(producer_thd1, nullptr) != 0) {
@@ -80,8 +84,11 @@ int main(int argc, char** argv) {
     cerr << "pthread_join failed for ";
     cerr << snack_type_2 << " producer" << endl;
   }
-  if (pthread_join(consumer_thd, nullptr) != 0) {
-    cerr << "pthread_join failed for consumer" << endl;
+  if (pthread_join(consumer_thd1, nullptr) != 0) {
+    cerr << "pthread_join failed for consumer1" << endl;
+  }
+  if (pthread_join(consumer_thd2, nullptr) != 0) {
+    cerr << "pthread_join failed for consumer2" << endl;
   }
 
   pthread_mutex_destroy(&write_lock);
@@ -115,7 +122,7 @@ void* producer_start(void* arg_ptr) {
 
 // You should NOT modify this method
 void consumer() {
-  for (int i = 0; i < 2 * kNumSnacks; i++) {
+  for (int i = 0; i < kNumSnacks; i++) {
     bool successful = false;
     string snack_type;
     while (!successful) {
@@ -126,7 +133,13 @@ void consumer() {
       }
       successful = queue.Dequeue(&snack_type);
     }
-    thread_safe_print(snack_type + " eaten!");
+
+    if (sour_cream != 0 && snack_type.compare("nalysnyky") == 0) {
+      sour_cream--;
+      thread_safe_print(snack_type + " eaten with sour cream!");
+    } else {
+      thread_safe_print(snack_type + " eaten!");
+    }
   }
 }
 

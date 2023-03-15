@@ -9,64 +9,46 @@
  * author.
  */
 
-#include <pthread.h>
+#ifndef _SIMPLEQUEUE_H_
+#define _SIMPLEQUEUE_H_
+
 #include <string>
-#include "SimpleQueue.h"
+#include <memory>
 
 using std::shared_ptr;
 using std::string;
 
-SimpleQueue::SimpleQueue() {
-  this->size_ = 0;
-  this->front_.reset();
-  this->end_.reset();
-  pthread_mutex_init(&this->mtx_, nullptr);
-}
+// A simple FIFO queue class that stores strings
+class SimpleQueue {
+ public:
+  SimpleQueue();
 
-SimpleQueue::~SimpleQueue() { pthread_mutex_destroy(&this->mtx_); }
+  ~SimpleQueue();
 
-void SimpleQueue::Enqueue(const string& item) {
-  shared_ptr<Node> new_node(new Node());
-  new_node->next.reset();
-  new_node->item = item;
-  pthread_mutex_lock(&this->mtx_);
-  if (this->end_) {
-    this->end_->next = new_node;
-  } else {
-    this->front_ = new_node;
-  }
-  this->end_ = new_node;
-  this->size_++;
-  pthread_mutex_unlock(&this->mtx_);
-}
+  // Enqueues the given item
+  void Enqueue(const string& item);
 
-bool SimpleQueue::Dequeue(string* const result) {
-  pthread_mutex_lock(&this->mtx_);
-  if (this->size_ == 0) {
-    pthread_mutex_unlock(&this->mtx_);
-    return false;
-  }
-  *result = this->front_->item;
-  if (this->end_ == this->front_) {
-    this->end_ = this->front_ = this->front_->next;
-  } else {
-    this->front_ = this->front_->next;
-  }
-  this->size_--;
-  pthread_mutex_unlock(&this->mtx_);
-  return true;
-}
+  // Dequeues the item at the front of the queue
+  // and stores it at the location pointed to by result.
+  // Returns true if there was an item to return and
+  // false if the queue was empty.
+  bool Dequeue(string* const result);
 
-int SimpleQueue::Size() const {
-  pthread_mutex_lock(&this->mtx_);
-  int result = this->size_;
-  pthread_mutex_unlock(&this->mtx_);
-  return result;
-}
+  // Returns the size of the queue
+  int Size() const;
 
-bool SimpleQueue::IsEmpty() const {
-  pthread_mutex_lock(&this->mtx_);
-  bool result = this->size_ == 0;
-  pthread_mutex_unlock(&this->mtx_);
-  return result;
-}
+  // Returns true if the queue if empty, false otherwise
+  bool IsEmpty() const;
+
+ private:
+  struct Node {
+    string item;
+    shared_ptr<Node> next;
+  };
+  shared_ptr<Node> front_;
+  shared_ptr<Node> end_;
+  int size_;
+  mutable pthread_mutex_t mtx_;
+};  // class SimpleQueue
+
+#endif  // _SIMPLEQUEUE_H_

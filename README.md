@@ -1,2 +1,2 @@
 # prog_c
-C projects
+C/C++ projects

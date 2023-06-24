@@ -1,2 +1,2 @@
-# prog_c_cpp
+# c_cpp
 C/C++ projects
